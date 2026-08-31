@@ -244,7 +244,7 @@ export class StoryDirector {
       this.game.addCash(800); this.reputation.change('runners', 1.4, 'running-dark-lost-key', 'Cal Rook에게 분실된 채널 컨트롤러를 가져다줬습니다.', true);
       this.reputation.change('locals', -0.55, 'running-dark-lost-key', 'Old Mill에서 분실 컨트롤러 행방을 들었습니다.', false);
       this.law.hotCargoT = 0; this.law.cool(0.35);
-      this.call('CH 72', 'CAL ROOK · LOST KEY', '케이스 밀봉完好. 약속대로 800. 어느 표지에 들어가는지 묻지 마세요.', 3, 'runner-finish');
+      this.call('CH 72', 'CAL ROOK · LOST KEY', '케이스 밀봉 그대로. 약속대로 800. 어느 표지에 들어가는지 묻지 마세요.', 3, 'runner-finish');
       this.game.bountyToast('Lost Key 배달 완료 <b>+$800</b>');
     } else {
       this.game.addCash(425); this.reputation.change('locals', 1.3, 'running-dark-old-mill', 'West Cut 표시를 유지하는 컨트롤러를 복귀시켰습니다.', true);
