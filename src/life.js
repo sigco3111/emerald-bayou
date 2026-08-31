@@ -276,9 +276,9 @@ export class Debris {
 // ---------------------------------------------------------------------------------------------------------------
 // Traffic: other boats on the water
 // ---------------------------------------------------------------------------------------------------------------
-const YELLS = ['Watch it!', 'Hey! Learn to drive that thing!', 'You blind, son?', 'Easy! Easy!', 'That is a new hull, dammit!'];
-const ANGLER_SLOW = ['Any luck?', 'Nothin\' but gar, all morning', 'They were biting at first light', 'Got a nice bream. Go on, quiet now'];
-const ANGLER_WAKE = ['Slow down! You are rocking my boat!', 'Idle speed, you fool!', 'There goes my whole morning', 'I got a line out here!'];
+const YELLS = ['조심해!', '이봐! 그거 몰 줄은 알지?', '눈 먼 거야, 애송이?', '천천히! 천천히!', '배가 새 거라고, 젠장!'];
+const ANGLER_SLOW = ['낚시 잘 돼?', '아침 내내 가물치뿐이야', '해 뜰 때만 입질이 좋았어', '꽤 좋은 붕어를 잡았어. 이제 조용히 해'];
+const ANGLER_WAKE = ['천천히! 우리 배 흔들리잖아!', '최저 속도로, 이 바보야!', '오늘 아침이 다 망했네', '여기 낚싯줄 드리웠다고!'];
 const STEER_PROBES = [-0.7, -0.35, 0, 0.35, 0.7];
 const SHELTER_RELEASE_MARGIN = 0.09;
 const TOW_BERTH_RADII = [6.5, 8.5, 10.5, 12.5];
@@ -286,9 +286,9 @@ const TRAFFIC_DRIVER_POSE_RANGE = 120;
 const wrapAngle = a => Math.atan2(Math.sin(a), Math.cos(a));
 const TRAFFIC_PROFILES = [
   { id: 'net-nine', callsign: 'NET BOAT 9', operator: 'EDDIE MORA', job: 'mullet netter', duty: [4.5, 14], threshold: 0.12, cruise: 0.72, work: [18, 34, 0.72], maxStorm: 0.58, channel: 'CH 16', faction: 'locals', color: '#78a6bd' },
-  { id: 'marsh-ice', callsign: 'MARSH ICE', operator: 'ROSA MENDEZ', job: 'fish buyer', duty: [5.25, 16.2], threshold: 0.38, cruise: 0.82, work: [10, 22, 0.42], maxStorm: 0.66, channel: 'CH 68', faction: 'locals', color: '#8eb895' },
-  { id: 'bay-star', callsign: 'BAY STAR', operator: 'GABE NOLAN', job: 'guide boat', duty: [8, 18.5], threshold: 0.66, cruise: 0.72, work: [8, 16, 0.2], maxStorm: 0.4, channel: 'CH 16', faction: 'locals', color: '#d7c98d' },
-  { id: 'bird-crew', callsign: 'BIRD CREW', operator: 'IMANI WELLS', job: 'rookery survey', duty: [6.25, 19.25], threshold: 0.5, cruise: 0.64, work: [24, 44, 0.68], maxStorm: 0.5, channel: 'CH 68', faction: 'fwc', color: '#a8c8bf' },
+  { id: 'marsh-ice', callsign: 'MARSH ICE', operator: 'ROSA MENDEZ', job: '생선 매수상', duty: [5.25, 16.2], threshold: 0.38, cruise: 0.82, work: [10, 22, 0.42], maxStorm: 0.66, channel: 'CH 68', faction: 'locals', color: '#8eb895' },
+  { id: 'bay-star', callsign: 'BAY STAR', operator: 'GABE NOLAN', job: '가이드 보트', duty: [8, 18.5], threshold: 0.66, cruise: 0.72, work: [8, 16, 0.2], maxStorm: 0.4, channel: 'CH 16', faction: 'locals', color: '#d7c98d' },
+  { id: 'bird-crew', callsign: 'BIRD CREW', operator: 'IMANI WELLS', job: '군락지 조사', duty: [6.25, 19.25], threshold: 0.5, cruise: 0.64, work: [24, 44, 0.68], maxStorm: 0.5, channel: 'CH 68', faction: 'fwc', color: '#a8c8bf' },
   { id: 'fwc-27', callsign: 'FWC 27', operator: 'WARDEN SOTO', job: 'backcountry patrol', duty: [5.5, 23], threshold: 0.16, cruise: 0.84, work: [5, 10, 0.08], maxStorm: 0.94, channel: 'FWC TAC', faction: 'fwc', color: '#5aa7ff', essential: true },
   { id: 'back-line', callsign: 'BACK LINE', operator: 'RAFE MERCER', job: 'night courier', duty: [18.5, 5.2], threshold: 0.07, cruise: 0.94, work: [5, 12, 0.12], maxStorm: 0.72, channel: 'CH 72', faction: 'runners', color: '#cf7e43' },
   { id: 'glades-field', callsign: 'GLADES FIELD 3', operator: 'TESS WARD + MALIK JONES', job: 'water survey', duty: [6.5, 18], threshold: 0.72, cruise: 0.9, work: [30, 52, 0.75], maxStorm: 0.28, channel: 'CH 68', faction: 'fwc', color: '#dbc98f' },
@@ -530,7 +530,7 @@ export class Traffic {
   }
   chooseShelter(b) {
     const s = b.shelter, world = this.fx.game.world;
-    s.active = true; s.arrived = false; s.kind = 'lee'; s.key = ''; s.name = 'the lee bank'; s.x = b.x; s.z = b.z; s.distance = 0;
+    s.active = true; s.arrived = false; s.kind = 'lee'; s.key = ''; s.name = '풍하측 둑'; s.x = b.x; s.z = b.z; s.distance = 0;
     const wind = this.environment?.windDir, wx = wind?.x || 1, wz = wind?.z || 0;
     s.heading = Math.atan2(wx, wz); // bow toward the weather while holding
 
@@ -563,7 +563,7 @@ export class Traffic {
       const score = Math.min(4, -h) + Math.max(-1, Math.min(2.5, upwind + 0.7)) * 1.8 - ring * 0.12;
       if (score > best) { best = score; s.x = x; s.z = z; }
     }
-    if (best === -1e9) { s.kind = 'hold'; s.name = 'deep-water hold'; s.heading = b.heading; }
+    if (best === -1e9) { s.kind = 'hold'; s.name = '깊은 물 대피 지점'; s.heading = b.heading; }
     s.distance = Math.hypot(s.x - b.x, s.z - b.z); return s;
   }
   beginShelter(b) {
@@ -664,13 +664,13 @@ export class Traffic {
     const C = b.collision, P = b.profile;
     C.active = true; C.stage = 'disabled'; C.t = 0; C.elapsed = 0; C.hold = 0; C.farT = 0; C.signalT = 0; C.impact = impact; C.distance = Math.hypot(b.x - this.phys.pos.x, b.z - this.phys.pos.y);
     C.prevState = b.state; C.prevRetiring = b.retiring; C.prevLeg = b.leg; C.prevWorkT = b.workT; C.prevWorkRig = Boolean(b.workRig?.visible);
-    C.marker.x = b.x; C.marker.z = b.z; C.marker.label = `${P.callsign} disabled · hold alongside`;
+    C.marker.x = b.x; C.marker.z = b.z; C.marker.label = `${P.callsign} 기관 고장 · 나란히 대어 주세요`;
     b.state = 'collision-disabled'; b.retiring = false; b.speed = Math.min(b.speed, 1.1); b.turn = 0; b.greetT = 18;
     if (b.workRig) b.workRig.visible = false;
     this.collisionBoat = b; this.fx.game.wpTarget = C.marker;
     b.record.seriousCollisions++; this.fx.game.persist();
-    this.fx.game.toast('Their engine stopped', `${P.callsign} · idle below 5.5 mph and hold alongside`, 4.2);
-    this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text: 'Tower Boat, you hit us hard. Engine is down. Kill your prop and hold alongside while we check everybody.', priority: 3, key: `working-collision:${P.id}:${b.record.seriousCollisions}`, cooldown: 99999 });
+    this.fx.game.toast('상대 기관이 멈췄습니다', `${P.callsign} · 5.5 mph 이하로 줄이고 나란히 대기`, 4.2);
+    this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text: '타워 보트, 심하게 들이받았어. 엔진이 멈췄다. 프로펠러 끄고 우리 점검하는 동안 옆에 있어.', priority: 3, key: `working-collision:${P.id}:${b.record.seriousCollisions}`, cooldown: 99999 });
     this.signalCollisionCrew(b); return true;
   }
   restoreAfterCollision(b) {
@@ -684,13 +684,13 @@ export class Traffic {
   }
   abandonCollision(b) {
     const C = b.collision, P = b.profile; if (!C.active || C.stage !== 'disabled') return;
-    C.stage = 'reported'; C.t = 0; C.hold = 0; C.marker.label = `${P.callsign} disabled · incident reported`;
+    C.stage = 'reported'; C.t = 0; C.hold = 0; C.marker.label = `${P.callsign} 기관 고장 · 사건 보고됨`;
     if (this.fx.game.wpTarget === C.marker) this.fx.game.wpTarget = null;
     b.record.leftDisabled++; this.fx.game.persist();
-    this.law?.add(0.95, `left ${P.callsign} disabled after collision`, true);
-    this.reputation?.change(P.faction, -0.55, 'left-disabled-boat', `${P.callsign} told the district the tower boat struck them and left.`, false);
-    this.fx.game.toast('Hit-and-run reported', `${P.callsign} put your hull and direction over the radio`, 4.2);
-    this.radio?.transmit({ channel: 'CH 16', speaker: `${P.callsign} · ${P.operator}`, text: 'All stations, tower airboat struck us and left. We are disabled in the channel. Logging their direction now.', priority: 3, key: `working-abandoned:${P.id}:${b.record.leftDisabled}`, cooldown: 99999 });
+    this.law?.add(0.95, `${P.callsign} 충돌 후 장애 상태로 방치`, true);
+    this.reputation?.change(P.faction, -0.55, 'left-disabled-boat', `${P.callsign}이(가) 구역에 타워 보트가 들이받고 떠났다고 알렸다.`, false);
+    this.fx.game.toast('뺑소니 신고됨', `${P.callsign}이(가) 우리 선체와 항로를 무선에 알림`, 4.2);
+    this.radio?.transmit({ channel: 'CH 16', speaker: `${P.callsign} · ${P.operator}`, text: '전 부서, 타워 에어보트가 우리를 들이받고 떠났어. 수로에서 기관 불능 상태. 지금 항로 기록 중.', priority: 3, key: `working-abandoned:${P.id}:${b.record.leftDisabled}`, cooldown: 99999 });
   }
   updateCollisionAftermath(b, dt, d) {
     const C = b.collision, P = b.profile; if (!C.active) return;
@@ -699,19 +699,19 @@ export class Traffic {
       const holding = d < 24 && this.phys.speed * 2.23694 < 5.5 && !this.phys.airborne && this.phys.wipeT <= 0;
       C.hold = holding ? Math.min(7, C.hold + dt) : Math.max(0, C.hold - dt * 0.55);
       C.farT = C.elapsed > 4 && d > 120 ? C.farT + dt : Math.max(0, C.farT - dt * 1.5);
-      C.marker.label = C.hold > 0.2 ? `${P.callsign} · crew check ${Math.ceil(7 - C.hold)}s` : `${P.callsign} disabled · hold alongside`;
+      C.marker.label = C.hold > 0.2 ? `${P.callsign} · 승선 점검 ${Math.ceil(7 - C.hold)}초` : `${P.callsign} 기관 고장 · 나란히 대어 주세요`;
       this.fx.game.wpTarget = C.marker;
       if (C.signalT <= 0 && d < 115) this.signalCollisionCrew(b);
       if (C.hold >= 7) {
-        C.stage = 'restart'; C.t = 0; C.marker.label = `${P.callsign} · restarting engine`;
+        C.stage = 'restart'; C.t = 0; C.marker.label = `${P.callsign} · 엔진 재시동 중`;
         b.record.aidedAfterCollision++; this.fx.game.persist();
-        this.reputation?.change(P.faction, 0.2, 'stayed-after-collision', `You stayed alongside while ${P.callsign} checked the crew and restarted.`, false);
-        this.fx.game.toast('Everybody is accounted for', `${P.callsign} is restarting · the collision remains on the log`, 3.8);
-        this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text: 'Everybody is accounted for. We have steering. Stand clear while I restart her.', priority: 2, key: `working-aided:${P.id}:${b.record.aidedAfterCollision}`, cooldown: 99999 });
+        this.reputation?.change(P.faction, 0.2, 'stayed-after-collision', `${P.callsign}이(가) 승선 점검하고 재시동하는 동안 옆에 남아 주었다.`, false);
+        this.fx.game.toast('전원 안전 확인', `${P.callsign} 재시동 중 · 충돌은 기록에 남아 있음`, 3.8);
+        this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text: '전원 안전 확인. 조향 가능. 재시동하는 동안 거리 유지해 줘.', priority: 2, key: `working-aided:${P.id}:${b.record.aidedAfterCollision}`, cooldown: 99999 });
       } else if (C.farT >= 2.2) this.abandonCollision(b);
       else if (C.elapsed >= 58) {
-        this.fx.game.toast('They got the engine back', `${P.callsign} · you stayed, but never came alongside`, 3.4);
-        this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text: 'Engine is back. Tower Boat, next time come alongside and make sure everybody is standing.', priority: 2, key: `working-unassisted:${P.id}:${b.record.seriousCollisions}`, cooldown: 99999 });
+        this.fx.game.toast('상대가 엔진 복구', `${P.callsign} · 옆에 남았지만 다가오지 않음`, 3.4);
+        this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text: '엔진 복구. 타워 보트, 다음엔 나란히 붙어 모두 서 있는지 확인해.', priority: 2, key: `working-unassisted:${P.id}:${b.record.seriousCollisions}`, cooldown: 99999 });
         this.restoreAfterCollision(b);
       }
     } else if (C.stage === 'restart' && C.t >= 4.5) this.restoreAfterCollision(b);
@@ -758,8 +758,8 @@ export class Traffic {
     b.record.lastMet = key; b.record.passes++; b.greetT = 24; this.fx.game.persist();
     if (b.people?.length) wave(b.people[b.people.length - 1]);
     const restricted = (this.environment?.restrictedVisibility || 0) > 0.45;
-    const state = b.state === 'tow-response' ? 'responding to your tow call' : b.state === 'tow-alongside' ? 'passing a tow line' : b.state === 'shelter-run' ? `making for ${b.shelter.name}` : b.state === 'sheltered' ? `weathered in at ${b.shelter.name}` : b.state === 'work' ? `working · ${b.profile.job}` : restricted ? 'making way slow · restricted visibility' : b.retiring ? 'heading in' : b.profile.job;
-    const wakeMemory = !b.assisting && !b.shelter.active && b.record.wakeComplaints > 0 ? (b.record.wakeReports > 0 ? ' · prior wake report on file' : ' · remembers your last wake') : '';
+    const state = b.state === 'tow-response' ? '견인 호출에 출동 중' : b.state === 'tow-alongside' ? '견인줄 전달 중' : b.state === 'shelter-run' ? `${b.shelter.name}(으)로 대피 중` : b.state === 'sheltered' ? `${b.shelter.name}에서 대기 중` : b.state === 'work' ? `작업 중 · ${b.profile.job}` : restricted ? '시야 제한 속력으로 항해 중' : b.retiring ? '귀항 중' : b.profile.job;
+    const wakeMemory = !b.assisting && !b.shelter.active && b.record.wakeComplaints > 0 ? (b.record.wakeReports > 0 ? ' · 이전 파도 신고 기록 있음' : ' · 지난번 파도 기억함') : '';
     this.fx.game.toast(`${b.profile.callsign} · ${b.profile.operator}`, state + wakeMemory, 2.8);
   }
   recordWakeComplaint(b, severity, distance) {
@@ -772,21 +772,21 @@ export class Traffic {
     const consequence = wakeConsequence({ severity, shiftComplaints: record.wakeShiftComplaints, previousComplaints, enforcementCrew });
     b.wakeT = consequence.reported ? 24 : 14;
     if (!consequence.reported) {
-      const warning = b.kind === 'canoe' ? '“Easy on the wake.”' : '“No wake. Gear in the water.”';
-      const detail = b.kind === 'canoe' ? `${P.callsign} · water survey under paddle` : `${P.callsign} · ${P.job}`;
+      const warning = b.kind === 'canoe' ? '“파도 살살 줘.”' : '“파도 내지 마. 그물 넣은 상태야.”';
+      const detail = b.kind === 'canoe' ? `${P.callsign} · 패들 조사 작업 중` : `${P.callsign} · ${P.job}`;
       this.fx.game.toast(warning, detail, 2.6);
     } else {
       record.wakeReports = Math.min(9999, record.wakeReports + 1);
       const hard = severity >= 2;
       const text = enforcementCrew
-        ? hard ? 'Tower Boat, hard wake through an active survey station. Your hull and direction are going on the FWC log.' : 'Tower Boat, that is another wake through our station. Your hull and direction are going on the FWC log.'
-        : hard ? 'Tower Boat, that wake hit our gear hard. I am logging your hull and direction with FWC.' : 'Tower Boat, that is the second wake through our gear. I am logging your hull and direction with FWC.';
+        ? hard ? '타워 보트, 가동 중인 조사 구역에 강한 파도 발생. 선체와 항로를 FWC 기록에 올린다.' : '타워 보트, 우리 구역에 또 파도야. 선체와 항로를 FWC 기록에 올린다.'
+        : hard ? '타워 보트, 그물이 강하게 흔들렸어. 선체와 항로를 FWC에 기록한다.' : '타워 보트, 우리 그물 구역에 두 번째 파도야. 선체와 항로를 FWC에 기록한다.';
       if (consequence.horn) this.fx.audio.horn(Math.max(0.1, 0.34 * (1 - distance / 115)), b.x, b.z);
-      this.fx.game.toast('Dangerous wake reported', `${P.callsign} logged your hull and direction`, 3.5);
+      this.fx.game.toast('위험한 파도 신고', `${P.callsign}이(가) 선체와 항로 기록`, 3.5);
       this.radio?.transmit({ channel: P.channel, speaker: `${P.callsign} · ${P.operator}`, text, priority: 3, key: `working-wake:${P.id}:${record.wakeReports}`, cooldown: 99999 });
-      this.law?.add(consequence.attention, `dangerous wake reported by ${P.callsign}`, false);
+      this.law?.add(consequence.attention, `${P.callsign}의 위험 파도 신고`, false);
     }
-    this.reputation?.change(P.faction, consequence.reputation, 'working-wake', `${P.callsign} remembers the tower airboat's wake through ${b.kind === 'canoe' ? 'their paddle station' : 'their working gear'}.`, false);
+    this.reputation?.change(P.faction, consequence.reputation, 'working-wake', `${P.callsign}이(가) ${b.kind === 'canoe' ? '패들 조사 구역' : '작업 중 그물'}을 통과하는 타워 에어보트의 파도를 기억한다.`, false);
     this.fx.game.persist(); return true;
   }
   updateWorkingDetails(b, t) {
@@ -881,7 +881,7 @@ export class Traffic {
       const listenerDistance = Math.hypot(b.x - this.phys.pos.x, b.z - this.phys.pos.y);
       if (this.wildlifeCallT <= 0 && listenerDistance < 520 && this.radio?.transmit({
         channel: b.profile.channel, speaker: `${b.profile.callsign} · ${b.profile.operator}`,
-        text: b.kind === 'canoe' ? 'Manatee footprint ahead. Holding the paddle and passing wide.' : 'Manatee footprint ahead. Coming off plane and giving it fifty feet.',
+        text: b.kind === 'canoe' ? '전방에 마네키 흔적. 패들 멈추고 멀리 피한다.' : '전방에 마네키 흔적. 속도 줄이고 50피트 거리 확보.',
         priority: 1, key: `traffic:manatee:${b.profile.id}`, cooldown: 35,
       })) this.wildlifeCallT = 35;
     }
@@ -905,7 +905,7 @@ export class Traffic {
         this.pursuitCallMade = this.radio.transmit({
           channel: runners ? 'CH 72' : b.profile.channel,
           speaker: `${b.profile.callsign} · ${b.profile.operator}`,
-          text: runners ? 'Blue lights behind Tower Boat. I am clearing the cut—keep the back line open.' : 'Blue lights coming through. Clearing the cut and holding my wake.',
+          text: runners ? '타워 보트 뒤로 파란불. 수로 비키고 백 라인 열어둬.' : '파란불 다가옴. 수로 비우고 파도 줄인다.',
           priority: 2,
           key: `traffic:pursuit-yield:${b.profile.id}`,
           cooldown: 50,
@@ -1020,20 +1020,20 @@ export class Traffic {
     const calls = [];
     for (const b of nearby) {
       const P = b.profile, working = b.state === 'work'; let text = '';
-      if (b.collision.active) text = b.collision.stage === 'reported' ? `${P.callsign} is disabled after a collision. The striking tower airboat left the scene.` : `${P.callsign} is disabled after a collision. Keep the cut open while the crew checks everyone aboard.`;
-      else if (b.state === 'tow-response') text = 'Twenty-seven is responding to the tower boat. Hold position and leave room on the approach.';
-      else if (b.state === 'tow-alongside') text = 'Twenty-seven is alongside the tower boat. Passing the tow line now.';
-      else if (b.state === 'shelter-run') text = `${P.callsign} is making for ${b.shelter.name}. Keep the approach open and pass astern.`;
-      else if (b.state === 'sheltered') text = `${P.callsign} is secured at ${b.shelter.name}. Staying put until the wind comes down.`;
-      else if ((this.environment?.restrictedVisibility || 0) > 0.45 && P.id === 'net-nine' && working) text = 'Net Nine is fishing in restricted visibility. Gear is down; listen for one prolonged and two short.';
-      else if ((this.environment?.restrictedVisibility || 0) > 0.45 && b.kind !== 'canoe') text = `${P.callsign} is making way slow in restricted visibility. One prolonged blast on the next interval.`;
-      else if (P.id === 'net-nine') text = working ? 'Net is in the water on the outside bank. Pass my stern and keep your wash off it.' : 'Net Nine is moving to the next set. I will hold the narrow bend.';
-      else if (P.id === 'marsh-ice') text = 'Cold boxes aboard and running back toward the camps. I am taking the next blind turn slow.';
-      else if (P.id === 'bay-star') text = 'Guide boat has two passengers aboard. We will idle through the rookery water.';
-      else if (P.id === 'bird-crew') text = working ? 'Bird Crew is stopped on a sample station. Give us fifty yards and no wake.' : 'Bird Crew moving between the white stakes. Survey gear is still out.';
-      else if (P.id === 'fwc-27') text = (this.law?.attention || 0) > 1 ? 'Twenty-seven is working an active call. Keep sixteen clear.' : 'Patrol twenty-seven is checking camp approaches and navigation lights.';
-      else if (P.id === 'back-line') { if ((this.reputation?.score('runners') || 0) < 1) continue; text = 'Back Line is moving. Keep names and landmarks off this channel.'; }
-      else if (P.id === 'glades-field') text = working ? 'Field Three is taking a water sample. Paddle crew is stationary in the west half of the cut.' : 'Field Three is under paddle and clear of the marked channel.';
+      if (b.collision.active) text = b.collision.stage === 'reported' ? `${P.callsign}이(가) 충돌 후 기관 불능. 들이받은 타워 에어보트는 떠났다.` : `${P.callsign}이(가) 충돌 후 기관 불능. 승선 점검하는 동안 수로 열어둬.`;
+      else if (b.state === 'tow-response') text = '27호가 타워 보트로 출동 중. 접근로를 비우고 자리에 머물러.';
+      else if (b.state === 'tow-alongside') text = '27호가 타워 보트 옆에 붙었어. 견인줄 전달 중.';
+      else if (b.state === 'shelter-run') text = `${P.callsign}이(가) ${b.shelter.name}(으)로 이동 중. 접근로 열고 선미로 통과해.`;
+      else if (b.state === 'sheltered') text = `${P.callsign}이(가) ${b.shelter.name}에 정박. 바람이 잦아들 때까지 대기.`;
+      else if ((this.environment?.restrictedVisibility || 0) > 0.45 && P.id === 'net-nine' && working) text = '넷 나인이 시야 제한 상태로 조업 중. 그물 내림; 장음 1회 + 단음 2회 신호 청취 요망.';
+      else if ((this.environment?.restrictedVisibility || 0) > 0.45 && b.kind !== 'canoe') text = `${P.callsign}이(가) 시야 제한 상태로 감속 항해 중. 다음 신호 주기에서 장음 1회.`;
+      else if (P.id === 'net-nine') text = working ? '그물 바깥 둑에 내림. 선미 통과하고 파도 내지 마.' : '넷 나인이 다음 그물 자리로 이동 중. 좁은 곡류구간에서 대기한다.';
+      else if (P.id === 'marsh-ice') text = '차가운 얼음 상자 싣고 캠프로 복항 중. 다음 사각지대 곡류 천천히 돈다.';
+      else if (P.id === 'bay-star') text = '가이드 보트에 승객 2명 탑승. 번식지 구간에서는 최저 속력으로 간다.';
+      else if (P.id === 'bird-crew') text = working ? '버드 크루가 조사 지점에서 정지 중. 50야드 거리 유지하고 파도 내지 마.' : '버드 크루가 흰 말뚝 사이 이동 중. 조사 장비 여전히 내린 상태.';
+      else if (P.id === 'fwc-27') text = (this.law?.attention || 0) > 1 ? '27호가 가동 중인 호출 처리 중. 16번 채널 열어둬.' : '순찰 27호가 캠프 진입로와 항해등 점검 중.';
+      else if (P.id === 'back-line') { if ((this.reputation?.score('runners') || 0) < 1) continue; text = '백 라인 이동 중. 이 채널에선 이름과 지형 언급 금지.'; }
+      else if (P.id === 'glades-field') text = working ? '필드 3호가 시료 채취 중. 패들 인력이 수로 서쪽 절반에 정지.' : '필드 3호가 패들로 표시된 수로에서 떨어져 이동 중.';
       if (text) calls.push([P.channel, `${P.callsign} · ${P.operator}`, text]);
     }
     return calls;
@@ -1301,7 +1301,7 @@ export class Traffic {
 // Folk on the banks: bank anglers with a bucket and a cooler, one per ~500 m cell where a channel bank allows it
 // ---------------------------------------------------------------------------------------------------------------
 const FOLK_CELL = 500;
-const SHORE_WAKE = ['Hey! Idle speed along the bank!', 'You are putting the fish down!', 'Slow it down, son!', 'Real nice. Real nice.'];
+const SHORE_WAKE = ['이봐! 둑 따라서 최저 속도로!', '물고기 다 놀래키고 있어!', '속도 줄여, 애송이!', '아주 좋았어. 아주 좋았어.'];
 export class Folk {
   constructor(terrain, scene, fx) { this.T = terrain; this.scene = scene; this.fx = fx; this.cells = new Map(); this.live = new Map(); this.checkT = 0; this.activity = 1; this.cacheEvictions = 0; this.disposedLineGeometries = 0; }
   at(ci, cj) {

@@ -197,7 +197,7 @@ export class Game {
     const contactAlong = (this.phys.pos.x - this.skiff.pos.x) * fx + (this.phys.pos.y - this.skiff.pos.y) * fz;
     this.skiff.applyImpact?.(into, nx, nz, contactAlong);
     this.shake = Math.max(this.shake, Math.min(0.3, into * 0.032)); this.audio.warn();
-    this.toast('Rub rails hit', s.rivalRams > 1 ? 'That is not a clean race anymore.' : 'The johnboat crew is keeping count.', 2.4);
+    this.toast('Rub rails hit', s.rivalRams > 1 ? '더 이상 깨끗한 경주가 아닙니다.' : '존보트 승무원이 카운트를 세고 있습니다.', 2.4);
   }
   toast(text, sub = '', dur = 2.6) { this.el.toast.innerHTML = `${text}${sub ? `<small>${sub}</small>` : ''}`; this.el.toast.classList.add('on'); this.toastT = dur; }
   bountyToast(text) { this.el.bounty.innerHTML = text; this.el.bounty.classList.add('on'); this.bountyT = 4; }
@@ -285,7 +285,7 @@ export class Game {
     this.renderHud();
   }
   showResult(title, lines, fail) {
-    this.el.result.innerHTML = `<h2 class="${fail ? 'fail' : ''}">${fail ? title : 'Mission complete'}</h2>${fail ? '' : `<div class="lines" style="font-size:24px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">${title}</div>`}<div class="lines">${lines.map(l => `<div>${l}</div>`).join('')}</div><div class="foot"><span class="input-keyboard">Enter · continue &nbsp;&nbsp; R · retry &nbsp;&nbsp; M · jobs board</span><span class="input-gamepad">A / Cross · continue &nbsp;&nbsp; Y / Triangle · retry &nbsp;&nbsp; B / Circle · jobs board</span></div>`;
+    this.el.result.innerHTML = `<h2 class="${fail ? 'fail' : ''}">${fail ? title : '임무 완료'}</h2>${fail ? '' : `<div class="lines" style="font-size:24px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">${title}</div>`}<div class="lines">${lines.map(l => `<div>${l}</div>`).join('')}</div><div class="foot"><span class="input-keyboard">Enter · continue &nbsp;&nbsp; R · retry &nbsp;&nbsp; M · jobs board</span><span class="input-gamepad">A / Cross · continue &nbsp;&nbsp; Y / Triangle · retry &nbsp;&nbsp; B / Circle · jobs board</span></div>`;
     this.el.result.classList.remove('hidden'); this.resultOpen = true; this.paused = true; document.getElementById('hud').classList.add('dim'); this.lastMission = this.state ? this.state.m : this.lastMission;
   }
   closeResult() { this.el.result.classList.add('hidden'); this.resultOpen = false; this.paused = this.menuOpen; if (!this.menuOpen) document.getElementById('hud').classList.remove('dim'); }
@@ -339,7 +339,7 @@ export class Game {
       let best = '';
       if (b) { best = b.score !== undefined ? `${b.score.toLocaleString()}점` : b.time ? fmtT(b.time) : ''; if (b.medal) best += `<i>${b.medal}</i>`; }
       const goal = m.gold ? `골드 ${fmtT(m.gold)}` : m.scoreMedal ? `골드 ${m.scoreMedal[0].toLocaleString()}` : m.timeLimit ? `${fmtT(m.timeLimit)} 제한` : '';
-      return `<button type="button" class="m ${i === this.sel ? 'sel' : ''} ${lock ? 'locked' : ''} ${b ? 'done' : ''}" data-mission="${i}" ${lock ? 'disabled' : ''}><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${m.title}</span><span class="best">${lock ? 'LOCKED' : best || fmtCash(m.reward)}</span><span class="d">${lock ? 'Finish the previous job first.' : m.desc}${goal && !lock ? `<em>${goal}</em>` : ''}</span></button>`;
+      return `<button type="button" class="m ${i === this.sel ? 'sel' : ''} ${lock ? 'locked' : ''} ${b ? 'done' : ''}" data-mission="${i}" ${lock ? 'disabled' : ''}><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${m.title}</span><span class="best">${lock ? 'LOCKED' : best || fmtCash(m.reward)}</span><span class="d">${lock ? '이전 작업을 먼저 마치세요.' : m.desc}${goal && !lock ? `<em>${goal}</em>` : ''}</span></button>`;
     }).join('');
     const r = this.save.rec;
     const records = [
@@ -380,7 +380,7 @@ export class Game {
       keyHelp = inputHelp('<span><b>↑ ↓</b> choose &nbsp; <b>Enter</b> start</span><span><b>M / Esc</b> back to the water</span>', '<span><b>D-pad ↑ ↓</b> choose &nbsp; <b>A / Cross</b> start</span><span><b>Menu / B</b> back to the water</span>');
     } else if (this.menuTab === 'world') {
       kicker = '살아있는 세계'; title = '물은 기억한다'; copy = '전화, 호의, 충돌이 캠프, 운행자, FWC의 이 보트에 대한 시선을 바꿉니다.';
-      content = `<div class="world-grid"><section class="menu-card"><div class="h">Current picture</div><div class="kpis"><div class="kpi"><b>${encounterCount}</b><span>encounters</span></div><div class="kpi"><b>${regionsSeen}/${regionTotal}</b><span>regions</span></div><div class="kpi"><b>${incidentResolved}/${incidentHeard}</b><span>calls resolved</span></div><div class="kpi"><b>${wanted ? '★'.repeat(wanted) : 'Clear'}</b><span>FWC wanted</span></div><div class="kpi"><b>${citations}</b><span>citations</span></div><div class="kpi"><b>${Number(incidents.fwc) || 0}/${Number(incidents.runners) || 0}</b><span>FWC / runners</span></div></div></section><section class="menu-card"><div class="h">Standing</div><div class="standing"><span>Locals</span><b>${esc(standing.locals)}</b><em>${this.reputation ? this.reputation.score('locals').toFixed(1) : '0.0'}</em></div><div class="standing"><span>FWC</span><b>${esc(standing.fwc)}</b><em>${this.reputation ? this.reputation.score('fwc').toFixed(1) : '0.0'}</em></div><div class="standing"><span>Backchannel</span><b>${esc(standing.runners)}</b><em>${this.reputation ? this.reputation.score('runners').toFixed(1) : '0.0'}</em></div></section><section class="menu-card"><div class="h">Open threads</div><div class="deed"><b>Story</b>${esc(storyLine)}</div><div class="deed"><b>Resident work</b>${esc(contractLine)}</div><div class="deed"><b>Conditions</b>${esc(this.getWorldLabel?.() || 'South Florida backcountry')}</div></section><section class="menu-card"><div class="h">What people remember</div>${deedRows}</section><section class="menu-card field-notes"><div class="h">Field notes · ${fieldNoteCount} / ${fieldNotes.length || 3}</div><div class="field-note-grid">${fieldNoteRows}</div></section></div>`;
+      content = `<div class="world-grid"><section class="menu-card"><div class="h">Current picture</div><div class="kpis"><div class="kpi"><b>${encounterCount}</b><span>encounters</span></div><div class="kpi"><b>${regionsSeen}/${regionTotal}</b><span>regions</span></div><div class="kpi"><b>${incidentResolved}/${incidentHeard}</b><span>calls resolved</span></div><div class="kpi"><b>${wanted ? '★'.repeat(wanted) : 'Clear'}</b><span>FWC wanted</span></div><div class="kpi"><b>${citations}</b><span>citations</span></div><div class="kpi"><b>${Number(incidents.fwc) || 0}/${Number(incidents.runners) || 0}</b><span>FWC / runners</span></div></div></section><section class="menu-card"><div class="h">Standing</div><div class="standing"><span>Locals</span><b>${esc(standing.locals)}</b><em>${this.reputation ? this.reputation.score('locals').toFixed(1) : '0.0'}</em></div><div class="standing"><span>FWC</span><b>${esc(standing.fwc)}</b><em>${this.reputation ? this.reputation.score('fwc').toFixed(1) : '0.0'}</em></div><div class="standing"><span>Backchannel</span><b>${esc(standing.runners)}</b><em>${this.reputation ? this.reputation.score('runners').toFixed(1) : '0.0'}</em></div></section><section class="menu-card"><div class="h">Open threads</div><div class="deed"><b>Story</b>${esc(storyLine)}</div><div class="deed"><b>Resident work</b>${esc(contractLine)}</div><div class="deed"><b>Conditions</b>${esc(this.getWorldLabel?.() || '남플로리다 뒷골')}</div></section><section class="menu-card"><div class="h">What people remember</div>${deedRows}</section><section class="menu-card field-notes"><div class="h">Field notes · ${fieldNoteCount} / ${fieldNotes.length || 3}</div><div class="field-note-grid">${fieldNoteRows}</div></section></div>`;
       keyHelp = inputHelp('<span><b>Tab / ← →</b> change section</span><span><b>Esc</b> back to the water</span>', '<span><b>D-pad ← →</b> change section</span><span><b>Menu / B</b> back to the water</span>');
     } else if (this.menuTab === 'records') {
       kicker = '보트 일지'; title = '기록'; copy = '최고 기록, 점프, 야외 활동과 어획을 선측에서 측정한 결과.';
@@ -393,7 +393,7 @@ export class Game {
         ['graphics', '그래픽', '지속된 프레임 압박 시 자동 조정 · 고정 모드는 유지', quality, false],
         ['title', '타이틀로 복귀', "선체 현재 위치를 저장하고 수상 정지 상태로 타이틀 복귀", 'Title', false],
       ];
-      if (this.hasProgress()) systemActions.push(['new', resetArmed ? 'Confirm new game' : 'New game', resetArmed ? 'Select again now to clear jobs, cash, records and world history' : 'Start over at the tower dock; graphics choice is kept', resetArmed ? 'Clear save' : 'Reset', resetArmed]);
+      if (this.hasProgress()) systemActions.push(['new', resetArmed ? '새 게임 확인' : 'New game', resetArmed ? '의뢰, 현금, 기록, 세계 기록을 초기화하려면 다시 선택' : '타워 독에서 새로 시작; 그래픽 설정은 유지', resetArmed ? 'Clear save' : 'Reset', resetArmed]);
       this.systemSel = Math.max(0, Math.min(this.systemSel, systemActions.length - 1));
       const actions = systemActions.map(([action, name, detail, value, danger], i) => `<button type="button" class="system-action ${i === this.systemSel ? 'sel' : ''} ${danger ? 'danger' : ''}" data-action="${action}"><strong>${name}</strong><small>${detail}</small><em>${value}</em></button>`).join('');
       content = `<div class="menu-grid"><div class="system-list">${actions}</div><aside><section class="menu-card"><div class="h">On the water</div><div class="keys"><span class="input-keyboard">W / S throttle · A / D rudder<br>Drag to look · wheel to change chase distance · V camera<br>E interact · C cast / reel · X cut line or cage debris · G anchor<br>L spotlight · H horn · Tab chart · M jobs<br>In dense fog: H sounds one prolonged blast<br>In the air: S nose up · Shift nose down · A / D spin<br>R reset the hull</span><span class="input-gamepad">RT / LT throttle · left stick rudder · click for camera<br>Right stick look · click to centre<br>A / Cross interact · B / Circle alternate or cut debris<br>X / Square cast or reel · Y / Triangle anchor<br>LB spotlight · RB horn · D-pad up jobs<br>View chart · Menu / Options pause<br>In the air: left stick pitches and spins</span></div></section></aside></div>`;
@@ -479,7 +479,7 @@ export class Game {
     this.tricks.bust('BOAT');
     if (P?.id === 'fwc-27' && into > 2.5) {
       if (this.law) { this.law.stats.patrolRams = (this.law.stats.patrolRams || 0) + 1; this.law.add(1.75 + Math.min(1.1, into * 0.1), 'rammed FWC patrol boat', true); }
-      if (this.reputation) this.reputation.change('fwc', -Math.min(0.9, 0.38 + into * 0.045), 'patrol-ram', 'FWC logged the tower airboat striking twenty-seven.', false);
+      if (this.reputation) this.reputation.change('fwc', -Math.min(0.9, 0.38 + into * 0.045), 'patrol-ram', 'FWC가 타워 에어보트가 27호를 들이받았다고 기록했습니다.', false);
       return Boolean(this.encounters?.forcePatrolPursuit?.(b, into));
     }
     if (this.law && into > 3.5) this.law.violation(0.35 + Math.min(0.7, into * 0.06), `${P?.callsign || 'boat'} collision reported`);
@@ -557,7 +557,7 @@ export class Game {
       this.law.stats.manateeNearMisses = (this.law.stats.manateeNearMisses || 0) + 1;
       this.law.add(0.55, 'high-speed manatee near-miss', false);
     }
-    if (this.reputation) this.reputation.change('fwc', -0.3, 'manatee-near-miss', 'FWC logged a high-speed pass over a surfaced manatee.', false);
+    if (this.reputation) this.reputation.change('fwc', -0.3, 'manatee-near-miss', 'FWC가 수면 위로 떠오른 마네키 위 고속 통과를 기록했습니다.', false);
     else this.persist();
   }
   manateeHit(m) {
@@ -573,8 +573,8 @@ export class Game {
       this.law.add(1.65, 'protected manatee strike', false);
     }
     if (this.reputation) {
-      this.reputation.change('fwc', -1.1, 'manatee-strike', 'A protected manatee strike went into the FWC file.', true);
-      this.reputation.change('locals', -0.35, 'manatee-strike', 'Word reached the camps that the tower boat hit a manatee.', false);
+      this.reputation.change('fwc', -1.1, 'manatee-strike', '보호 마네키 충돌이 FWC 파일에 기록되었습니다.', true);
+      this.reputation.change('locals', -0.35, 'manatee-strike', '타워 보트가 마네키를 들이받았다는 소식이 캠프에 닿았습니다.', false);
     } else this.persist();
   }
   gatorHit(g) {
@@ -606,7 +606,7 @@ export class Game {
     this.hitCd = Math.max(0, (this.hitCd || 0) - dt);
     if (p.hit > 2.5 && p.hitTag && this.hitCd <= 0 && !this.paused) {
       const tag = p.hitTag, mph = this.mph();
-      if (tag === 'log') { this.hitCd = 4; this.audio.knock(Math.min(1, p.hit / 6)); this.tricks.bust('DEADHEAD'); this.toast('Deadhead', mph > 18 ? 'A sunken log, right under the surface. They drift in the still water.' : 'Sunken log', 2.2); if (p.hit > 4 && !p.airborne && p.wipeT <= 0) this.bounties.event('deadhead', mph); }
+      if (tag === 'log') { this.hitCd = 4; this.audio.knock(Math.min(1, p.hit / 6)); this.tricks.bust('DEADHEAD'); this.toast('Deadhead', mph > 18 ? '수면 바로 아래 가라앉은 통나무. 잔잔한 물에 떠다닙니다.' : 'Sunken log', 2.2); if (p.hit > 4 && !p.airborne && p.wipeT <= 0) this.bounties.event('deadhead', mph); }
       else if (tag === 'snag') { this.hitCd = 4; this.audio.knock(Math.min(1, p.hit / 6)); this.tricks.bust('SNAG'); this.toast('장애물', '시내에 죽은 사이프러스', 2); }
       else if (tag === 'dock' || tag === 'house' || tag === 'truck' || tag === 'blind') {
         this.hitCd = 4; this.tricks.bust('DOCK');
@@ -618,7 +618,7 @@ export class Game {
     }
     this.el.air.textContent = p.airborne && p.airTime > 0.25 ? `공중 ${p.airTime.toFixed(2)}초 · ${Math.max(0, p.y * FT).toFixed(0)} ft` : '';
     // beached against something with the throttle pinned: nudge the player toward reverse
-    if (p.landFac > 0.5 && p.speed < 0.6 && p.throttle > 0.7 && !this.paused) { this.stuckT = (this.stuckT || 0) + dt; if (this.stuckT > 1.6) { this.toast('Hung up', 'Back off with S and pick another line', 2.2); this.stuckT = -4; } }
+    if (p.landFac > 0.5 && p.speed < 0.6 && p.throttle > 0.7 && !this.paused) { this.stuckT = (this.stuckT || 0) + dt; if (this.stuckT > 1.6) { this.toast('Hung up', 'S로 후진해서 다른 라인 선택', 2.2); this.stuckT = -4; } }
     else if (this.stuckT > 0) this.stuckT = 0; else if (this.stuckT < 0) this.stuckT = Math.min(0, this.stuckT + dt);
     // records & bounties that watch the physics directly
     if (!this.paused) {
@@ -756,7 +756,7 @@ export class Game {
       e.timer.innerHTML = ''; e.timer.classList.remove('warn'); e.wp.innerHTML = '';
     } else if (this.life?.traffic?.activeCollision()) {
       const b = this.life.traffic.activeCollision(), c = b.collision, checking = c.stage === 'disabled', restarting = c.stage === 'restart';
-      e.mission.innerHTML = `<div class="title">Collision aftermath</div><div class="obj">${checking ? `Idle below 5.5 mph and hold alongside ${b.profile.callsign}` : restarting ? `${b.profile.callsign} is restarting` : `${b.profile.callsign} reported the collision`}</div><div class="sub">${checking ? 'Stay until the crew accounts for everyone' : restarting ? 'The collision stays on the log, but you did not leave them' : 'FWC has your hull and direction'}</div>`;
+      e.mission.innerHTML = `<div class="title">Collision aftermath</div><div class="obj">${checking ? `Idle below 5.5 mph and hold alongside ${b.profile.callsign}` : restarting ? `${b.profile.callsign} is restarting` : `${b.profile.callsign} reported the collision`}</div><div class="sub">${checking ? '승무원이 모두 확인할 때까지 대기' : restarting ? '충돌은 일지에 남아 있지만 떠나지 않았습니다' : 'FWC가 당신의 선체와 방향을 확보했습니다'}</div>`;
       e.timer.innerHTML = checking ? `${Math.max(0, 7 - c.hold).toFixed(1)}<small>seconds alongside</small>` : restarting ? `${Math.max(0, 4.5 - c.t).toFixed(1)}<small>engine restart</small>` : '';
       e.timer.classList.toggle('warn', checking && c.distance > 80); e.wp.innerHTML = this.wpTarget ? `${this.wpTarget.label} <b>${fmtDist(c.distance)}</b>` : '';
     } else {
@@ -797,20 +797,20 @@ export class Game {
 // Daily bounties: four small challenges drawn from a pool, new set every day, paid on completion.
 // ------------------------------------------------------------------------------------------
 const BOUNTY_POOL = [
-  { id: 'air15', text: 'Hang 1.5 s in the air', kind: 'air', target: 1.5, pay: 150 },
-  { id: 'peak4', text: 'Get 4 m off the water', kind: 'peak', target: 4, pay: 200 },
+  { id: 'air15', text: '공중에서 1.5초 체공', kind: 'air', target: 1.5, pay: 150 },
+  { id: 'peak4', text: '수면에서 4 m 상승', kind: 'peak', target: 4, pay: 200 },
   { id: 'spin360', text: 'Land a 360', kind: 'spin', target: 360, pay: 300 },
-  { id: 'chain5', text: 'Chain five tricks', kind: 'chainlen', target: 5, pay: 250 },
-  { id: 'drift3', text: 'Hold a 3 s drift', kind: 'driftnow', target: 3, pay: 150 },
+  { id: 'chain5', text: '트릭 5개 연결', kind: 'chainlen', target: 5, pay: 250 },
+  { id: 'drift3', text: '3초 드리프트 유지', kind: 'driftnow', target: 3, pay: 150 },
   { id: 'speed31', text: 'Hit 31 mph', kind: 'speed', target: 31, pay: 100 },
-  { id: 'mud4', text: 'Run the flats for 4 s straight', kind: 'mud', target: 4, pay: 150 },
-  { id: 'near5', text: 'Five near misses', kind: 'nearmiss', target: 1, count: 5, pay: 250 },
-  { id: 'bank3k', text: 'Bank a 3,000-point chain', kind: 'bank', target: 3000, pay: 300 },
-  { id: 'clean3', text: 'Three clean landings', kind: 'clean', target: 1, count: 3, pay: 200 },
-  { id: 'tail', text: 'Land a tail slap', kind: 'tail', target: 1, pay: 200 },
-  { id: 'gold', text: 'Take a gold medal', kind: 'medal', target: 'GOLD', pay: 400 },
-  { id: 'gator', text: 'Get a look at the bull gator', kind: 'seegator', target: 1, pay: 150 },
-  { id: 'lagoon', text: 'Ride out to the lagoon', kind: 'visit', target: 'lagoon', pay: 100 },
+  { id: 'mud4', text: '평지에서 4초 직진', kind: 'mud', target: 4, pay: 150 },
+  { id: 'near5', text: '아슬아슬 5회', kind: 'nearmiss', target: 1, count: 5, pay: 250 },
+  { id: 'bank3k', text: '3,000점 체인 적립', kind: 'bank', target: 3000, pay: 300 },
+  { id: 'clean3', text: '클린 착지 3회', kind: 'clean', target: 1, count: 3, pay: 200 },
+  { id: 'tail', text: '테일 슬랩 착지', kind: 'tail', target: 1, pay: 200 },
+  { id: 'gold', text: '금메달 획득', kind: 'medal', target: 'GOLD', pay: 400 },
+  { id: 'gator', text: '수컷 악어 관찰', kind: 'seegator', target: 1, pay: 150 },
+  { id: 'lagoon', text: '라군으로 출항', kind: 'visit', target: 'lagoon', pay: 100 },
   { id: 'huge', text: 'Land a huge air', kind: 'air', target: 1.7, pay: 300 },
   { id: 'twojobs', text: 'Finish two jobs', kind: 'mission', target: 1, count: 2, pay: 350 },
   { id: 'newcamp', text: 'Find a new fish camp', kind: 'discover', target: 1, pay: 250 },

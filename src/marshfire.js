@@ -282,10 +282,10 @@ export class MarshFireDirector {
   announceIgnition(patch) {
     const distance = Math.hypot(patch.x - this.phys.pos.x, patch.z - this.phys.pos.y);
     this.audio?.warn?.();
-    if (distance < 420) this.game.toast(patch.source === 'ember' ? 'Windborne spot fire' : 'Dry-lightning fire', 'Sawgrass is burning on the bank. Stay on the water and approach at idle.', 4.2);
+    if (distance < 420) this.game.toast(patch.source === 'ember' ? '바람에 옮겨진 불꽃' : '마른 번개 화재', '톱블레이드가 기슭에서 타고 있습니다. 물 위에 머물며 유속으로 접근하세요.', 4.2);
     if (patch.source === 'lightning') this.radio?.transmit?.({
       channel: 'FWC TAC', speaker: 'FWC FIRE',
-      text: 'Lightning has lit a low bank in the tower boat’s cut. Stay on open water, approach from the wet edge, and do not put prop wash into the grass.',
+      text: '벼락이 타워 보트 수로의 낮은 기슭에 불을 붙였습니다. 열린 수면에 머물며 젖은 가장자리에서 접근하고, 프로펠러 워시를 풀 속으로 넣지 마세요.',
       priority: 4, key: `marsh-fire:${this.environment.day}:${Math.round(patch.x / 50)}:${Math.round(patch.z / 50)}`, cooldown: 35,
     });
   }
@@ -326,7 +326,7 @@ export class MarshFireDirector {
     const x = parent.x + wind.x * distance - wind.z * side, z = parent.z + wind.z * distance + wind.x * side;
     if (Math.random() > 0.34 || this.fuelAt(x, z) < 0.24) return false;
     const patch = this.igniteAt(x, z, { source: 'ember', intensity: 0.25 + parent.intensity * 0.18, announce: false });
-    if (patch && Math.hypot(x - this.phys.pos.x, z - this.phys.pos.y) < 300) this.game.toast('Spot fire', 'An ember crossed the wet edge and found dry grass downwind.', 3.2);
+    if (patch && Math.hypot(x - this.phys.pos.x, z - this.phys.pos.y) < 300) this.game.toast('스팟 화재', '불씨가 젖은 가장자리를 넘어 바람 아래 마른 풀을 찾았습니다.', 3.2);
     return patch;
   }
 
@@ -358,7 +358,7 @@ export class MarshFireDirector {
   setPrompt(patch) {
     const element = this.game.el?.prompt; if (!element) { this.prompting = true; return; }
     if (element.classList.contains('on') && element.innerHTML !== this.lastPromptHtml) { this.prompting = false; return; }
-    const html = `<b>E</b> hold bank-water pump <i>· ${Math.round(patch.intensity / 1.25 * 100)}% flame · keep the prop at idle</i>`;
+    const html = `<b>E</b> 기슭-물 펌프 작동 <i>· ${Math.round(patch.intensity / 1.25 * 100)}% 불꽃 · 프로펠러를 유속으로 유지</i>`;
     element.innerHTML = html; element.classList.add('on'); this.lastPromptHtml = html; this.prompting = true;
   }
 
@@ -389,7 +389,7 @@ export class MarshFireDirector {
     const flooded = ground <= this.environment.waterLevel + 0.04 ? 1 : 0;
     const fan = this.fanStrength(patch), suppression = this.pumpActive && patch === this.interactivePatch ? 1 : 0;
     if (fan > 0.22 && !patch.fanned) {
-      patch.fanned = true; this.stats.propFanned++; this.game.toast('Prop wash fanned the line', 'Turn the bow toward the fire and bring the prop to idle.', 3.2); this.persist(true);
+      patch.fanned = true; this.stats.propFanned++; this.game.toast('프로펠러 파도가 불씨를 키웠습니다', '선수를 불 쪽으로 향하고 프로펠러를 유속으로.', 3.2); this.persist(true);
     }
     marshFireDynamics({ intensity: patch.intensity, radius: patch.radius, age: patch.age, maxLife: patch.maxLife, fuel, rain, wetness, wind: windSpeed, suppression, fan, flooded }, dt, this._dynamics);
     patch.intensity = this._dynamics.intensity; patch.radius = this._dynamics.radius; patch.ground = ground;
@@ -403,7 +403,7 @@ export class MarshFireDirector {
     if (patch.emberT <= 0) { patch.emberT = 17 + Math.random() * 28; this.trySpotFire(patch); }
     if (!patch.spreadWarned && patch.intensity > 0.84 && patch.radius > 7.5) {
       patch.spreadWarned = true;
-      this.radio?.transmit?.({ channel: 'FWC TAC', speaker: 'FWC FIRE', text: 'The head fire is moving with the wind. Work only the wet flank from the water; do not cross the smoke column.', priority: 3, key: `marsh-fire-spread:${Math.round(patch.originX / 50)}:${Math.round(patch.originZ / 50)}`, cooldown: 60 });
+      this.radio?.transmit?.({ channel: 'FWC TAC', speaker: 'FWC FIRE', text: '선두 화재가 바람에 따라 이동 중. 물에서 젖은 측면만 작업; 연기 기둥을 횡단하지 마세요.', priority: 3, key: `marsh-fire-spread:${Math.round(patch.originX / 50)}:${Math.round(patch.originZ / 50)}`, cooldown: 60 });
     }
     this.emitSmoke(patch, dt, windSpeed);
     this.applyHeat(patch);
@@ -431,7 +431,7 @@ export class MarshFireDirector {
     if (heat <= 0.04) return;
     patch.damageT = 0.85; this.condition?.damage?.(0.04 + heat * 0.16, 0.02 + heat * 0.11);
     this.game.shake = Math.max(this.game.shake || 0, heat * 0.09);
-    if (patch.fanNoticeT <= 0) { patch.fanNoticeT = 5; this.game.toast('Radiant heat on the hull', 'Back out of the flame edge and work it from the water.', 2.4); }
+    if (patch.fanNoticeT <= 0) { patch.fanNoticeT = 5; this.game.toast('선체에 복사열', '불꽃 가장자리에서 물러나 물에서 작업하세요.', 2.4); }
   }
 
   emitPump(dt, patch) {
@@ -453,7 +453,7 @@ export class MarshFireDirector {
     }
     if (!patch.pumpCalled) {
       patch.pumpCalled = true;
-      this.radio?.transmit?.({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: 'Bank-water pump is flowing. Sweep the wet edge, keep the prop at idle, and leave yourself a clean reverse line.', priority: 3, key: 'marsh-fire:pumping', cooldown: 45 });
+      this.radio?.transmit?.({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: '기슭-물 펌프가 흐르고 있습니다. 젖은 가장자리를 쓸고, 프로펠러를 유속으로 유지하며, 깨끗한 후진 경로를 확보하세요.', priority: 3, key: 'marsh-fire:pumping', cooldown: 45 });
     }
   }
 
@@ -462,13 +462,13 @@ export class MarshFireDirector {
     patch.state = 'scar'; patch.intensity = 0; patch.coolT = 18; patch.savedAt = Date.now(); patch.expiresAt = Date.now() + SCAR_REALTIME_MS;
     if (reason === 'contained') {
       this.stats.contained++; this.game.bounties?.event?.('marshfire', 1);
-      this.game.toast('Fire line contained', 'No visible flame. Hold off the black edge and watch for smoke.', 4);
-      this.radio?.transmit?.({ channel: 'FWC TAC', speaker: 'FWC FIRE', text: 'Tower Boat has visible flame knocked down from the water. Marking the bank for an infrared pass and mop-up crew.', priority: 3, key: `marsh-fire-contained:${this.stats.contained}`, cooldown: 30 });
-      this.reputation?.change?.('fwc', 0.34, 'marsh-fire-contained', 'You held the wet edge and stopped a bank fire without putting the boat ashore.', true);
-      this.reputation?.change?.('locals', 0.22, 'marsh-fire-contained', 'The tower boat kept a grass fire out of the camps and rookery.', false);
+      this.game.toast('불씨 라인 차단 완료', '보이는 불꽃 없음. 검은 가장자리에서 떨어져 연기를 감시하세요.', 4);
+      this.radio?.transmit?.({ channel: 'FWC TAC', speaker: 'FWC FIRE', text: '타워 보트가 물에서 보이는 불꽃을 진압했습니다. 적외선 확인과 마무리팀을 위해 기슭을 표시 중.', priority: 3, key: `marsh-fire-contained:${this.stats.contained}`, cooldown: 30 });
+      this.reputation?.change?.('fwc', 0.34, 'marsh-fire-contained', '젖은 가장자리를 유지하며 보트를 육지로 올리지 않고 기슭 화재를 진화시켰습니다.', true);
+      this.reputation?.change?.('locals', 0.22, 'marsh-fire-contained', '타워 보트가 풀불을 캠프와 군락지 바깥에 가두었습니다.', false);
     } else if (reason === 'weather') {
       this.stats.weatherOut++;
-      if (Math.hypot(patch.x - this.phys.pos.x, patch.z - this.phys.pos.y) < 170) this.game.toast('Rain took the fire', 'Steam is lifting off the black edge. It can still hold hot spots.', 3.2);
+      if (Math.hypot(patch.x - this.phys.pos.x, patch.z - this.phys.pos.y) < 170) this.game.toast('비가 화재를 끌었습니다', '검은 가장자리에서 수증기가 올라옵니다. 아직 뜨거운 곳이 남아 있을 수 있습니다.', 3.2);
     } else this.stats.burnedOut++;
     this.persist(true); this.visualT = 0;
   }
@@ -546,13 +546,13 @@ export class MarshFireDirector {
     const patch = this.nearestBurning(620);
     if (!patch) { this.el.classList.remove('on'); this.el.innerHTML = ''; return; }
     const wind = this.environment.windDir, angle = (Math.atan2(wind.x, -wind.z) * 180 / Math.PI + 360) % 360;
-    const direction = angle < 22.5 || angle >= 337.5 ? 'north' : angle < 67.5 ? 'northeast' : angle < 112.5 ? 'east' : angle < 157.5 ? 'southeast' : angle < 202.5 ? 'south' : angle < 247.5 ? 'southwest' : angle < 292.5 ? 'west' : 'northwest';
-    let line = `${fmtDist(patch.playerDistance)} · spreading ${direction}`;
-    if (this.pumpActive && patch === this.interactivePatch) line = `pumping · flame ${Math.round(patch.intensity / 1.25 * 100)}%`;
-    else if (patch.playerDistance < 32 && this.phys.speed * MPH >= 5.5) line = 'idle below 5 mph to use bank water';
-    else if (patch.playerDistance < 32 && this.phys.rpm >= 0.42) line = 'prop wash is feeding the fire';
-    else if (this.canSuppress(patch)) line = 'hold E · bank-water pump ready';
-    this.el.classList.add('on'); this.el.innerHTML = `<span>${patch.source === 'ember' ? 'Spot fire' : 'Marsh fire'}</span><small>${line}</small>`;
+    const direction = angle < 22.5 || angle >= 337.5 ? '북' : angle < 67.5 ? '북동' : angle < 112.5 ? '동' : angle < 157.5 ? '남동' : angle < 202.5 ? '남' : angle < 247.5 ? '남서' : angle < 292.5 ? '서' : '북서';
+    let line = `${fmtDist(patch.playerDistance)} · ${direction} 방향으로 확산`;
+    if (this.pumpActive && patch === this.interactivePatch) line = `펌프 작동 중 · 불꽃 ${Math.round(patch.intensity / 1.25 * 100)}%`;
+    else if (patch.playerDistance < 32 && this.phys.speed * MPH >= 5.5) line = '기슭물을 쓰려면 5 mph 이하로 유속';
+    else if (patch.playerDistance < 32 && this.phys.rpm >= 0.42) line = '프로펠러 파도가 불을 키우고 있습니다';
+    else if (this.canSuppress(patch)) line = 'E를 누르세요 · 기슭-물 펌프 준비 완료';
+    this.el.classList.add('on'); this.el.innerHTML = `<span>${patch.source === 'ember' ? '스팟 화재' : '습지 화재'}</span><small>${line}</small>`;
   }
 
   persist(force = false) {

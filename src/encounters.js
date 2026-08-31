@@ -271,24 +271,24 @@ export class EncounterDirector {
     this.netObs = { ax: 0, az: 0, bx: 0, bz: 0, r: 0.32, tag: 'monofilament net', onHit: (into) => {
       const e = this.active; if (!e || e.type !== 'netline' || e.state === 'recovering' || e.state === 'secured' || e.hitCd > 0 || into < 1.8) return;
       e.hitCd = 3.5; e.snag = clamp((e.snag || 0) + into * 0.035, 0, 0.65);
-      this.game.toast(into > 5 ? '선체에 걸린 모노필라멘트' : 'Float line struck', into > 5 ? 'Back off. The net is pulling tight under the stern.' : 'There is a net stretched across the cut.', 2.8);
+      this.game.toast(into > 5 ? '선체에 걸린 모노필라멘트' : '부표 줄에 부딪힘', into > 5 ? '물러나라. 그물이 선미 아래로 팽팽하게 당겨지고 있다.' : '수로를 가로지르는 그물이 있다.', 2.8);
       if (into > 4.5) { this.audio.warn(); this.game.shake = Math.max(this.game.shake, 0.22); }
     } };
     this.fireObs = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'burning skiff', onHit: (into) => {
       const e = this.active; if (!e || e.type !== 'fire' || e.burned || e.hitCd > 0 || into < 2.5) return;
       e.hitCd = 2.2; e.burn = Math.min(e.limit, e.burn + into * 0.9); this.game.shake = Math.max(this.game.shake, Math.min(0.34, into * 0.035));
-      this.game.toast('불타는 스키프 접촉', 'The fuel tank shifted. Back off and come alongside at idle.', 2.8);
+      this.game.toast('불타는 스키프 접촉', '연료탱크가 움직였습니다. 유속으로 물러나서 나란히 접근하세요.', 2.8);
     } };
     this.groundingObs = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'boat', onHit: (into) => {
       const e = this.active; if (!e || e.type !== 'grounding' || e.hitCd > 0 || into < 2.2) return;
       e.hitCd = 2.8; e.scour += into * 0.18; this.game.shake = Math.max(this.game.shake, Math.min(0.28, into * 0.03));
-      this.game.toast('Contact with the grounded skiff', 'Back into the deep water and pass the line at idle.', 2.8);
+      this.game.toast('좌초 스키프 접촉', '깊은 물로 후진해서 유속으로 줄을 건보내세요.', 2.8);
     } };
     this.raceObs = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'racing johnboat', onHit: (into, nx, nz) => {
       const e = this.active; if (!e || e.type !== 'race' || (e.state !== 'countdown' && e.state !== 'running') || e.hitCd > 0 || into < 2.2) return;
       const A = this.rigs.smuggler.agent; e.hitCd = 1.8; e.rams++; e.dirty = true; A.speed *= clamp(1 - into * 0.025, 0.68, 0.92); this.impactAgent(A, into, nx, nz, 0.46);
       this.game.shake = Math.max(this.game.shake, Math.min(0.3, into * 0.032)); this.audio.warn();
-      this.game.toast('Rub rails hit', e.rams > 1 ? 'That is not a clean race anymore.' : 'The johnboat crew is keeping count.', 2.4);
+      this.game.toast('러브레일 충돌', e.rams > 1 ? '이제 깨끗한 경주가 아닙니다.' : '존보트 승무원이 세고 있습니다.', 2.4);
     } };
     this.patrolObs = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.08, tag: 'FWC patrol', onHit: (into, nx, nz) => this.hitPatrol(into, nx, nz) };
     this.backupObs = [0, 1].map(index => ({ ax: 0, az: 0, bx: 0, bz: 0, r: 1.08, tag: 'FWC backup', onHit: (into, nx, nz) => this.hitPatrolBackup(index, into, nx, nz) }));
@@ -336,7 +336,7 @@ export class EncounterDirector {
     this._f = new THREE.Vector2(); this._r = new THREE.Vector2(); this._flow = new THREE.Vector2(); this._personBoat = { x: 0, z: 0, speed: 0 }; this._downburstProbe = {};
     this._patrolSight = { timer: 0, clear: true, held: true, inRange: true, blockedFor: 0, clearFor: 0, occluded: false, checkedUnits: 0, samples: 0 };
     this._patrolSound = { timer: 0, hornT: 0, hornProlonged: false, contact: false, source: '', range: 0, distance: Infinity, engineNoise: 0, fixAge: Infinity, fixX: 0, fixZ: 0, uncertainty: 0, reportCd: 0 };
-    this._patrolSearch = { active: false, x: 0, z: 0, r: 0, label: 'FWC last-fix area', color: '#5aa7ff' };
+    this._patrolSearch = { active: false, x: 0, z: 0, r: 0, label: 'FWC 마지막 좌표 구역', color: '#5aa7ff' };
     this.stormEvacuationUsed = false; this.stormEvacuationWeather = this.environment.key;
     this.stormEvacuationContext = { weather: '', phase: '', progress: 0, surge: 0, surgeRate: 0, duration: 0, playerX: 0, playerZ: 0, waterLevel: 0, leadSeconds: 0 };
     this.airWashStamp = { x: 0, z: 0, radius: 8.5, height: -0.82, foam: 2.2, foamRadius: 9.5 };
@@ -354,7 +354,7 @@ export class EncounterDirector {
     const blue = signalLight(patrolBoat, 0x267cff, -0.25, 1.35, -0.2), red = signalLight(patrolBoat, 0xff2f25, 0.25, 1.35, -0.2);
     const patrol = { boat: patrolBoat, blue, red, agent: boatAgent(patrolBoat, 0), role: 0, searchlight: makePatrolSearchlight(patrolBoat, this.water.scene || this.scene, 0) };
     const patrolBackups = [0, 1].map(index => {
-      const boat = buildSkiff({ crew: true, driverModel: false }); recolor(boat, index ? 0x35614f : 0x315848); boat.name = index ? 'FWC Shallow Water 4' : 'FWC Marine 12'; boat.visible = false; this.scene.add(boat);
+      const boat = buildSkiff({ crew: true, driverModel: false }); recolor(boat, index ? 0x35614f : 0x315848); boat.name = index ? 'FWC 천해 4호' : 'FWC Marine 12'; boat.visible = false; this.scene.add(boat);
       const blueBulb = signalBulb(boat, 0x267cff, -0.25, 1.35, -0.2), redBulb = signalBulb(boat, 0xff2f25, 0.25, 1.35, -0.2);
       const closure = { active: false, holding: false, announced: false, x: 0, z: 0, courseX: 0, courseZ: -1, heading: 0, remaining: 0, cooldown: index ? 1.8 : 0, plan: { eligible: false, lead: 0, duration: 0, cooldown: 0, approachSpeed: 0, setupTimeout: 0 } };
       return { boat, blueBulb, redBulb, agent: boatAgent(boat, index + 1), closure, index, role: index + 1, searchlight: makePatrolSearchlight(boat, this.water.scene || this.scene, index + 1) };
@@ -526,7 +526,7 @@ export class EncounterDirector {
       campKey: camp.key, campName: camp.name, bankClearance: camp.bank.h - this.environment.waterLevel, drop,
     };
     this.stormEvacuationUsed = true;
-    this.game.toast('Surge evacuation', `Water is across the low bank at ${camp.name}. One resident needs the ${drop.name} before the backside hits.`, 4.2);
+    this.game.toast('폭풍 대피', `${camp.name}의 낮은 둑 위로 물이 넘쳤습니다. 뒤쪽 파도가 오기 전에 ${drop.name} 주민 한 명이 필요합니다.`, 4.2);
   }
 
   distressBerth(baseX, baseZ, name, preferred = 0) {
@@ -569,7 +569,7 @@ export class EncounterDirector {
     const evacuation = e.variant === 'surge-evacuation';
     const R = this.rigs.distress; e.state = 'aboard'; e.drop ||= evacuation ? this.stormEvacuationDrop(e.x, e.z) : this.distressDrop(e.x, e.z); e.boardedAt = e.t;
     R.survivor.visible = false; R.passenger.visible = true; this.clearPrompt(); this.audio.checkpoint();
-    this.game.toast(evacuation ? 'Resident aboard' : 'Operator aboard', evacuation ? `Run for ${e.drop.name}. The backside wind is still coming.` : `Run him to ${e.drop.name}. Keep the front bench dry.`, 3.2);
+    this.game.toast(evacuation ? '주민 승선 완료' : '운전자 승선 완료', evacuation ? `${e.drop.name}으로 출발하세요. 뒤쪽 바람이 아직 오고 있습니다.` : `${e.drop.name}으로 모시고 가세요. 앞 좌석을 마르게 유지하세요.`, 3.2);
   }
 
   startGrounding(at) {
@@ -609,8 +609,8 @@ export class EncounterDirector {
     const px = p.pos.x - pf.x * 2.6, pz = p.pos.y - pf.y * 2.6, sx = e.x - sfx * 1.85, sz = e.z - sfz * 1.85;
     const d = Math.hypot(px - sx, pz - sz); if (!force && d > 15) return;
     e.state = 'tow'; e.ropeLength = clamp(d + 0.45, 5.5, 15); e.strain = 0; this.rigs.grounding.rope.visible = true;
-    this.game.wpTarget = { x: e.clearX, z: e.clearZ, label: 'deep water', color: '#7db8d8', encounter: true };
-    this.clearPrompt(); this.audio.checkpoint(); this.game.toast('Stern line fast', 'Motor stays trimmed. Ease her toward blue water; F drops the line.', 3.4);
+    this.game.wpTarget = { x: e.clearX, z: e.clearZ, label: '깊은 물', color: '#7db8d8', encounter: true };
+    this.clearPrompt(); this.audio.checkpoint(); this.game.toast('선미 줄 견고히 연결', '모터는 트림 유지. 푸른 물 쪽으로 살짝 움직이세요. F키로 줄을 놓습니다.', 3.4);
   }
 
   dropGroundingTow(e, parted = false) {
@@ -618,14 +618,14 @@ export class EncounterDirector {
     e.state = 'waiting'; e.strain = 0; e.lineParts += parted ? 1 : 0; this.rigs.grounding.rope.visible = false; this.phys.towDrag = 0;
     if (this.game.wpTarget?.encounter) this.game.wpTarget = null;
     if (parted) { this.audio.warn(); this.game.shake = Math.max(this.game.shake, 0.18); }
-    this.game.toast(parted ? 'Tow line parted' : 'Tow line dropped', parted ? 'Too much shock load. Come back at idle and reset it.' : 'The skiff is still pinned on the bank.', 3);
+    this.game.toast(parted ? '견인 줄 끊김' : '견인 줄 해제', parted ? '충격 하중이 너무 컸습니다. 유속으로 돌아와 다시 설정하세요.' : '스키프는 여전히 둑에 걸려 있습니다.', 3);
   }
 
   waitForGroundingFlood(e) {
     if (e.state !== 'waiting') return;
     e.state = 'secured'; e.resolveT = 5.5; this.clearPrompt();
-    if (this.reputation) this.reputation.change('fwc', 0.45, 'grounding-held-for-tide', 'You kept a grounded skiff from powering across a shallow bank and relayed its position.', true);
-    this.audio.checkpoint(); this.game.toast('Position and hull relayed', 'Outboard stays trimmed. The operator will hold aboard for the flood tide.', 3.5);
+    if (this.reputation) this.reputation.change('fwc', 0.45, 'grounding-held-for-tide', '얕은 모래톱 위를 가로지르려던 좌초 스키프를 막고 위치를 전달했습니다.', true);
+    this.audio.checkpoint(); this.game.toast('위치와 선체 정보 송신', '외장 모터는 트림 상태. 운전자가 만조 때까지 승선해 대기합니다.', 3.5);
   }
 
   floatGrounding(e, assisted = true) {
@@ -637,7 +637,7 @@ export class EncounterDirector {
     this.resetAgentImpact(A);
     Object.assign(A, { x: e.x, z: e.z, heading, speed: 0.25, want: 5.2, turn: 0, decisionT: 0, targetX: e.x + dx / d * 320, targetZ: e.z + dz / d * 320, active: true });
     R.boat.userData.motor.rotation.x = 0.18; this.audio.checkpoint();
-    this.game.toast(assisted ? 'Skiff floating clear' : 'Flood tide lifted the skiff', assisted ? 'Line is off. Let the outboard open a safe gap.' : 'The operator waited it out with the motor trimmed.', 3.2);
+    this.game.toast(assisted ? '스키프 안전한 곳으로 띄움' : '만조가 스키프를 들어올림', assisted ? '줄이 해제되었습니다. 외장 모터로 안전 거리를 벌리세요.' : '운전자가 모터 트림 상태로 기다렸습니다.', 3.2);
   }
 
   updateGroundingRope(e, dt, t) {
@@ -654,7 +654,7 @@ export class EncounterDirector {
     const skiffSpeed = Math.hypot(e.vx, e.vz);
     if (grounded > 0.2 && skiffSpeed > 0.55) {
       e.scour += (skiffSpeed - 0.55) * grounded * dt * 0.42;
-      if (e.scour > 1.05 && !e.scourWarned) { e.scourWarned = true; this.game.toast('Mud boiling under the skiff', 'Ease off. A hard pull will carve the bank and part the line.', 3.1); }
+      if (e.scour > 1.05 && !e.scourWarned) { e.scourWarned = true; this.game.toast('스키프 아래 진흙이 끓어오름', '속도를 줄이세요. 거센 견인은 둑을 파내고 줄을 끊습니다.', 3.1); }
     }
     const arr = R.rope.geometry.attributes.position.array;
     for (let i = 0; i < 18; i++) {
@@ -734,20 +734,20 @@ export class EncounterDirector {
   sightAirRescueSurvivor(e, source = 'boat') {
     if (e.sighted) return;
     e.sighted = true; this.audio.checkpoint();
-    this.game.toast(source === 'aircraft' ? 'Strobe in the search beam' : 'Person in the water', source === 'aircraft' ? 'Rescue 6507 has a possible contact. Close at idle and verify the position.' : '구명조끼와 스트로브 발견. 유속으로 접근하고 정확한 좌표를 송신하세요.', 3.5);
+    this.game.toast(source === 'aircraft' ? '수색 빔 속 스트로브' : '물 위에 사람', source === 'aircraft' ? 'Rescue 6507이 의심 접점을 잡았습니다. 유속으로 접근해 위치를 확인하세요.' : '구명조끼와 스트로브 발견. 유속으로 접근하고 정확한 좌표를 송신하세요.', 3.5);
   }
 
   markAirRescue(e, force = false) {
     if (e.state !== 'search' || !e.sighted) return;
     const d = Math.hypot(e.x - this.phys.pos.x, e.z - this.phys.pos.y); if (!force && (d > 24 || this.phys.speed * MPH > 5.5)) return;
     e.state = 'approach'; e.marked = true; e.flightTargetX = e.x; e.flightTargetZ = e.z; e.flightTargetY = 29; e.crowdT = 0;
-    this.clearPrompt(); this.audio.checkpoint(); this.game.toast('정확 좌표 송신', 'Rescue 6507 is inbound. Hold fifty yards clear of the hover.', 3.7);
+    this.clearPrompt(); this.audio.checkpoint(); this.game.toast('정확 좌표 송신', 'Rescue 6507이 진입 중입니다. 헬기 호버에서 50야드 떨어져 대기하세요.', 3.7);
   }
 
   beginAirRescueHoist(e) {
     const R = this.rigs.airrescue; e.state = 'hoist'; e.hoistT = 0; e.crowdT = 0; e.washWarned = false;
     e.hvx *= 0.2; e.hvz *= 0.2; R.basket.visible = true; R.swimmer.visible = true; R.hoistLine.visible = true; R.trailLine.visible = true;
-    this.audio.checkpoint(); this.game.toast('Rescue swimmer going down', '로터 워시 밖에서 대기. 주황 트레일 라인을 묶지 마세요.', 3.8);
+    this.audio.checkpoint(); this.game.toast('구조대원 강하 중', '로터 워시 밖에서 대기. 주황 트레일 라인을 묶지 마세요.', 3.8);
   }
 
   hideAirRescueHoist() {
@@ -759,7 +759,7 @@ export class EncounterDirector {
     e.state = 'goaround'; e.aborts++; e.goT = 0; e.crowdT = 0; e.hoistT = 0;
     e.flightTargetX = e.x - fx * 85 + rx * (e.aborts % 2 ? 62 : -62); e.flightTargetZ = e.z - fz * 85 + rz * (e.aborts % 2 ? 62 : -62); e.flightTargetY = 48;
     this.hideAirRescueHoist(); this.rigs.airrescue.survivor.visible = true; this.rigs.airrescue.survivorStrobe.visible = true;
-    this.audio.warn(); this.game.toast('Hoist waved off', 'Your boat entered the hover. Clear the wash and let the aircraft reset.', 3.8);
+    this.audio.warn(); this.game.toast('인양 작업 취소됨', '보트가 호버 안으로 들어왔습니다. 워시를 비우고 항공기가 다시 설정하도록 두세요.', 3.8);
   }
 
   updateAirRescueHoist(e, dt, t) {
@@ -786,7 +786,7 @@ export class EncounterDirector {
     if (e.hoistT >= 11.2) {
       this.hideAirRescueHoist(); R.survivor.visible = false; R.survivorStrobe.visible = false; e.state = 'depart'; e.departT = 9;
       const fx = -Math.sin(e.heading), fz = -Math.cos(e.heading); e.flightTargetX = e.hx + fx * 520; e.flightTargetZ = e.hz + fz * 520; e.flightTargetY = 72;
-      this.audio.checkpoint(); this.game.toast('Survivor aboard Rescue 6507', 'Basket is in and the aircraft is climbing out.', 3.7);
+      this.audio.checkpoint(); this.game.toast('생존자 Rescue 6507 승선', '바구니가 들어왔고 항공기가 이륙 중입니다.', 3.7);
     }
   }
 
@@ -832,13 +832,13 @@ export class EncounterDirector {
     R.operator.visible = false; R.swimmer.visible = false; this.rigs.distress.passenger.visible = true;
     this.phys.loaded = Math.max(this.phys.loaded, 0.32); e.state = e.fireOut ? 'contained-aboard' : e.burned ? 'rescued' : 'aboard';
     this.clearPrompt(); this.audio.checkpoint();
-    this.game.toast('Operator aboard', e.fireOut ? `Fire is down. Run him to ${e.drop.name}.` : e.burned ? `He is out of the water. Run him to ${e.drop.name}.` : 'The fuel tank is still heating. Fight it or get clear.', 3.4);
+    this.game.toast('운전자 승선 완료', e.fireOut ? `불이 꺼졌습니다. ${e.drop.name}으로 모시고 가세요.` : e.burned ? `그는 물에서 나왔습니다. ${e.drop.name}으로 모시고 가세요.` : '연료탱크가 여전히 뜨거워지고 있습니다. 진화하거나 빠지세요.', 3.4);
   }
 
   containFire(e) {
     if (e.fireOut || e.burned) return;
     e.fireOut = true; e.suppressing = false; e.flame = Math.min(e.flame, 0.34); e.state = e.aboard ? 'contained-aboard' : 'contained';
-    this.audio.checkpoint(); this.game.toast('Fire knocked down', e.aboard ? 'No flame at the tank. Take the operator to a safe berth.' : 'No flame at the tank. Bring the operator off the disabled skiff.', 3.4);
+    this.audio.checkpoint(); this.game.toast('불 진압 완료', e.aboard ? '탱크에 불꽃 없음. 운전자를 안전한 정박지로 모시고 가세요.' : '탱크에 불꽃 없음. 운전자를 손상된 스키프에서 이송시키세요.', 3.4);
   }
 
   flashFire(e) {
@@ -865,7 +865,7 @@ export class EncounterDirector {
       const a = Math.random() * Math.PI * 2, speed = 1 + Math.random() * 5;
       this.spray.emit(e.x + Math.cos(a) * 0.7, this.water.level + 0.08, e.z + Math.sin(a) * 0.7, Math.cos(a) * speed, 1 + Math.random() * 4.5, Math.sin(a) * speed, 0.014 + Math.random() * 0.028, 0.4 + Math.random() * 0.4, 0.68);
     }
-    this.game.toast(e.aboard ? 'Fuel tank let go' : 'Fuel flash — operator overboard', e.aboard ? '잡았습니다. 불타는 기름 막대기에서 떨어져 계세요.' : 'PFD in the water off the skiff. Approach at idle.', 3.8);
+    this.game.toast(e.aboard ? '연료탱크 폭발' : '연료 폭발 — 운전자가 물에 빠짐', e.aboard ? '잡았습니다. 불타는 기름 막대기에서 떨어져 계세요.' : '스키프 옆 물에 구명조끼. 유속으로 접근하세요.', 3.8);
   }
 
   emitExtinguisher(e, dt) {
@@ -931,15 +931,15 @@ export class EncounterDirector {
   beginWranglerAssist(e) {
     if (!e || e.type !== 'wrangler' || e.state !== 'waiting') return false;
     e.state = 'helping'; e.helped = true; this.clearPrompt(); this.audio.checkpoint();
-    this.game.toast('Hold the escape cut', 'Cal의 작업권 밖에서 유속. 다른 보트들도 막고 잔잔한 물을 유지하세요.', 3.4);
+    this.game.toast('도주 수로 차단 유지', 'Cal의 작업권 밖에서 유속. 다른 보트들도 막고 잔잔한 물을 유지하세요.', 3.4);
     return true;
   }
 
   placeWranglerBet(e) {
     if (!e || e.type !== 'wrangler' || !['waiting', 'helping'].includes(e.state) || e.bet) return false;
-    if ((Number(this.game.save.cash) || 0) < 50) { this.audio.fail(); this.game.toast('Short on cash', 'The spectator wants fifty before Cal reaches for the tape.', 2.8); return false; }
+    if ((Number(this.game.save.cash) || 0) < 50) { this.audio.fail(); this.game.toast('현금 부족', '관중이 Cal이 테이프에 손을 대기 전에 50달러를 원합니다.', 2.8); return false; }
     e.bet = 50; this.game.addCash(-50); this.game.save.wranglerBets = (this.game.save.wranglerBets || 0) + 1; this.game.persist();
-    this.game.bountyToast('Side bet <b>-$50</b>'); this.audio.pickup(); this.game.toast('50달러 걸고 열 손가락', '보라색 모자 스키프가 돈을 들고 있습니다.', 2.9); return true;
+    this.game.bountyToast('사이드 베팅 <b>-$50</b>'); this.audio.pickup(); this.game.toast('50달러 걸고 열 손가락', '보라색 모자 스키프가 돈을 들고 있습니다.', 2.9); return true;
   }
 
   secureWrangler(e, helped = false) {
@@ -948,15 +948,15 @@ export class EncounterDirector {
     let payout = 0;
     if (helped) { payout += 180; this.game.save.wranglerAssists = (this.game.save.wranglerAssists || 0) + 1; }
     if (e.bet) { e.betPaid = 100; payout += e.betPaid; this.game.save.wranglerBetWins = (this.game.save.wranglerBetWins || 0) + 1; }
-    if (payout) { this.game.addCash(payout); this.game.bountyToast(`${helped && e.bet ? 'Capture and side bet' : helped ? 'Capture assist' : 'Side bet paid'} <b>+$${payout}</b>`); }
+    if (payout) { this.game.addCash(payout); this.game.bountyToast(`${helped && e.bet ? '포획 지원 및 사이드 베팅' : helped ? '포획 지원' : '사이드 베팅 정산'} <b>+$${payout}</b>`); }
     if (helped && this.reputation) {
-      this.reputation.change('locals', 0.8, 'gator-capture-assist', 'You held a flat escape lane while Cal taped a nuisance gator beside the work skiff.', true);
+      this.reputation.change('locals', 0.8, 'gator-capture-assist', 'Cal이 작업 스키프 옆에서 성가신 악어 테이핑을 하는 동안 잔잔한 탈출로를 유지했습니다.', true);
       this.reputation.change('fwc', 0.55, 'gator-capture-assist', '공인된 성가신 악어 포획이 파도 충돌이나 동물 도주 없이 완료되었습니다.', false);
     }
     if (helped && this.law) this.law.cool(0.15);
     this.game.persist(); this.audio.complete();
-    this.game.toast('Gator taped and tagged', helped ? 'Cal still has ten fingers. The work skiff is paying for the quiet water.' : e.bet ? 'Cal은 여전히 열 손가락. 보라색 모자 스키프가 돈을 지불합니다.' : 'Cal still has ten fingers. Nobody in the gallery looks surprised.', 3.8);
-    this.radio?.transmit({ channel: 'LOCAL 72', speaker: 'CYPRESS HOOK', text: 'Cal has the tape on. Keep the cut down until the work skiff clears.', priority: 1, key: 'wrangler-secured', cooldown: 28 });
+    this.game.toast('악어 테이프 완료 및 태그 부착', helped ? 'Cal은 여전히 열 손가락. 작업 스키프가 잔잔한 물 값을 치릅니다.' : e.bet ? 'Cal은 여전히 열 손가락. 보라색 모자 스키프가 돈을 지불합니다.' : 'Cal은 여전히 열 손가락. 관중 누구도 놀라지 않은 표정입니다.', 3.8);
+    this.radio?.transmit({ channel: 'LOCAL 72', speaker: 'CYPRESS HOOK', text: 'Cal이 테이프를 잡았습니다. 작업 스키프가 빠질 때까지 수로를 낮게 유지하세요.', priority: 1, key: 'wrangler-secured', cooldown: 28 });
     return true;
   }
 
@@ -970,15 +970,15 @@ export class EncounterDirector {
       const hard = reason === 'hull'; this.game.save.wranglerWakeBreaks = (this.game.save.wranglerWakeBreaks || 0) + 1;
       if (this.law) this.law.add(hard ? 0.68 : 0.48, hard ? 'struck a nuisance-gator capture scene' : 'reckless wake at a nuisance-gator capture', false);
       if (this.reputation) {
-        this.reputation.change('locals', hard ? -0.8 : -0.6, 'gator-capture-broken', hard ? 'You hit a boat in Cal’s nuisance-gator setup and broke his grip.' : '파도가 성가신 악어 포획 중 Cal의 그립을 풀었습니다.', true);
-        this.reputation.change('fwc', hard ? -0.65 : -0.45, 'gator-capture-broken', 'The licensed capture ended with a loose animal after the tower boat entered the working circle.', false);
+        this.reputation.change('locals', hard ? -0.8 : -0.6, 'gator-capture-broken', hard ? 'Cal의 성가신 악어 세팅에 보트를 들이받아 그립을 풀렸습니다.' : '파도가 성가신 악어 포획 중 Cal의 그립을 풀었습니다.', true);
+        this.reputation.change('fwc', hard ? -0.65 : -0.45, 'gator-capture-broken', '타워 보트가 작업권에 진입한 후 공인 포획이 동물의 도주로 끝났습니다.', false);
       }
-      this.game.persist(); this.audio.warn(); this.game.toast('That wake made the decision', e.bet ? 'Cal let go. The gator is loose and the fifty is gone.' : '손까지 닿기 전에 Cal이 놓쳤습니다. 악어가 스키프에서 떨어집니다.', 3.8);
+      this.game.persist(); this.audio.warn(); this.game.toast('파도가 그립을 풀렸음', e.bet ? 'Cal이 놓쳤습니다. 악어가 풀려났고 50달러는 사라졌습니다.' : '손까지 닿기 전에 Cal이 놓쳤습니다. 악어가 스키프에서 떨어집니다.', 3.8);
     } else {
-      this.audio.warn(); this.game.toast('Weather broke the grip', e.bet ? '스콜이 관중을 흩뜨렸습니다. 보라색 모자 스키프가 50달러를 돌려줬습니다.' : 'Cal let go and everybody found a throttle at once.', 3.6);
-      if (e.bet) { this.game.addCash(e.bet); this.game.bountyToast('Weather refund <b>+$50</b>'); e.bet = 0; this.game.persist(); }
+      this.audio.warn(); this.game.toast('날씨가 그립을 풀렸음', e.bet ? '스콜이 관중을 흩뜨렸습니다. 보라색 모자 스키프가 50달러를 돌려줬습니다.' : 'Cal이 놓쳤고 모두가 동시에 스로틀을 잡았습니다.', 3.6);
+      if (e.bet) { this.game.addCash(e.bet); this.game.bountyToast('날씨 환불 <b>+$50</b>'); e.bet = 0; this.game.persist(); }
     }
-    this.radio?.transmit({ channel: 'LOCAL 72', speaker: 'CYPRESS HOOK', text: 'Loose gator off Cal’s skiff. Give the work boat room.', priority: 2, key: 'wrangler-loose', cooldown: 28 });
+    this.radio?.transmit({ channel: 'LOCAL 72', speaker: 'CYPRESS HOOK', text: 'Cal의 스키프에서 악어가 풀렸습니다. 작업 보트에 자리를 비켜주세요.', priority: 2, key: 'wrangler-loose', cooldown: 28 });
     return true;
   }
 
@@ -987,7 +987,7 @@ export class EncounterDirector {
     e.hitCd = 2.2; e.wakeRisk = Math.max(e.wakeRisk, clamp(into / 4)); this.game.shake = Math.max(this.game.shake, Math.min(0.34, into * 0.04));
     if (this.condition) this.condition.damage(0.15 + into * 0.06, into * 0.025);
     if (into >= 2.1) this.releaseWrangler(e, 'hull', true);
-    else this.game.toast(index ? 'Spectator boat rocked' : 'Contact with Cal’s skiff', 'Back out at idle. The gator is still in his hands.', 2.8);
+    else this.game.toast(index ? '관중 보트 흔들림' : 'Cal의 스키프 접촉', '유속으로 빠지세요. 악어는 여전히 그의 손 안에 있습니다.', 2.8);
   }
 
   hitWranglerGator(into) {
@@ -1079,13 +1079,13 @@ export class EncounterDirector {
     Object.assign(A, { x: at.x, z: at.z, heading, speed: 5.2, want: 8, turn: 0, decisionT: 0, active: true });
     A.mesh.position.set(A.x, this.water.waveHeight(A.x, A.z, 0) - 0.05, A.z); A.mesh.rotation.set(0, heading, 0); A.mesh.visible = true;
     e.state = 'reported'; e.fixX = e.x; e.fixZ = e.z; e.fixAge = 0; e.visualT = 0; e.lostT = 0; e.cutT = 0;
-    this.clearPrompt(); this.audio.checkpoint(); this.game.toast('Wildlife Alert notified', 'Keep visual, update the exact position, and do not touch the gear.', 3.5);
+    this.clearPrompt(); this.audio.checkpoint(); this.game.toast('야생동물 경보 통보 완료', '시야를 유지하고 정확한 위치를 업데이트하며 장비를 만지지 마세요.', 3.5);
   }
 
   beginManateeCut(e) {
     if (e.state !== 'waiting') return;
     e.state = 'cutting'; e.cutT = 0; this.clearPrompt(); this.audio.warn();
-    this.game.toast('Cutting the float line', 'The wrap may be embedded. FWC says leave the gear in place.', 3.2);
+    this.game.toast('부표 줄 절단 중', '감긴 줄이 박혀 있을 수 있습니다. FWC는 장비를 제자리에 두라고 합니다.', 3.2);
   }
 
   improperManateeCut(e) {
@@ -1094,10 +1094,10 @@ export class EncounterDirector {
     this.game.save.manateeBadCuts = (this.game.save.manateeBadCuts || 0) + 1;
     if (this.law) this.law.add(0.55, 'interfering with an entangled manatee', false);
     if (this.reputation) {
-      this.reputation.change('fwc', -0.9, 'manatee-line-cut', 'You cut away the locator float before trained rescuers could remove the embedded wrap.', true);
-      this.reputation.change('locals', -0.25, 'manatee-line-cut', 'The camps heard the entangled manatee lost its float before the rescue boat arrived.', false);
+      this.reputation.change('fwc', -0.9, 'manatee-line-cut', '훈련된 구조대원이 매립된 그물을 제거하기 전에 위치 부표를 잘라냈습니다.', true);
+      this.reputation.change('locals', -0.25, 'manatee-line-cut', '구조 보트가 도착하기 전에 줄에 감긴 마네키가 부표를 잃었다는 소식이 캠프에 들었습니다.', false);
     }
-    this.game.persist(); this.audio.warn(); this.game.toast('Only the float came free', '줄이 여전히 지느러미에 감겨 있고 동물을 찾기 더 어려워졌습니다.', 3.8);
+    this.game.persist(); this.audio.warn(); this.game.toast('부표만 풀렸음', '줄이 여전히 지느러미에 감겨 있고 동물을 찾기 더 어려워졌습니다.', 3.8);
   }
 
   releaseManatee(e) {
@@ -1105,11 +1105,11 @@ export class EncounterDirector {
     const R = this.rigs.manatee; R.buoy.visible = false; R.rope.visible = false; e.state = 'released'; e.releaseT = 0; e.spook = 0;
     this.game.save.manateeRescues = (this.game.save.manateeRescues || 0) + 1;
     if (this.reputation) {
-      this.reputation.change('fwc', 1.45, 'manatee-rescue', 'Your location updates kept an entangled manatee in sight until trained rescuers removed the wrap.', true);
-      this.reputation.change('locals', 0.45, 'manatee-rescue', 'The camps heard the tower boat held visual for a manatee rescue.', false);
+      this.reputation.change('fwc', 1.45, 'manatee-rescue', '위치 업데이트로 줄에 감긴 마네키를 훈련된 구조대원이 그물을 제거할 때까지 시야에 유지했습니다.', true);
+      this.reputation.change('locals', 0.45, 'manatee-rescue', '캠프 주민들이 타워 보트가 마네키 구조를 위해 시야를 유지했다는 소식을 들었습니다.', false);
     }
     if (this.law) this.law.cool(0.35);
-    this.game.persist(); this.audio.checkpoint(); this.game.toast('Wrap removed', 'The flipper is clear. The biologist is releasing the animal on site.', 3.8);
+    this.game.persist(); this.audio.checkpoint(); this.game.toast('감긴 줄 제거 완료', '지느러미가 깨끗합니다. 생물학자가 현장에서 동물을 풀어줍니다.', 3.8);
   }
 
   hitManateeLine(into) {
@@ -1117,23 +1117,23 @@ export class EncounterDirector {
     e.lineHitCd = 2.4; e.spook = Math.max(e.spook, 5.5); e.navHeading = Math.atan2(-(e.x - this.phys.pos.x), -(e.z - this.phys.pos.y));
     if (this.condition) this.condition.damage(0.2 + Math.min(0.8, into * 0.08), 0.7 + Math.min(2.8, into * 0.25));
     this.audio.warn(); this.game.shake = Math.max(this.game.shake, Math.min(0.28, into * 0.035));
-    this.game.toast('Crab line under the hull', 'Kill the throttle. The float line is pulling tight against the animal.', 3.1);
+    this.game.toast('선체 아래 게 줄', '스로틀을 끄세요. 부표 줄이 동물 쪽으로 팽팽하게 당겨지고 있습니다.', 3.1);
   }
 
   hitEntangledManatee(into) {
     const e = this.active; if (!e || e.type !== 'manatee' || e.hitCd > 0 || e.state === 'released' || e.state === 'cut' || e.state === 'struck' || into < 1.1) return;
     e.hitCd = 3; e.spook = Math.max(e.spook, 7); e.navHeading = Math.atan2(-(e.x - this.phys.pos.x), -(e.z - this.phys.pos.y));
     this.audio.thud(Math.min(1.2, 0.35 + into * 0.1)); this.game.shake = Math.max(this.game.shake, Math.min(0.58, 0.16 + into * 0.06));
-    if (into < 3.4) { this.game.toast('Manatee under the chine', 'Prop to idle. Let it move clear before you turn.', 3); return; }
+    if (into < 3.4) { this.game.toast('쉬핑 아래 마네키', '프로펠러를 유속으로. 돌리기 전에 동물이 빠지도록 두세요.', 3); return; }
     if (!this.rigs.patrol.agent.active) this.reportManatee(e);
     e.state = 'struck'; e.struck = true; e.resolveT = 4.2;
     this.game.save.manateeEntanglementStrikes = (this.game.save.manateeEntanglementStrikes || 0) + 1;
     if (this.law) { this.law.stats.manateeStrikes = (this.law.stats.manateeStrikes || 0) + 1; this.law.add(1.65, 'protected manatee strike', false); }
     if (this.reputation) {
-      this.reputation.change('fwc', -1.15, 'manatee-strike', 'FWC logged a strike on the entangled manatee before the rescue boat reached it.', true);
-      this.reputation.change('locals', -0.4, 'manatee-strike', 'The tower hull hit the animal it was meant to protect.', false);
+      this.reputation.change('fwc', -1.15, 'manatee-strike', '구조 보트가 도착하기 전에 FWC가 줄에 감긴 마네키 충돌을 기록했습니다.', true);
+      this.reputation.change('locals', -0.4, 'manatee-strike', '타워 선체가 보호하려던 동물을 들이받았습니다.', false);
     }
-    this.game.persist(); this.game.toast('Protected animal struck', 'Hold position. The rescue team is now responding to an injured manatee.', 3.8);
+    this.game.persist(); this.game.toast('보호 동물 피격', '현위치 유지. 구조팀이 이제 부상당한 마네키에 출동 중입니다.', 3.8);
   }
 
   debugAdvanceManatee() {
@@ -1207,7 +1207,7 @@ export class EncounterDirector {
     P.mesh.position.set(P.x, this.water.waveHeight(P.x, P.z, 0) - 0.05, P.z); P.mesh.rotation.set(0, heading, 0); P.mesh.visible = true;
     e.state = 'reported'; e.choice = 'fwc'; e.chaseT = 0; e.visualT = 0; e.lostT = 0; e.fixX = A.x; e.fixZ = A.z;
     this.setSpotlightEscape(e); this.rigs.spotlight.gator.visible = false; this.clearPrompt(); this.audio.checkpoint();
-    this.game.toast('Hull and position relayed', 'Keep the blacked-out skiff in sight. FWC twenty-seven is coming dark.', 3.5);
+    this.game.toast('선체 및 위치 정보 송신', '블랙아웃 스키프를 시야에 유지. FWC 27호가 암전 상태로 접근 중.', 3.5);
   }
 
   warnSpotlight(e) {
@@ -1218,11 +1218,11 @@ export class EncounterDirector {
     this.game.save.spotlightWarnings = (this.game.save.spotlightWarnings || 0) + 1;
     if (this.reputation) {
       this.reputation.change('runners', 0.9, 'spotlight-warning', '블랙아웃 팀이 피난처 수로에서 경고한 사람들을 기억합니다.', true);
-      this.reputation.change('fwc', -0.75, 'spotlight-warning', 'FWC heard the tower hull warn an unlicensed harvest crew.', false);
-      this.reputation.change('locals', -0.3, 'spotlight-warning', 'The camps heard an untagged crew got a clean exit.', false);
+      this.reputation.change('fwc', -0.75, 'spotlight-warning', 'FWC가 타워 선체가 무면허 포획팀에 경고한 것을 들었습니다.', false);
+      this.reputation.change('locals', -0.3, 'spotlight-warning', '캠프 주민들이 무태그 팀이 깨끗하게 빠져나갔다는 소식을 들었습니다.', false);
     }
-    this.pay(e.paid, 'Backchannel credit'); this.game.persist(); this.audio.pickup();
-    this.game.toast('Warning sent on seventy-two', 'Their light went black. The skiff is leaving before twenty-seven gets a hull number.', 3.6);
+    this.pay(e.paid, '백채널 공로'); this.game.persist(); this.audio.pickup();
+    this.game.toast('72 채널로 경고 송신', '그들의 불빛이 꺼졌습니다. 27호가 선체 번호를 받기 전에 스키프가 떠납니다.', 3.6);
   }
 
   spookSpotlight(e) {
@@ -1230,13 +1230,13 @@ export class EncounterDirector {
     e.state = 'spooked'; e.choice = 'spooked'; e.resolveT = 8; this.setSpotlightEscape(e); this.rigs.spotlight.gator.visible = false;
     this.game.save.spotlightCrewsSpooked = (this.game.save.spotlightCrewsSpooked || 0) + 1;
     if (this.reputation) {
-      this.reputation.change('fwc', 0.18, 'spotlight-spooked', 'Your approach broke up an unlicensed alligator take.', true);
-      this.reputation.change('runners', -0.45, 'spotlight-spooked', 'The blackout crew knows which hull drove through its setup.', false);
+      this.reputation.change('fwc', 0.18, 'spotlight-spooked', '접근으로 무면허 악어 포획을 깨뜨렸습니다.', true);
+      this.reputation.change('runners', -0.45, 'spotlight-spooked', '블랙아웃 팀이 어떤 선체가 세팅을 돌파했는지 알고 있습니다.', false);
     }
     const f = this.phys.forward(this._f), x = this.phys.pos.x + f.x * 5 + (Math.random() - 0.5) * 3, z = this.phys.pos.y + f.y * 5 + (Math.random() - 0.5) * 3;
     this.audio.shot(0.55, x, z); for (let i = 0; i < 18; i++) this.spray.emit(x + (Math.random() - 0.5), this.water.waveHeight(x, z, 0) + 0.04, z + (Math.random() - 0.5), (Math.random() - 0.5) * 2.2, 0.8 + Math.random() * 2.8, (Math.random() - 0.5) * 2.2, 0.014 + Math.random() * 0.02, 0.35 + Math.random() * 0.3, 0.58);
     this.game.persist(); this.audio.warn(); this.game.shake = Math.max(this.game.shake, 0.24);
-    this.game.toast('Warning shot off the bow', 'The gator went under. The blacked-out skiff is running for the narrow water.', 3.5);
+    this.game.toast('선수 쪽에 경고 사격', '악어가 잠수했습니다. 블랙아웃 스키프가 좁은 수로로 도주 중.', 3.5);
   }
 
   takeSpotlightGator(e) {
@@ -1245,7 +1245,7 @@ export class EncounterDirector {
     this.game.save.untaggedAlligatorsTaken = (this.game.save.untaggedAlligatorsTaken || 0) + 1;
     const y = this.water.waveHeight(e.gatorX, e.gatorZ, 0) + 0.04;
     this.audio.shot(0.7, e.gatorX, e.gatorZ); for (let i = 0; i < 24; i++) this.spray.emit(e.gatorX + (Math.random() - 0.5) * 1.5, y, e.gatorZ + (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 2.8, 0.7 + Math.random() * 2.4, (Math.random() - 0.5) * 2.8, 0.014 + Math.random() * 0.022, 0.35 + Math.random() * 0.32, 0.58);
-    this.game.persist(); this.audio.warn(); this.game.toast('Single shot in the refuge cut', 'The light went out. The untagged crew is leaving with the animal.', 3.7);
+    this.game.persist(); this.audio.warn(); this.game.toast('피난처 수로 내 단발 사격', '불빛이 꺼졌습니다. 무태그 팀이 동물을 들고 떠납니다.', 3.7);
   }
 
   seizeSpotlight(e) {
@@ -1256,16 +1256,16 @@ export class EncounterDirector {
     if (this.reputation) {
       this.reputation.change('fwc', 1.35, 'spotlight-seizure', '이동 좌표 덕분에 FWC가 무면허 악어 포획팀 곁에 도착했습니다.', true);
       this.reputation.change('locals', 0.45, 'spotlight-seizure', '캠프 주민들이 폐쇄된 피난처 수로가 온전했다는 소식을 들었습니다.', false);
-      this.reputation.change('runners', -1.1, 'spotlight-seizure', 'The backchannel tied the seized blackout skiff to your radio calls.', false);
+      this.reputation.change('runners', -1.1, 'spotlight-seizure', '백채널이 압수된 블랙아웃 스키프를 당신의 무전 호출에 연결했습니다.', false);
     }
     if (this.law) this.law.cool(0.3); this.game.persist(); this.audio.checkpoint();
-    this.game.toast('FWC alongside the blackout skiff', 'Long gun, no restraint line, no harvest tags. The gator stayed in the cut.', 3.8);
+    this.game.toast('FWC가 블랙아웃 스키프 옆에 나란히', '롱건, 구속 라인 없음, 수확 태그 없음. 악어는 수로에 남았습니다.', 3.8);
   }
 
   escapeSpotlight(e) {
     if (e.state === 'escaped') return;
     e.state = 'escaped'; e.resolveT = 4.8; this.audio.warn();
-    this.game.toast('FWC lost the blacked-out skiff', 'The last moving fix went stale where the channels split.', 3.4);
+    this.game.toast('FWC가 블랙아웃 스키프 놓침', '마지막 이동 좌표가 수로 갈래에서 낡았습니다.', 3.4);
   }
 
   debugAdvanceSpotlight() {
@@ -1304,7 +1304,7 @@ export class EncounterDirector {
     if (e.stake) { this.pay(-e.stake, 'Race stake'); e.paidStake = true; }
     const g = e.gates[0]; this.rigs.smuggler.agent.heading = Math.atan2(-(g.x - e.x), -(g.z - e.z));
     this.showRaceGate(e); this.clearPrompt(); this.audio.horn(0.24);
-    this.game.toast(e.stake ? '$100 cash sprint' : '$110 open purse', 'Six gates. Hold your line and go on the horn.', 3.2);
+    this.game.toast(e.stake ? '100달러 현금 스프린트' : '110달러 오픈 상금', '6개 게이트. 라인을 유지하고 경적을 울리세요.', 3.2);
   }
 
   raceProgress(e, index, x, z) {
@@ -1326,10 +1326,10 @@ export class EncounterDirector {
 
   abortRace(e) {
     if (e.state === 'aborted' || e.state === 'resolved') return;
-    if (e.paidStake && !e.stakeSettled) { this.pay(e.stake, 'Race stake returned'); e.stakeSettled = true; }
+    if (e.paidStake && !e.stakeSettled) { this.pay(e.stake, '경주 배당금 반환'); e.stakeSettled = true; }
     e.state = 'aborted'; e.resolveT = 3.8; this.game.beacon.hide(); this.game.beacon2.hide();
     if (this.game.wpTarget?.encounter) this.game.wpTarget = null;
-    this.audio.warn(); this.game.toast('Sprint called off', 'Weather closed the cut. Nobody keeps the stake.', 3.2);
+    this.audio.warn(); this.game.toast('스프린트 취소', '날씨로 수로가 닫혔습니다. 배당금을 가져가는 사람은 없습니다.', 3.2);
   }
 
   resolveRace(e, won) {
@@ -1338,14 +1338,14 @@ export class EncounterDirector {
     if (this.game.wpTarget?.encounter) this.game.wpTarget = null;
     if (won) {
       e.payout = e.stake ? (e.dirty ? 185 : 285) : (e.dirty ? 65 : 110); e.outcome = e.dirty ? 'race-dirty' : 'race-won';
-      e.resultTitle = e.dirty ? 'Rough sprint won' : 'Cash sprint won';
+      e.resultTitle = e.dirty ? '거친 스프린트 승리' : 'Cash sprint won';
       e.resultLine = e.dirty ? '먼저 통과했지만 러브레일 돈은 배당금에서 나왔습니다.' : '6개 게이트 통과. 존보트 승무원이 수상에서 지불합니다.';
-      if (this.reputation) this.reputation.change('runners', e.dirty ? 0.2 : 0.75, e.dirty ? 'race-dirty' : 'race-won', e.dirty ? 'You won the cut sprint after trading paint.' : 'You beat Mud Hen through six clean gates.', true);
-      this.audio.complete(); this.game.toast('You took the line', e.dirty ? 'First hull through, with paint missing from both boats.' : 'Mud Hen crossed behind you.', 3.4);
+      if (this.reputation) this.reputation.change('runners', e.dirty ? 0.2 : 0.75, e.dirty ? 'race-dirty' : 'race-won', e.dirty ? '페인트 교환 끝에 컷 스프린트에서 승리했습니다.' : '6개 깨끗한 게이트를 통과해 Mud Hen을 이겼습니다.', true);
+      this.audio.complete(); this.game.toast('당신이 결승선을 통과했습니다', e.dirty ? '두 보트 모두 페인트가 벗겨진 채로 첫 번째 통과.' : 'Mud Hen이 뒤에서 통과했습니다.', 3.4);
     } else {
-      e.payout = 0; e.outcome = 'race-lost'; e.resultTitle = 'Cash sprint lost'; e.resultLine = e.stake ? 'Mud Hen crossed first and keeps the hundred.' : 'Mud Hen crossed first. No money changed hands.';
-      if (this.reputation && !e.dirty) this.reputation.change('runners', 0.1, 'race-finished', 'You ran all six marks and took the loss clean.', false);
-      this.audio.fail(); this.game.toast('Mud Hen took the line', e.stake ? 'The hundred stays in the johnboat.' : 'They point back at the first gate.', 3.4);
+      e.payout = 0; e.outcome = 'race-lost'; e.resultTitle = '현금 스프린트 패배'; e.resultLine = e.stake ? 'Mud Hen이 먼저 통과해 100달러를 가져갑니다.' : 'Mud Hen이 먼저 통과. 돈은 오가지 않았습니다.';
+      if (this.reputation && !e.dirty) this.reputation.change('runners', 0.1, 'race-finished', '6개 마크 모두 통과하고 깨끗하게 패배.', false);
+      this.audio.fail(); this.game.toast('Mud Hen이 결승선을 통과했습니다', e.stake ? '100달러는 존보트에 남습니다.' : '첫 게이트를 가리킵니다.', 3.4);
     }
     if (e.payout) this.pay(e.payout, e.resultTitle); else this.game.bountyToast(e.resultTitle);
     this.game.save.encounters.race = (this.game.save.encounters.race || 0) + 1; this.remember(e.outcome, e.place); this.game.persist();
@@ -1414,9 +1414,9 @@ export class EncounterDirector {
       if (index >= 0) this.law.stats.backupRams = (this.law.stats.backupRams || 0) + 1;
       this.law.add(1.45 + Math.min(0.9, into * 0.08), 'rammed FWC patrol boat', true);
     }
-    if (this.reputation) this.reputation.change('fwc', -Math.min(0.8, 0.32 + into * 0.04), 'patrol-ram', 'FWC logged the tower airboat striking a patrol hull.', false);
+    if (this.reputation) this.reputation.change('fwc', -Math.min(0.8, 0.32 + into * 0.04), 'patrol-ram', 'FWC가 타워 에어보트가 순찰정을 들이받았다고 기록했습니다.', false);
     this.beginPatrolPursuit(e, 'rammed FWC patrol', false); this.audio.warn(); this.game.shake = Math.max(this.game.shake, Math.min(0.42, into * 0.045));
-    this.game.toast('FWC pursuit', index >= 0 ? 'You hit a backup unit. The whole line is staying with you.' : 'You hit the patrol boat. They are staying on the hull.', 3.2);
+    this.game.toast('FWC pursuit', index >= 0 ? '예비 부선을 들이받았습니다. 전체 라인이 당신을 따라옵니다.' : '순찰정을 들이받았습니다. 그들이 이 선체를 추적합니다.', 3.2);
   }
 
   resetPatrolBackups() {
@@ -1479,7 +1479,7 @@ export class EncounterDirector {
     e.backupCount++; e.units = 1 + e.backupCount;
     if (this.law) this.law.stats.backupDeployments = (this.law.stats.backupDeployments || 0) + 1;
     this.audio.horn(index ? 0.22 : 0.18);
-    this.game.toast(index ? 'FWC closing the channel' : 'FWC backup entering', index ? '얕은 물 순찰대가 반대쪽 강기슭에서 내려옵니다.' : '두 번째 순찰대가 선수 방향으로 횡단 중.', 3);
+    this.game.toast(index ? 'FWC 수로 폐쇄 중' : 'FWC 백업 진입', index ? '얕은 물 순찰대가 반대쪽 강기슭에서 내려옵니다.' : '두 번째 순찰대가 선수 방향으로 횡단 중.', 3);
     return true;
   }
 
@@ -1520,7 +1520,7 @@ export class EncounterDirector {
     });
     updateAirRescueAircraft(R, e, t);
     if (this.law) { this.law.stats.aviationDeployments = (this.law.stats.aviationDeployments || 0) + 1; this.game.persist(); }
-    this.game.toast('FWC Air 2 inbound', 'Air Two is taking the next cut. Surface units are calling your turns.', 3.2);
+    this.game.toast('FWC Air 2 진입 중', 'Air 2가 다음 수로를 잡습니다. 수상 부대가 당신의 회전을 호출합니다.', 3.2);
     return true;
   }
 
@@ -1579,7 +1579,7 @@ export class EncounterDirector {
       aviationRequested: false, aviationDue: Infinity, aviationActive: false, aviationVisual: false, aviationBeamActive: false,
       aviationLastSeen: 0, aviationAircraftDistance: Infinity, aviationBeamDistance: Infinity,
     };
-    if (options.pursuit) { this.beginPatrolPursuit(this.active, 'rammed FWC patrol', false); this.audio.warn(); this.game.toast('Wanted', 'FWC 추격 중. 시야에서 벗어나거나 유속으로 정지 유지.', 3.2); }
+    if (options.pursuit) { this.beginPatrolPursuit(this.active, 'rammed FWC patrol', false); this.audio.warn(); this.game.toast('수배 중', 'FWC 추격 중. 시야에서 벗어나거나 유속으로 정지 유지.', 3.2); }
   }
 
   startSmuggler(at) {
@@ -1657,10 +1657,10 @@ export class EncounterDirector {
     this.game.save.salvageRuptures = (this.game.save.salvageRuptures || 0) + 1;
     if (this.law) { this.law.stats.fuelSpills = (this.law.stats.fuelSpills || 0) + 1; this.law.add(0.6, 'fuel sheen from ruptured salvage drum', false); }
     if (this.reputation) {
-      this.reputation.change('fwc', -0.65, 'fuel-spill', 'FWC logged a fuel sheen after your hull struck loose salvage.', true);
-      this.reputation.change('locals', -0.25, 'fuel-spill', 'The camps heard a recovery drum split under the tower boat.', false);
+      this.reputation.change('fwc', -0.65, 'fuel-spill', '당신 선체가 흘러다니는 잔해를 친 후 FWC가 연료 막대기를 기록했습니다.', true);
+      this.reputation.change('locals', -0.25, 'fuel-spill', '캠프 주민들이 타워 보트 아래에서 회수용 연료통이 깨진 소식을 들었습니다.', false);
     }
-    this.game.persist(); this.game.toast('Fuel drum ruptured', 'Visible sheen on the water. Back clear and mark the position.', 3.4);
+    this.game.persist(); this.game.toast('연료통 파열', '수면 위에 가시성 있는 기름막. 빠지고 위치를 표시하세요.', 3.4);
   }
 
   recoverDrum(e, q) {
@@ -1998,37 +1998,37 @@ export class EncounterDirector {
     if (R.passenger.visible) animatePerson(R.passenger, t, dt);
     if (R.survivor.userData.waveT <= 0 && d < 130) wave(R.survivor);
     const pulse = 0.5 + 0.5 * Math.sin(t * 7); R.flare.light.intensity = 50 + pulse * 95; R.flare.bulb.scale.setScalar(0.7 + pulse * 0.8);
-    if (d < 120) this.known(e, evacuation ? 'Surge pickup' : 'Distress flare', evacuation ? `${e.campName} has one resident waiting at the dock.` : e.recognized ? 'He knows the hull and is waving you in.' : '전방에 스키프가 정지해 있습니다.');
-    if (e.known && e.state !== 'aboard') this.point(e.x, e.z, evacuation ? `${e.campName} pickup` : 'distress flare', '#ff5a36');
+    if (d < 120) this.known(e, evacuation ? '폭풍 픽업' : '조난 신호탄', evacuation ? `${e.campName}에 한 주민이 독에서 대기 중입니다.` : e.recognized ? '그는 이 선체를 알고 손짓으로 부르고 있습니다.' : '전방에 스키프가 정지해 있습니다.');
+    if (e.known && e.state !== 'aboard') this.point(e.x, e.z, evacuation ? `${e.campName} 픽업` : '조난 신호탄', '#ff5a36');
     if (d < 70 && R.boat.visible) { const o = this.boatObs; o.ax = e.x - Math.sin(e.heading) * 2; o.az = e.z - Math.cos(e.heading) * 2; o.bx = e.x + Math.sin(e.heading) * 2; o.bz = e.z + Math.cos(e.heading) * 2; o.tag = 'boat'; o.agent = null; this.obs.push(o); }
     if (evacuation && e.state === 'waiting') {
       const phase = this.environment.hurricane?.phase;
       if (this.environment.key !== 'hurricane' || phase === 'back-eyewall' || phase === 'trailing-bands') {
-        this.game.toast('Pickup window closed', this.environment.key === 'hurricane' ? `They have gone back inside at ${e.campName}. Backside wind has closed the dock.` : `Water is falling. ${e.campName} has cancelled the pickup.`, 3.8);
+        this.game.toast('픽업 시간 종료', this.environment.key === 'hurricane' ? `${e.campName} 사람들이 안으로 돌아갔습니다. 뒤쪽 바람이 독을 닫았습니다.` : `물이 빠지는 중. ${e.campName}에서 픽업을 취소했습니다.`, 3.8);
         this.finish(false); return;
       }
     }
     if (e.state === 'waiting' && d < 13 && this.phys.speed * MPH < 6 && this.canInteract()) {
-      this.setPrompt(evacuation ? `bring the ${e.campName} resident aboard` : 'hold steady for a fuel-line repair <i>· F bring the operator aboard</i>');
+      this.setPrompt(evacuation ? `${e.campName} 주민을 승선시키세요` : '연료 라인 수리를 위해 정지 유지 <i>· F 운전자를 승선시키세요</i>');
       if (this.interact) {
         if (evacuation) this.boardDistress(e);
-        else { e.state = 'repair'; this.clearPrompt(); this.game.toast('Hold her steady', 'He is clearing the fuel line.', 2.4); }
+        else { e.state = 'repair'; this.clearPrompt(); this.game.toast('그대로 유지', '연료 라인을 청소 중입니다.', 2.4); }
       }
       else if (!evacuation && this.alternate) this.boardDistress(e);
     }
     if (e.state === 'repair') {
       if (d < 15 && this.phys.speed * MPH < 7) e.hold += dt; else e.hold = Math.max(0, e.hold - dt * 1.5);
-      if (e.hold >= 6) { this.audio.checkpoint(); if (this.law) this.law.cool(0.2); this.complete('Stranger helped', e.recognized ? '모터 걸림. 캠프에 소문이 퍼질 거라고 합니다.' : 'Motor caught. He owes you one.', 180, 1, 'You pulled a stranded skiff clear.', 'distress-repaired'); }
+      if (e.hold >= 6) { this.audio.checkpoint(); if (this.law) this.law.cool(0.2); this.complete('낯선 사람이 도움', e.recognized ? '모터 걸림. 캠프에 소문이 퍼질 거라고 합니다.' : '모터 걸렸습니다. 그 사람 당신에게 신세를 졌습니다.', 180, 1, '좌초된 스키프를 끌어냈습니다.', 'distress-repaired'); }
     } else if (e.state === 'aboard') {
       if (d > 360) R.boat.visible = false;
       const q = e.drop, dd = Math.hypot(q.x - this.phys.pos.x, q.z - this.phys.pos.y);
       this.point(q.x, q.z, q.name, '#7be08a');
       if (dd < 13 && this.phys.speed * MPH < 5 && !this.game.dockJob && !this.game.atBoard) {
-        this.setPrompt(`put the ${evacuation ? 'resident' : 'operator'} ashore at ${q.name}`);
+        this.setPrompt(`${evacuation ? '주민' : '운전자'}을 ${q.name}에 상륙시키세요`);
         if (this.interact) {
           if (this.law) this.law.cool(0.3);
-          if (evacuation) this.complete('Surge evacuation complete', `The resident from ${e.campName} is ashore at ${q.name}. Nobody goes back until the water drops.`, 420, 2, `You evacuated a resident from ${e.campName} ahead of the backside surge.`, 'surge-evacuation', `${e.campName} to ${q.name}`);
-          else this.complete('Safe berth reached', `${q.name} took him in. His skiff can wait for daylight.`, 275, 1.25, '고립된 운전자를 안전한 정박지로 옮겼습니다.', 'distress-berth', q.name);
+          if (evacuation) this.complete('폭풍 대피 완료', `${e.campName}의 주민이 ${q.name}에 상륙했습니다. 물이 빠질 때까지 아무도 돌아가지 않습니다.`, 420, 2, `${e.campName} 주민을 뒤쪽 파도보다 먼저 대피시켰습니다.`, 'surge-evacuation', `${e.campName} to ${q.name}`);
+          else this.complete('안전 정박지 도착', `${q.name}이 그를 받아들였습니다. 그의 스키프는 밝아질 때까지 기다릴 수 있습니다.`, 275, 1.25, '고립된 운전자를 안전한 정박지로 옮겼습니다.', 'distress-berth', q.name);
         }
       }
     }
@@ -2040,7 +2040,7 @@ export class EncounterDirector {
     const beamStrength = clamp(0.28 + (night ? 0.56 : 0) + this.environment.restrictedVisibility * 0.48);
     this.updateAirRescueSurvivor(e, dt, t);
     if (!e.known && Math.min(playerD, Math.hypot(e.centerX - p.pos.x, e.centerZ - p.pos.y), aircraftD) < 315) {
-      this.known(e, 'Coast Guard air search', 'Rescue 6507 is working parallel tracks for one person in the water.');
+      this.known(e, '해안경비대 항공 수색', 'Rescue 6507이 수중 1명을 위해 평행 트랙을 작업 중입니다.');
     }
 
     if (e.state === 'search') {
@@ -2052,26 +2052,26 @@ export class EncounterDirector {
       updateAirRescueBeam(R, e.hx + rx * 0.52, e.hy - 0.55, e.hz + rz * 0.52, e.beamX, beamY, e.beamZ, beamStrength);
       if (!e.sighted && Math.hypot(e.beamX - e.x, e.beamZ - e.z) < 15) this.sightAirRescueSurvivor(e, 'aircraft');
       if (!e.sighted && playerD < (night && !this.environment.spotOn ? 48 : 68)) this.sightAirRescueSurvivor(e, 'boat');
-      if (e.known) this.point(e.sighted ? e.x : e.centerX, e.sighted ? e.z : e.centerZ, e.sighted ? 'survivor strobe' : 'air search sector', e.sighted ? '#d8f2ff' : '#79a8c7');
+      if (e.known) this.point(e.sighted ? e.x : e.centerX, e.sighted ? e.z : e.centerZ, e.sighted ? '생존자 스트로브' : '항공 수색 구역', e.sighted ? '#d8f2ff' : '#79a8c7');
       if (e.sighted && playerD < 24 && p.speed * MPH < 5.5 && this.canInteract()) {
-        this.setPrompt('transmit an exact position to Rescue 6507'); if (this.interact) this.markAirRescue(e);
+        this.setPrompt('Rescue 6507에 정확한 좌표 송신'); if (this.interact) this.markAirRescue(e);
       }
     } else if (e.state === 'approach') {
-      this.point(e.x, e.z, 'survivor strobe', '#d8f2ff'); this.flyAirRescue(e, dt, e.x, e.z, 27, 18);
+      this.point(e.x, e.z, '생존자 스트로브', '#d8f2ff'); this.flyAirRescue(e, dt, e.x, e.z, 27, 18);
       updateAirRescueBeam(R, e.hx, e.hy - 0.55, e.hz, e.x, this.water.waveHeight(e.x, e.z, t), e.z, beamStrength);
-      if (playerD < 48) this.setPrompt('clear the helicopter hover <i>· hold fifty yards off</i>', 'HOLD');
+      if (playerD < 48) this.setPrompt('헬기 호버 비우기 <i>· 50야드 떨어져 대기</i>', 'HOLD');
       if (Math.hypot(e.hx - e.x, e.hz - e.z) < 4.8 && Math.abs(e.hy - 27) < 2.2) this.beginAirRescueHoist(e);
     } else if (e.state === 'goaround') {
-      e.goT += dt; this.point(e.x, e.z, 'survivor strobe', '#d8f2ff'); this.flyAirRescue(e, dt, e.flightTargetX, e.flightTargetZ, e.flightTargetY, 23);
+      e.goT += dt; this.point(e.x, e.z, '생존자 스트로브', '#d8f2ff'); this.flyAirRescue(e, dt, e.flightTargetX, e.flightTargetZ, e.flightTargetY, 23);
       updateAirRescueBeam(R, e.hx, e.hy - 0.55, e.hz, e.x, this.water.waveHeight(e.x, e.z, t), e.z, beamStrength * 0.72);
       if (e.goT > 7.5 && Math.hypot(e.flightTargetX - e.hx, e.flightTargetZ - e.hz) < 24) { e.state = 'approach'; e.flightTargetX = e.x; e.flightTargetZ = e.z; e.flightTargetY = 27; }
     } else if (e.state === 'hoist') {
-      this.point(e.x, e.z, 'hoist in progress', '#d8f2ff'); this.flyAirRescue(e, dt, e.x, e.z, 26.5, 4.2);
+      this.point(e.x, e.z, '인양 진행 중', '#d8f2ff'); this.flyAirRescue(e, dt, e.x, e.z, 26.5, 4.2);
       updateAirRescueBeam(R, e.hx, e.hy - 0.55, e.hz, e.x, this.water.waveHeight(e.x, e.z, t), e.z, beamStrength * 0.92);
-      this.setPrompt('hold outside the rotor wash <i>· keep the orange trail line free</i>', 'HOLD');
+      this.setPrompt('로터 워시 밖에서 대기 <i>· 주황 트레일 라인을 비워두세요</i>', 'HOLD');
       if (playerD < 31) {
         e.crowdT += dt;
-        if (!e.washWarned) { e.washWarned = true; this.audio.warn(); this.game.toast('Inside the hoist zone', 'Clear the hover now or the aircraft will wave off.', 3.2); }
+        if (!e.washWarned) { e.washWarned = true; this.audio.warn(); this.game.toast('인양 구역 안', '지금 호버를 비우세요. 그렇지 않으면 기체가 웨이브 오프합니다.', 3.2); }
       } else { e.crowdT = Math.max(0, e.crowdT - dt * 1.7); if (playerD > 40) e.washWarned = false; }
       if (e.crowdT > 1.35) { this.abortAirRescueHoist(e); return; }
       this.updateAirRescueHoist(e, dt, t);
@@ -2081,9 +2081,9 @@ export class EncounterDirector {
       if (e.departT <= 0) {
         const clean = e.aborts === 0, amount = clean ? 260 : 170;
         this.game.save.airRescueFixes = (this.game.save.airRescueFixes || 0) + 1; this.game.save.airRescueWaveOffs = (this.game.save.airRescueWaveOffs || 0) + e.aborts;
-        if (this.reputation) this.reputation.change('fwc', clean ? 1.1 : 0.45, clean ? 'air-rescue-clean-fix' : 'air-rescue-delayed-fix', clean ? '정확한 위치 보고 덕분에 헬기가 깨끗하게 들어올릴 수 있었습니다.' : 'Your position report found the survivor, but the aircraft had to reset around your boat.', true);
+        if (this.reputation) this.reputation.change('fwc', clean ? 1.1 : 0.45, clean ? 'air-rescue-clean-fix' : 'air-rescue-delayed-fix', clean ? '정확한 위치 보고 덕분에 헬기가 깨끗하게 들어올릴 수 있었습니다.' : '당신의 위치 보고로 생존자를 찾았지만 기체가 보트 주변에서 재진입해야 했습니다.', true);
         if (this.law) this.law.cool(clean ? 0.4 : 0.18);
-        this.complete(clean ? 'Clean air rescue' : '웨이브 오프 후 생존자 구조', clean ? 'One exact fix, one clean hover, survivor aboard.' : `${e.aborts} ${e.aborts === 1 ? 'wave-off' : 'wave-offs'} before the basket came up.`, amount, clean ? 0.75 : 0.3, clean ? 'Rescue 6507이 생존자를 들어올리는 동안 워시 밖에서 대기했습니다.' : 'You found a survivor and cleared the final helicopter approach.', clean ? 'airrescue-clean' : 'airrescue-delayed');
+        this.complete(clean ? '깔끔한 항공 구조' : '웨이브 오프 후 생존자 구조', clean ? '정확한 좌표 1회, 깔끔한 호버 1회, 생존자 탑승.' : `바구니가 올라오기 전에 ${e.aborts}회 ${e.aborts === 1 ? '웨이브 오프' : '웨이브 오프'}가 있었습니다.`, amount, clean ? 0.75 : 0.3, clean ? 'Rescue 6507이 생존자를 들어올리는 동안 워시 밖에서 대기했습니다.' : '생존자를 발견하고 헬기 최종 접근로를 확보했습니다.', clean ? 'airrescue-clean' : 'airrescue-delayed');
         return;
       }
     }
@@ -2101,15 +2101,15 @@ export class EncounterDirector {
       this.addBoatObstacle(A, 'departing skiff', 1); e.departT -= dt;
       if (e.departT <= 0) {
         if (!e.assisted) {
-          if (e.known) this.complete('Flood tide lifted the skiff', 'The operator waited with the outboard trimmed and left without cutting the bank.', 0, 0, '', 'grounding-flood');
+          if (e.known) this.complete('만조가 스키프를 들어올림', '운전자가 외장 모터 정렬 후 모래톱을 깎지 않고 떠났습니다.', 0, 0, '', 'grounding-flood');
           else this.finish(false, true);
         } else if (e.cleanTow) {
-          if (this.reputation) this.reputation.change('fwc', 0.3, 'grounding-clean-tow', 'A grounded skiff was pulled into deep water without a visible prop scar.', false);
-          this.complete('Skiff recovered clean', 'Steady line, trimmed motor, no mud trench behind the hull.', 230, 0.85, 'You floated a working skiff off a falling-tide bank without chewing up the bottom.', 'grounding-towed');
+          if (this.reputation) this.reputation.change('fwc', 0.3, 'grounding-clean-tow', '좌초 스키프가 프로펠러 흔적 없이 깊은 물로 끌어올려졌습니다.', false);
+          this.complete('스키프 깨끗하게 회수', '안정된 줄, 정렬된 모터, 선체 뒤 진흙 도랑 없음.', 230, 0.85, '썰물 기슭에서 작업 스키프를 바닥을 헤치지 않고 띄웠습니다.', 'grounding-towed');
         } else {
-          if (this.reputation) this.reputation.change('fwc', -0.55, 'grounding-bottom-scar', 'FWC logged a fresh bottom scar behind a skiff pulled off the bank.', true);
+          if (this.reputation) this.reputation.change('fwc', -0.55, 'grounding-bottom-scar', 'FWC가 기슭에서 끌어올린 스키프 뒤에 새로운 바닥 흉터를 기록했습니다.', true);
           if (this.law) this.law.add(0.35, 'shallow-bank damage during a tow', false);
-          this.complete('Skiff dragged clear', 'The hull is floating, but the hard pull left a fresh trench in the bank.', 140, 0.35, '거친 견인으로 고장난 작업 스키프를 풀어줬습니다.', 'grounding-scarred');
+          this.complete('스키프 끌어서 빠짐', '선체는 떠 있지만 강한 견인으로 기슭에 새로운 도랑이 남았습니다.', 140, 0.35, '거친 견인으로 고장난 작업 스키프를 풀어줬습니다.', 'grounding-scarred');
         }
       }
       return;
@@ -2119,8 +2119,8 @@ export class EncounterDirector {
     { const boat = this._personBoat; boat.x = p.pos.x; boat.z = p.pos.y; boat.speed = p.speed; animatePerson(R.operator, t, dt, boat); }
     const d = Math.hypot(e.x - p.pos.x, e.z - p.pos.y), fx = -Math.sin(e.heading), fz = -Math.cos(e.heading);
     if (R.operator.userData.waveT <= 0 && d < 150 && e.state === 'waiting') wave(R.operator);
-    if (d < 145) this.known(e, 'Skiff hard aground', e.falling ? 'Outboard is trimmed, but the ebb is still taking water off the bank.' : '외장 모터 트림 완료. 운전자가 더 깊은 물을 기다리고 있습니다.');
-    if (e.known && e.state !== 'tow') this.point(e.x, e.z, 'grounded skiff', '#f0a24d');
+    if (d < 145) this.known(e, '스키프 강하게 좌초', e.falling ? '외장 모터는 정렬됐지만 썰물이 계속 기슭에서 물을 빼내고 있습니다.' : '외장 모터 트림 완료. 운전자가 더 깊은 물을 기다리고 있습니다.');
+    if (e.known && e.state !== 'tow') this.point(e.x, e.z, '좌초된 스키프', '#f0a24d');
     if (d < 72) {
       const o = this.groundingObs; o.ax = e.x + fx * 2; o.az = e.z + fz * 2; o.bx = e.x - fx * 2; o.bz = e.z - fz * 2; this.obs.push(o);
     }
@@ -2129,12 +2129,12 @@ export class EncounterDirector {
       e.vx *= Math.exp(-dt * 3.5); e.vz *= Math.exp(-dt * 3.5);
       if (e.clearance > 0.58) { this.floatGrounding(e, false); return; }
       if (d < 14.5 && p.speed * MPH < 4.8 && this.canInteract()) {
-        this.setPrompt('set a stern line for deep water <i>· F relay the position and wait for high tide</i>');
+        this.setPrompt('깊은 물을 위해 선미 줄 설정 <i>· F 위치 중계 후 만조 대기</i>');
         if (this.interact) this.attachGroundingTow(e);
         else if (this.alternate) this.waitForGroundingFlood(e);
       }
     } else if (e.state === 'tow') {
-      this.point(e.clearX, e.clearZ, 'deep water', '#7db8d8'); this.updateGroundingRope(e, dt, t);
+      this.point(e.clearX, e.clearZ, '깊은 물', '#7db8d8'); this.updateGroundingRope(e, dt, t);
       const grounded = clamp((0.52 - e.clearance) / 0.44), flow = this.currents ? this.currents.flowAt(e.x, e.z, this._flow) : null;
       e.vx *= Math.exp(-dt * (0.72 + grounded * 2.8)); e.vz *= Math.exp(-dt * (0.72 + grounded * 2.8));
       const nx = e.x + (e.vx + (flow ? flow.x * (1 - grounded) * 0.34 : 0)) * dt, nz = e.z + (e.vz + (flow ? flow.y * (1 - grounded) * 0.34 : 0)) * dt;
@@ -2142,10 +2142,10 @@ export class EncounterDirector {
       else { e.vx *= -0.16; e.vz *= -0.16; }
       e.clearance = this.environment.waterLevel - this.terrain.heightAt(e.x, e.z);
       if (e.state === 'tow' && (Math.hypot(e.x - e.clearX, e.z - e.clearZ) < 9 || e.clearance > 0.61)) { this.floatGrounding(e, true); return; }
-      if (e.state === 'tow') this.setPrompt(`drop the tow line <i>· ${e.strain > 0.7 ? 'shock load high, ease off' : e.scour > 0.8 ? 'bottom dragging, keep it slow' : 'steady tension toward blue water'}</i>`, 'F');
+      if (e.state === 'tow') this.setPrompt(`견인 줄 놓기 <i>· ${e.strain > 0.7 ? '충격 하중 높음, 속도 줄이세요' : e.scour > 0.8 ? '바닥 끌림, 천천히' : '푸른 물 방향으로 일정 장력 유지'}</i>`, 'F');
     } else if (e.state === 'secured') {
       e.resolveT -= dt;
-      if (e.resolveT <= 0) this.complete('Grounding response logged', 'The operator is staying with the skiff for higher water. No prop scar, no abandoned hull.', 70, 0.3, 'You stopped a grounded operator from powering across a shallow bank.', 'grounding-wait');
+      if (e.resolveT <= 0) this.complete('좌초 대응 기록됨', '운전자가 수위 상승을 기다리며 스키프와 함께 있습니다. 프로펠러 흉적 없음, 유기된 선체 없음.', 70, 0.3, '얕은 모래톱 위로 가속하려는 좌초 운전자를 멈추게 했습니다.', 'grounding-wait');
     }
   }
 
@@ -2179,19 +2179,19 @@ export class EncounterDirector {
       const boat = this._personBoat; boat.x = p.pos.x; boat.z = p.pos.y; boat.speed = p.speed; animatePerson(R.swimmer, t, dt, boat);
     }
 
-    if (d < 135) this.known(e, 'Skiff on fire', 'Flame is through the outboard cowl. One operator is trapped at the bow.');
+    if (d < 135) this.known(e, 'Skiff on fire', '불꽃이 외장 모터 커버를 뚫고 나왔습니다. 운전자가 선수에 갇혔습니다.');
     if (!e.aboard) {
       if (e.overboard && rescueD < 8 && mph < 5.5 && this.canInteract()) {
-        this.setPrompt('pull the operator from the water'); if (this.interact) this.boardFireOperator(e);
+        this.setPrompt('물에서 운전자를 건져 올리세요'); if (this.interact) this.boardFireOperator(e);
       } else if (e.fireOut && d < 13 && mph < 6 && this.canInteract()) {
-        this.setPrompt('bring the operator off the disabled skiff'); if (this.interact || this.alternate) this.boardFireOperator(e);
+        this.setPrompt('손상된 스키프에서 운전자를 이송시키세요'); if (this.interact || this.alternate) this.boardFireOperator(e);
       } else if (!e.burned && d < 13 && mph < 6.5 && this.canInteract()) {
-        this.setPrompt('lay the marine extinguisher across the stern <i>· F take the operator aboard</i>');
+        this.setPrompt('선미 위로 해양 소화기를 겨누세요 <i>· F 운전자를 승선시키세요</i>');
         if (this.interact) { e.suppressing = true; e.state = 'suppressing'; this.clearPrompt(); }
         else if (this.alternate) this.boardFireOperator(e);
       }
     } else if (!e.fireOut && !e.burned && d < 15 && mph < 7.5 && this.canInteract()) {
-      this.setPrompt(e.suppressing ? 'hold alongside while the extinguisher discharges' : 'fight the stern fire <i>· or back clear</i>');
+      this.setPrompt(e.suppressing ? '소화기 분사 중 나란히 대기' : '선미 불 진화 <i>· 또는 빠지기</i>');
       if (this.interact) { e.suppressing = true; e.state = 'suppressing-aboard'; this.clearPrompt(); }
     }
 
@@ -2233,17 +2233,17 @@ export class EncounterDirector {
     if (e.aboard && (e.fireOut || e.burned)) {
       const q = e.drop, dd = Math.hypot(q.x - p.pos.x, q.z - p.pos.y); this.point(q.x, q.z, q.name, '#7be08a');
       if (dd < 13 && mph < 5 && !this.game.dockJob && !this.game.atBoard) {
-        this.setPrompt(`put the operator ashore at ${q.name}`);
+        this.setPrompt(`운전자를 ${q.name}에 상륙시키세요`);
         if (this.interact) {
           if (this.reputation) this.reputation.change('fwc', e.fireOut ? 1.05 : 0.75, e.fireOut ? 'boat-fire-contained' : 'boat-fire-rescue', e.fireOut ? '해양 소화기를 사용하고 운전자를 대피시켜 수로로 연료가 새지 않게 했습니다.' : '불타는 스키프에서 운전자를 구조해 안전하게 옮겼습니다.', true);
           if (e.burned) this.game.save.engineFireLosses = (this.game.save.engineFireLosses || 0) + 1;
-          this.complete(e.fireOut ? 'Operator and skiff saved' : 'Operator brought ashore', e.fireOut ? 'The fire stayed out. A camp tow will recover the disabled skiff.' : 'He is safe. FWC is containing the sheen around what is left of the skiff.', e.fireOut ? 320 : 220, e.fireOut ? 1.25 : 1, e.fireOut ? 'You stopped an outboard fire before the fuel tank opened.' : 'You pulled a skiff operator out of a fuel fire.', e.fireOut ? 'fire-contained' : 'fire-evacuation', q.name);
+          this.complete(e.fireOut ? '운전자와 스키프 모두 구함' : '운전자 상륙 완료', e.fireOut ? '불이 꺼진 상태. 캠프 예인선이 손상된 스키프를 회수합니다.' : '그는 안전합니다. FWC가 남은 스키프 주변 기름막을 처리 중입니다.', e.fireOut ? 320 : 220, e.fireOut ? 1.25 : 1, e.fireOut ? '연료탱크가 열리기 전에 외장 모터 화재를 멈췄습니다.' : '연료 화재에서 스키프 운전자를 건져냈습니다.', e.fireOut ? 'fire-contained' : 'fire-evacuation', q.name);
           return;
         }
       }
     } else if (e.known) {
-      if (e.overboard) this.point(e.swimmerX, e.swimmerZ, 'operator in the water', '#ff5a36');
-      else this.point(e.x, e.z, e.fireOut ? 'disabled skiff' : 'burning skiff', e.fireOut ? '#7be08a' : '#ff5a36');
+      if (e.overboard) this.point(e.swimmerX, e.swimmerZ, '물 속 운전자', '#ff5a36');
+      else this.point(e.x, e.z, e.fireOut ? '손상된 스키프' : '불타는 스키프', e.fireOut ? '#7be08a' : '#ff5a36');
     }
   }
 
@@ -2251,8 +2251,8 @@ export class EncounterDirector {
     const p = this.phys, values = this.environment.values, dx = e.gatorX - p.pos.x, dz = e.gatorZ - p.pos.y;
     let d = Math.hypot(dx, dz), sceneD = Math.hypot(e.workX - p.pos.x, e.workZ - p.pos.y);
     e.hitCd = Math.max(0, e.hitCd - dt); e.gatorHitCd = Math.max(0, e.gatorHitCd - dt);
-    if (sceneD < 145) this.known(e, 'Nuisance-gator job', 'Big Cal이 양손으로 성가신 악어를 잡고 있습니다. Cypress Hook 주민 절반이 보트에서 보고 있습니다.');
-    if (e.known && e.state !== 'loose') this.point(e.workX, e.workZ, e.state === 'secured' ? 'taped gator' : 'gator capture', e.state === 'secured' ? '#7be08a' : '#e7a34d');
+    if (sceneD < 145) this.known(e, '성가신 악어 작업', '큰 Cal이 양손으로 성가신 악어를 잡고 있습니다. Cypress Hook 주민 절반이 보트에서 보고 있습니다.');
+    if (e.known && e.state !== 'loose') this.point(e.workX, e.workZ, e.state === 'secured' ? '테이프된 악어' : '악어 포획', e.state === 'secured' ? '#7be08a' : '#e7a34d');
 
     this.addWranglerBoatObstacle(0, e.workX, e.workZ, e.heading);
     this.addWranglerBoatObstacle(1, e.fireX, e.fireZ, e.fireHeading);
@@ -2275,15 +2275,15 @@ export class EncounterDirector {
       if (this.alternate && d < 42 && this.canInteract()) this.placeWranglerBet(e);
       if (e.state === 'waiting' && d < 42 && this.canInteract()) {
         if (p.speed < 2.7 && !p.airborne) {
-          this.setPrompt(`hold the escape cut for Cal <i>· E help${e.bet ? ' · $50 riding' : ' · F $50 says he keeps all ten'}</i>`);
+          this.setPrompt(`Cal을 위해 도주 수로 차단 유지 <i>· E 지원${e.bet ? ' · 50달러 걸림' : ' · F 50달러로 열 손가락 유지 베팅'}</i>`);
           if (this.interact) this.beginWranglerAssist(e);
-        } else this.setPrompt('idle outside Cal’s working circle <i>· wake will break his grip</i>', 'SLOW');
+        } else this.setPrompt('Cal의 작업권 밖에서 유속 대기 <i>· 파도가 그립을 풀립니다</i>', 'SLOW');
       }
       if (e.state === 'helping') {
         e.station = wranglerStationQuality(d, p.speed, p.airborne); e.assist = wranglerAssistStep(e.assist, dt, d, p.speed, p.airborne);
-        if (e.station > 0.35) this.setPrompt(`hold the escape cut <i>· ${Math.round(e.assist * 100)}%${e.bet ? ' · $50 riding' : ' · F side bet'}</i>`, 'IDLE');
-        else if (d < 17) this.setPrompt(`back outside 55 ft and idle <i>· ${Math.round(e.assist * 100)}%</i>`, 'BACK');
-        else this.setPrompt(`close to 55–100 ft and idle <i>· ${Math.round(e.assist * 100)}%</i>`, 'HOLD');
+        if (e.station > 0.35) this.setPrompt(`도주 수로 차단 유지 <i>· ${Math.round(e.assist * 100)}%${e.bet ? ' · 50달러 걸림' : ' · F 사이드 베팅'}</i>`, 'IDLE');
+        else if (d < 17) this.setPrompt(`55ft 밖으로 빠지고 유속 <i>· ${Math.round(e.assist * 100)}%</i>`, 'BACK');
+        else this.setPrompt(`55~100ft 접근해 유속 <i>· ${Math.round(e.assist * 100)}%</i>`, 'HOLD');
       }
       if (e.assist >= 1) this.secureWrangler(e, true);
       else if (e.workerProgress >= 1) this.secureWrangler(e, false);
@@ -2291,7 +2291,7 @@ export class EncounterDirector {
 
     if (e.state === 'secured') {
       e.resolveT -= dt; this.updateWranglerRig(e, dt, t);
-      if (e.resolveT <= 0) this.complete('Gator loaded for removal', e.helped ? 'Cal is clear of the water. The work skiff remembers who held the cut.' : '테이프가 버텼습니다. Cypress Hook에서 이미 소문이 좋아지고 있습니다.', 0, 0, '', e.outcome);
+      if (e.resolveT <= 0) this.complete('악어 반입 완료', e.helped ? 'Cal이 물에서 벗어났습니다. 작업 스키프가 누가 수로를 잡았는지 기억합니다.' : '테이프가 버텼습니다. Cypress Hook에서 이미 소문이 좋아지고 있습니다.', 0, 0, '', e.outcome);
       return;
     }
 
@@ -2309,11 +2309,11 @@ export class EncounterDirector {
         p.vel.x += hx / n * 2.4; p.vel.y += hz / n * 2.4; p.vy = Math.max(p.vy, 1.25); p.rollVel += (Math.random() < 0.5 ? -1 : 1) * 2.2;
         p.hit = Math.max(p.hit, 4.8); p.hitNormal.set(hx / n, hz / n); p.hitTag = 'gator';
         if (this.condition) this.condition.damage(0.75, 0.08); this.audio.thud(1.25); this.game.shake = Math.max(this.game.shake, 0.62);
-        this.game.toast('Gator under the chine', 'It hit the hull once and turned for the deep water.', 3.2);
+        this.game.toast('쉬핑 아래 악어', '한 번 선체를 치고 깊은 물로 돌았습니다.', 3.2);
       }
       this.updateWranglerRig(e, dt, t);
-      if (e.known) this.point(e.gatorX, e.gatorZ, 'loose gator', '#ff744f');
-      if (e.resolveT <= 0) this.complete('Gator loose in the cut', e.playerCaused ? 'Cal has the work skiff. The incident report has your wake.' : 'The weather ended the capture. Cal is counting hands before he tries again.', 0, 0, '', e.outcome);
+      if (e.known) this.point(e.gatorX, e.gatorZ, '풀린 악어', '#ff744f');
+      if (e.resolveT <= 0) this.complete('수로에 풀린 악어', e.playerCaused ? 'Cal이 작업 스키프를 확보. 사고 보고서에 당신의 파도가 기록되었습니다.' : '날씨로 포획 종료. Cal이 다시 시도하기 전 손가락을 세는 중.', 0, 0, '', e.outcome);
       return;
     }
 
@@ -2324,10 +2324,10 @@ export class EncounterDirector {
     const R = this.rigs.manatee, A = this.rigs.patrol.agent, p = this.phys;
     this.updateManateeRig(e, dt, t);
     const d = Math.hypot(e.x - p.pos.x, e.z - p.pos.y), mph = p.speed * MPH;
-    if (d < 138) this.known(e, 'Entangled manatee', '마네키가 번호표 달린 게통 부표를 끌고 있습니다. 줄이 지느러미에 단단히 감겼습니다.');
+    if (d < 138) this.known(e, '줄에 걸린 마네키', '마네키가 번호표 부표를 끌고 있습니다. 줄이 지느러미에 단단히 감겼습니다.');
     if (e.known && e.state !== 'released') {
-      if (e.state === 'reported' && e.lostT > 6) this.point(e.fixX, e.fixZ, 'last manatee position', '#e5c063');
-      else this.point(e.x, e.z, e.state === 'struck' ? 'injured manatee' : 'entangled manatee', e.state === 'struck' ? '#ff5a36' : '#7be08a');
+      if (e.state === 'reported' && e.lostT > 6) this.point(e.fixX, e.fixZ, '마네키 마지막 위치', '#e5c063');
+      else this.point(e.x, e.z, e.state === 'struck' ? '부상당한 마네키' : '줄에 걸린 마네키', e.state === 'struck' ? '#ff5a36' : '#7be08a');
     }
 
     if (d < 88 && e.state !== 'released' && e.state !== 'cut') {
@@ -2338,12 +2338,12 @@ export class EncounterDirector {
     }
     if (d < 18 && mph > 7 && e.state !== 'released' && e.state !== 'cut' && e.state !== 'struck') {
       e.spook = Math.max(e.spook, 5.5); e.navHeading = Math.atan2(-(e.x - p.pos.x), -(e.z - p.pos.y));
-      if (e.warnT <= 0) { e.warnT = 4; this.audio.warn(); this.game.toast('Manatee diving under the wake', 'Throttle to idle and hold the last position. Do not chase it.', 3.1); }
+      if (e.warnT <= 0) { e.warnT = 4; this.audio.warn(); this.game.toast('마네키가 파도 아래로 잠수', '스로틀을 유속으로 두고 마지막 위치를 유지하세요. 쫓아가지 마세요.', 3.1); }
     }
 
     if (e.state === 'waiting') {
       if (d < 22 && mph < 6.5 && this.canInteract()) {
-        this.setPrompt('report the entanglement to FWC <i>· F cut the float line yourself</i>');
+        this.setPrompt('FWC에 줄 감김 신고 <i>· F 부표 줄 직접 절단</i>');
         if (this.interact) this.reportManatee(e); else if (this.alternate) this.beginManateeCut(e);
       }
       return;
@@ -2351,9 +2351,9 @@ export class EncounterDirector {
 
     if (e.state === 'cutting') {
       if (d < 7 && mph < 4.5) {
-        e.cutT += dt; this.setPrompt(`hold beside the flipper while cutting <i>· ${Math.round(clamp(e.cutT / 4.5) * 100)}% · E stop and report</i>`, 'F');
+        e.cutT += dt; this.setPrompt(`절단 중 지느러미 옆에서 대기 <i>· ${Math.round(clamp(e.cutT / 4.5) * 100)}% · E 중단 후 신고</i>`, 'F');
       } else {
-        e.cutT = Math.max(0, e.cutT - dt * 0.8); this.setPrompt(`get within 23 ft at idle to reach the float line <i>· E report instead</i>`, 'F');
+        e.cutT = Math.max(0, e.cutT - dt * 0.8); this.setPrompt(`유속으로 23ft 이내 진입해 부표 줄 도달 <i>· E 대신 신고</i>`, 'F');
       }
       if (this.interact) { this.reportManatee(e); return; }
       if (e.cutT >= 4.5) { this.improperManateeCut(e); return; }
@@ -2371,51 +2371,51 @@ export class EncounterDirector {
       else { e.lostT += dt; e.visualT = Math.max(0, e.visualT - dt * 0.35); }
       const search = e.lostT > 7 ? 8 + Math.min(26, e.lostT * 0.45) : 0;
       this.updateAgent(A, dt, t, e.fixX + Math.sin(t * 0.25) * search, e.fixZ + Math.cos(t * 0.25) * search, e.lostT > 7 ? 4.6 : 8.2, e.lostT > 7 ? 12 : 7);
-      this.addBoatObstacle(A, 'FWC rescue skiff');
+      this.addBoatObstacle(A, 'FWC 구조 스키프');
       const rescueD = Math.hypot(A.x - e.x, A.z - e.z);
-      if (visual && d > 12 && d < 75) this.setPrompt(`keep the animal in sight for the rescue skiff <i>· ${fmtDist(rescueD)}</i>`, 'VISUAL');
-      if (rescueD < 15.5 && e.visualT > 4 && e.lostT < 3) { e.state = 'rescue'; e.rescueT = 0; A.speed *= 0.25; this.audio.checkpoint(); this.game.toast('Rescue skiff has visual', 'Hold outside their stern and keep your prop stopped.', 3.4); }
+      if (visual && d > 12 && d < 75) this.setPrompt(`구조 스키프가 동물을 볼 수 있도록 유지 <i>· ${fmtDist(rescueD)}</i>`, 'VISUAL');
+      if (rescueD < 15.5 && e.visualT > 4 && e.lostT < 3) { e.state = 'rescue'; e.rescueT = 0; A.speed *= 0.25; this.audio.checkpoint(); this.game.toast('구조 스키프 시야 확보', '선미 밖에서 대기하며 프로펠러를 멈추세요.', 3.4); }
       return;
     }
 
     if (e.state === 'rescue') {
       const rescueD = Math.hypot(A.x - e.x, A.z - e.z);
       this.updateAgent(A, dt, t, e.x + Math.cos(e.heading) * 5.6, e.z - Math.sin(e.heading) * 5.6, 1.15, 8);
-      this.addBoatObstacle(A, 'FWC rescue skiff');
+      this.addBoatObstacle(A, 'FWC 구조 스키프');
       if (e.spook > 0 || (d < 11 && mph > 5)) {
         e.state = 'reported'; e.rescueT = 0; e.visualT = 1; e.lostT = 0; e.fixX = e.x; e.fixZ = e.z;
-        this.audio.warn(); this.game.toast('Rescue approach broken off', 'Wake crossed the animal. Back out and let it surface again.', 3.2); return;
+        this.audio.warn(); this.game.toast('구조 접근 중단됨', '파도가 동물 위를 지났습니다. 빠지고 다시 떠오를 때까지 기다리세요.', 3.2); return;
       }
       if (rescueD < 16 && d > 13) e.rescueT += dt; else e.rescueT = Math.max(0, e.rescueT - dt * 0.3);
       R.rope.material.opacity = 0.86 * (1 - smooth(5.5, 8.8, e.rescueT));
-      this.setPrompt(`biologists working the wrap <i>· ${Math.round(clamp(e.rescueT / 9) * 100)}% · hold clear</i>`, 'FWC');
+      this.setPrompt(`생물학자들이 줄 작업 중 <i>· ${Math.round(clamp(e.rescueT / 9) * 100)}% · 멀리 대기</i>`, 'FWC');
       if (e.rescueT >= 9) this.releaseManatee(e);
       return;
     }
 
     if (e.state === 'released') {
-      e.releaseT += dt; this.updateAgent(A, dt, t, e.x + Math.sin(e.heading) * 220, e.z + Math.cos(e.heading) * 220, 7.6); this.addBoatObstacle(A, 'FWC rescue skiff');
-      if (e.releaseT >= 5.5) { this.complete('Manatee released', '게 줄이 구조 스키프에 회수되었습니다. 동물은 스스로 헤엄치고 있습니다.', 0, 0, '', 'manatee-rescued'); return; }
+      e.releaseT += dt; this.updateAgent(A, dt, t, e.x + Math.sin(e.heading) * 220, e.z + Math.cos(e.heading) * 220, 7.6); this.addBoatObstacle(A, 'FWC 구조 스키프');
+      if (e.releaseT >= 5.5) { this.complete('마네키 방류', '게 줄이 구조 스키프에 회수되었습니다. 동물은 스스로 헤엄치고 있습니다.', 0, 0, '', 'manatee-rescued'); return; }
       return;
     }
 
     if (e.state === 'cut') {
       e.resolveT -= dt;
-      if (e.resolveT <= 0) { this.complete('Locator float lost', 'FWC has the last position, but the embedded wrap is still on the animal.', 0, 0, '', 'manatee-line-cut'); return; }
+      if (e.resolveT <= 0) { this.complete('위치 부표 손실', 'FWC가 마지막 위치를 확보했지만 매립된 그물은 여전히 동물에 있습니다.', 0, 0, '', 'manatee-line-cut'); return; }
       return;
     }
 
     if (e.state === 'struck') {
-      e.resolveT -= dt; this.updateAgent(A, dt, t, e.x, e.z, 7.4, 11); this.addBoatObstacle(A, 'FWC rescue skiff');
-      if (e.resolveT <= 0) { this.complete('Wildlife response inbound', 'FWC has the injured animal and the tower hull in its incident log.', 0, 0, '', 'manatee-struck'); return; }
+      e.resolveT -= dt; this.updateAgent(A, dt, t, e.x, e.z, 7.4, 11); this.addBoatObstacle(A, 'FWC 구조 스키프');
+      if (e.resolveT <= 0) { this.complete('야생동물 대응팀 진입', 'FWC가 부상 동물과 타워 선체를 사고 일지에 기록했습니다.', 0, 0, '', 'manatee-struck'); return; }
     }
   }
 
   updateSpotlight(e, dt, t) {
     const A = this.rigs.smuggler.agent, P = this.rigs.patrol.agent, p = this.phys;
     let d = Math.hypot(A.x - p.pos.x, A.z - p.pos.y), mph = p.speed * MPH;
-    if (d < 155) this.known(e, 'Blacked-out spotlight crew', '항법등 없음. 폐쇄된 피난처 수로를 수색 중 긴 총이 올라가 있습니다.');
-    if (e.known && e.state !== 'seized') this.point(A.x, A.z, e.state === 'taken' ? 'untagged harvest crew' : 'blackout skiff', e.state === 'reported' ? '#5aa7ff' : '#ff8a45');
+    if (d < 155) this.known(e, '블랙아웃 스포트라이트 팀', '항법등 없음. 폐쇄된 피난처 수로를 수색 중 긴 총이 올라가 있습니다.');
+    if (e.known && e.state !== 'seized') this.point(A.x, A.z, e.state === 'taken' ? '무태그 수확팀' : '블랙아웃 스키프', e.state === 'reported' ? '#5aa7ff' : '#ff8a45');
 
     if (e.state === 'waiting') {
       if (d < 72) this.addBoatObstacle(A, 'blackout skiff');
@@ -2440,7 +2440,7 @@ export class EncounterDirector {
       if (visual) { e.fixX = A.x; e.fixZ = A.z; e.visualT = Math.min(24, e.visualT + dt); e.lostT = 0; }
       else { e.visualT = Math.max(0, e.visualT - dt * 0.3); e.lostT += dt; }
       this.updateAgent(P, dt, t, visual ? A.x : e.fixX, visual ? A.z : e.fixZ, visual ? 13.4 : 9.2, visual ? 5 : 14);
-      this.addBoatObstacle(P, 'FWC twenty-seven', 1);
+      this.addBoatObstacle(P, 'FWC 27호', 1);
       const blink = Math.floor(t * 5.2) % 2; this.rigs.patrol.blue.light.intensity = blink ? 86 : 4; this.rigs.patrol.red.light.intensity = blink ? 4 : 86;
       const pd = Math.hypot(P.x - A.x, P.z - A.z);
       if (visual) this.setPrompt(`keep the blackout skiff in sight for FWC <i>· ${fmtDist(pd)} to intercept</i>`, 'VISUAL');
@@ -2454,22 +2454,22 @@ export class EncounterDirector {
     if (e.state === 'seized') {
       const blink = Math.floor(t * 2.4) % 2; this.rigs.patrol.blue.light.intensity = blink ? 58 : 5; this.rigs.patrol.red.light.intensity = blink ? 5 : 48;
       e.resolveT -= dt; this.updateSpotlightRig(e, dt, t);
-      if (e.resolveT <= 0) { this.complete('Illegal harvest stopped', 'FWC has the blacked-out skiff, long gun and untagged gear.', 0, 0, '', 'spotlight-seized'); return; }
+      if (e.resolveT <= 0) { this.complete('불법 포획 저지', 'FWC가 블랙아웃 스키프, 긴 총, 무태그 장비를 확보했습니다.', 0, 0, '', 'spotlight-seized'); return; }
       return;
     }
 
     if (e.state === 'escaped') {
-      if (P.active) { this.updateAgent(P, dt, t, e.fixX, e.fixZ, 7.8, 16); this.addBoatObstacle(P, 'FWC twenty-seven', 1); }
+      if (P.active) { this.updateAgent(P, dt, t, e.fixX, e.fixZ, 7.8, 16); this.addBoatObstacle(P, 'FWC 27호', 1); }
       e.resolveT -= dt; this.updateSpotlightRig(e, dt, t);
-      if (e.resolveT <= 0) { this.complete('Blackout skiff escaped', 'FWC has the last hull description, but the channels swallowed the running lights.', 0, 0, '', 'spotlight-escaped'); return; }
+      if (e.resolveT <= 0) { this.complete('블랙아웃 스키프 도주', 'FWC가 마지막 선체 설명을 확보했지만 수로가 항법등을 삼켰습니다.', 0, 0, '', 'spotlight-escaped'); return; }
       return;
     }
 
     e.resolveT -= dt; this.updateSpotlightRig(e, dt, t);
     if (e.resolveT > 0) return;
-    if (e.state === 'warned') this.complete('Warning delivered', `The blackout crew is gone. ${e.paid ? `$${e.paid} is on your backchannel ledger.` : 'The backchannel remembers.'}`, 0, 0, '', 'spotlight-warned');
-    else if (e.state === 'spooked') this.complete('Crew scattered', 'The gator stayed in the refuge cut. The warning shot is in FWC’s call log.', 0, 0, '', 'spotlight-spooked');
-    else if (e.state === 'taken') this.complete('Untagged take lost', 'FWC has a shot report and no hull number. The closed cut is quiet again.', 0, 0, '', 'spotlight-taken');
+    if (e.state === 'warned') this.complete('경고 전달', `The blackout crew is gone. ${e.paid ? `$${e.paid} is on your backchannel ledger.` : '백채널이 기억합니다.'}`, 0, 0, '', 'spotlight-warned');
+    else if (e.state === 'spooked') this.complete('Crew scattered', '악어가 피난처 수로에 머물렀습니다. 경고 사격이 FWC 통화 기록에 있습니다.', 0, 0, '', 'spotlight-spooked');
+    else if (e.state === 'taken') this.complete('무태그 포획물 상실', 'FWC가 사격 신고와 선체 번호 없음을 보유. 닫힌 수로가 다시 조용합니다.', 0, 0, '', 'spotlight-taken');
   }
 
   updateRace(e, dt, t) {
@@ -2483,21 +2483,21 @@ export class EncounterDirector {
       const tx = e.originX + Math.sin(t * 0.24 + e.phase) * 13, tz = e.originZ + Math.cos(t * 0.19 + e.phase) * 13;
       this.updateAgent(A, dt, t, tx, tz, 3.8, 5); e.x = A.x; e.z = A.z; e.heading = A.heading; this.addRaceObstacle(A);
       const d = Math.hypot(A.x - p.pos.x, A.z - p.pos.y), mph = p.speed * MPH;
-      if (d < 135) this.known(e, 'Johnboat challenge', '두 손가락, 그 다음 갈대 끝. Mud Hen이 6마크 경주를 원합니다.');
+      if (d < 135) this.known(e, '존보트 도전', '두 손가락, 그 다음 갈대 끝. Mud Hen이 6마크 경주를 원합니다.');
       if (e.known) {
-        this.point(A.x, A.z, 'cash sprint', '#f07a2e');
+        this.point(A.x, A.z, '현금 스프린트', '#f07a2e');
         this.markRaceBoat(A);
       }
       if (d < 27 && this.canInteract()) {
         if (mph < 8) {
-          this.setPrompt(`${e.stake ? 'put up $100 and run the cut' : 'take the $110 open sprint'} <i>· F wave them off</i>`);
+          this.setPrompt(`${e.stake ? '100달러 걸고 컷 경주' : '110달러 오픈 스프린트 도전'} <i>· F 거절</i>`);
           if (this.interact) { this.acceptRace(e); return; }
           if (this.alternate) {
             e.state = 'declined'; e.resolveT = 3.8; this.clearPrompt(); this.audio.horn(0.12);
             if (this.game.wpTarget?.encounter) this.game.wpTarget = null;
-            this.game.toast('Sprint declined', 'Mud Hen rolls back onto the throttle.', 2.6); return;
+            this.game.toast('스프린트 거절됨', 'Mud Hen이 다시 스로틀 위로 굴러갑니다.', 2.6); return;
           }
-        } else this.setPrompt(`idle alongside to answer the sprint <i>· ${Math.round(mph)} mph</i>`, 'IDLE');
+        } else this.setPrompt(`스프린트 응답 위해 나란히 유속 <i>· ${Math.round(mph)} mph</i>`, 'IDLE');
       }
       return;
     }
@@ -2512,14 +2512,14 @@ export class EncounterDirector {
       }
       A.mesh.position.set(A.x, this.water.waveHeight(A.x, A.z, t) - 0.05, A.z); A.mesh.rotation.set(0, A.heading, 0); e.x = A.x; e.z = A.z; this.addRaceObstacle(A); this.showRaceGate(e);
       if (!e.falseStart && Math.hypot(p.pos.x - e.playerStartX, p.pos.y - e.playerStartZ) > 11) {
-        e.falseStart = true; e.dirty = true; this.audio.warn(); this.game.toast('Jumped the horn', 'You can keep running, but the clean purse is gone.', 2.7);
+        e.falseStart = true; e.dirty = true; this.audio.warn(); this.game.toast('경적보다 먼저 출발', '계속 달릴 수 있지만 깨끗한 상금은 사라졌습니다.', 2.7);
       }
       e.countdown -= dt; const count = Math.max(0, Math.ceil(e.countdown));
       if (count > 0 && count !== e.countMark) { e.countMark = count; this.audio.countdown(false); }
-      this.setPrompt(`${count || 1} <i>· hold for Mud Hen's horn${e.falseStart ? ' · false start logged' : ''}</i>`, 'READY');
+      this.setPrompt(`${count || 1} <i>· Mud Hen 경적 대기${e.falseStart ? ' · 팔스타트 기록됨' : ''}</i>`, 'READY');
       if (e.countdown <= 0) {
         e.state = 'running'; e.runT = 0; A.decisionT = 0; this.clearPrompt(); this.audio.countdown(true);
-        this.game.toast('Go', 'First hull through all six marks takes the purse.', 2.4);
+        this.game.toast('출발', '여섯 마크를 모두 통과한 첫 선체가 상금을 가져갑니다.', 2.4);
       }
       return;
     }
@@ -2535,15 +2535,15 @@ export class EncounterDirector {
       const playerGate = e.gates[e.playerGate];
       if (playerGate && Math.hypot(p.pos.x - playerGate.x, p.pos.y - playerGate.z) < playerGate.r) {
         e.playerGate++; this.audio.checkpoint();
-        if (e.playerGate < e.gates.length) this.game.toast(`Gate ${e.playerGate} / ${e.gates.length}`, e.gates[e.playerGate].label, 1.1);
+        if (e.playerGate < e.gates.length) this.game.toast(`게이트 ${e.playerGate} / ${e.gates.length}`, e.gates[e.playerGate].label, 1.1);
       }
       if (e.playerGate >= e.gates.length) { this.resolveRace(e, true); return; }
       if (e.aiGate >= e.gates.length) { this.resolveRace(e, false); return; }
 
       this.showRaceGate(e);
       const playerProgress = this.raceProgress(e, e.playerGate, p.pos.x, p.pos.y), aiProgress = this.raceProgress(e, e.aiGate, A.x, A.z), gap = Math.round(Math.abs(playerProgress - aiProgress));
-      const position = gap < 5 ? 'side by side' : playerProgress > aiProgress ? `${gap} m ahead` : `${gap} m back`;
-      this.setPrompt(`${e.playerGate + 1} / ${e.gates.length} gates <i>· ${position}${e.dirty ? ' · rough line' : ''}</i>`, 'SPRINT');
+      const position = gap < 5 ? '나란히' : playerProgress > aiProgress ? `${gap}m 앞섬` : `${gap}m 뒤처짐`;
+      this.setPrompt(`${e.playerGate + 1} / ${e.gates.length} 게이트 <i>· ${position}${e.dirty ? ' · 거친 라인' : ''}</i>`, 'SPRINT');
       if ((e.runT > 9 && Math.hypot(p.pos.x - e.gates[e.playerGate].x, p.pos.y - e.gates[e.playerGate].z) > 320) || e.runT > 92) this.resolveRace(e, false);
       return;
     }
@@ -2562,8 +2562,8 @@ export class EncounterDirector {
       seized = cargo && this.law.confiscate(); if (!seized) this.law.cited();
       this.law.stats.pursuitStops = (this.law.stats.pursuitStops || 0) + 1; this.law.cool(Math.max(0.8, heat * 0.62));
     }
-    this.pay(-fine, seized ? 'FWC seizure and fine' : 'FWC pursuit fine'); this.audio.fail();
-    this.game.toast(seized ? 'FWC boxed you in' : 'Patrol stop', seized ? '소포가 27호에 있습니다. 단속 기록은 이 선체에 남습니다.' : 'Engine at idle. Soto wrote the citation on the water.', 3.8);
+    this.pay(-fine, seized ? 'FWC 압수 및 벌금' : 'FWC 추격 벌금'); this.audio.fail();
+    this.game.toast(seized ? 'FWC가 당신을 가둠' : '순찰 정지', seized ? '소포가 27호에 있습니다. 단속 기록은 이 선체에 남습니다.' : '엔진을 유속으로. Soto가 수면 위에 단속표를 작성했습니다.', 3.8);
     this.game.save.encounters.patrol = (this.game.save.encounters.patrol || 0) + 1; this.remember(seized ? 'patrol-seizure' : 'patrol-cited'); this.game.persist(); this.finish(true);
   }
 
@@ -2578,12 +2578,12 @@ export class EncounterDirector {
   }
 
   resetPatrolSearch() {
-    const search = this._patrolSearch || (this._patrolSearch = { label: 'FWC last-fix area', color: '#5aa7ff' });
+    const search = this._patrolSearch || (this._patrolSearch = { label: 'FWC 마지막 좌표 구역', color: '#5aa7ff' });
     search.active = false; search.x = 0; search.z = 0; search.r = 0;
   }
 
   markPatrolSearch(e, heat) {
-    const search = this._patrolSearch || (this._patrolSearch = { label: 'FWC last-fix area', color: '#5aa7ff' });
+    const search = this._patrolSearch || (this._patrolSearch = { label: 'FWC 마지막 좌표 구역', color: '#5aa7ff' });
     if (!e || e.state !== 'pursuit' || e.visual) { search.active = false; return null; }
     const sound = this._patrolSound || {};
     search.active = true; search.x = e.lastKnownX; search.z = e.lastKnownZ;
@@ -2605,12 +2605,12 @@ export class EncounterDirector {
 
   reportPatrolSoundContact(e, source) {
     const horn = source !== 'engine', detail = horn
-      ? 'The patrol line has a rough bearing, not visual. Stay quiet and move off that cut.'
-      : 'They have a rough bearing, not visual. Idle the fan and stay behind cover.';
-    this.game.toast(horn ? 'Horn gave away the cut' : 'FWC heard the prop', detail, 3);
+      ? '순찰 라인이 시각 아닌 대략적 방향을 가지고 있습니다. 조용히 다른 수로로 빠지세요.'
+      : '시각이 아닌 대략적 방향. 팬을 유속으로 두고 엄폐물 뒤에 머무세요.';
+    this.game.toast(horn ? '경적이 수로를 노출시킴' : 'FWC가 프로펠러 소리를 들음', detail, 3);
     this.radio?.transmit({
       channel: 'FWC TAC', speaker: 'FWC 27 · WARDEN SOTO',
-      text: horn ? 'Horn contact behind the bank. Shift the search to that cut; no visual.' : 'Prop noise behind the bank. Work that cut from the rough bearing; no visual.',
+      text: horn ? '기슭 너머 경적 접촉. 그 수로로 수색 이동; 시각 없음.' : '기슭 너머 프로펠러 소음. 그 수로를 대략적 방향으로 작업; 시각 없음.',
       priority: 3, key: horn ? 'patrol-horn-contact' : 'patrol-engine-contact', cooldown: horn ? 11 : 8,
     });
     const sound = this._patrolSound; sound.reportCd = horn ? 12 : 9;
@@ -2704,13 +2704,13 @@ export class EncounterDirector {
     if (previous === current || e.pursuit < 0.8 || e.sightCallCd > 0) return;
     e.sightCallCd = current ? 8 : 11;
     if (!current) {
-      const bank = Boolean(e.surfaceOccluded), detail = bank ? 'The bank is between you and the patrol line. They are working from the last fix.' : 'The surface units are working from your last reported position.';
-      this.game.toast('FWC visual broken', detail, 3);
-      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC 27 · WARDEN SOTO', text: bank ? 'Visual broken behind the bank. Hold the last cut and work from Tower Boat’s last fix.' : 'Visual broken. Surface units hold the last fix and search the adjoining cuts.', priority: 3, key: 'patrol-visual-broken', cooldown: 10 });
+      const bank = Boolean(e.surfaceOccluded), detail = bank ? '기슭이 당신과 순찰 라인 사이에 있습니다. 그들은 마지막 좌표로 작업 중.' : '수상 부대가 당신의 마지막 신고 위치로 작업 중.';
+      this.game.toast('FWC 시각 끊김', detail, 3);
+      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC 27 · WARDEN SOTO', text: bank ? '기슭 너머 시각 끊김. 마지막 수로를 유지하고 타워 보트의 마지막 좌표로 작업.' : '시각 끊김. 수상 부대가 마지막 좌표를 유지하며 인접 수로를 수색.', priority: 3, key: 'patrol-visual-broken', cooldown: 10 });
     } else if (e.lostT > 0.35) {
       const beam = Boolean(e.surfaceVisual && this._patrolSight.beamHeld);
-      this.game.toast('FWC 시각 재확보', beam ? 'A searchlight found the hull again.' : 'A surface unit has the hull again.', 2.4);
-      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC 27 · WARDEN SOTO', text: beam ? 'Searchlight has the hull. Move on the beam.' : 'Tower Boat reacquired. Surface line is back on the hull.', priority: 3, key: 'patrol-visual-reacquired', cooldown: 8 });
+      this.game.toast('FWC 시각 재확보', beam ? '탐조등이 선체를 다시 발견했습니다.' : '수상 부대가 선체를 다시 확보했습니다.', 2.4);
+      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC 27 · WARDEN SOTO', text: beam ? '탐조등이 선체를 확보. 빔 쪽으로 이동.' : '타워 보트 재확보. 수상 라인이 선체로 복귀.', priority: 3, key: 'patrol-visual-reacquired', cooldown: 8 });
     }
   }
 
@@ -2779,7 +2779,7 @@ export class EncounterDirector {
       if (backup) this.law.stats.backupContacts = (this.law.stats.backupContacts || 0) + 1;
     }
     this.audio.thud((backup ? 0.68 : 0.75) + stars * 0.08);
-    this.game.toast(backup ? 'Interceptor ram' : 'Patrol ram', backup ? (role === 1 ? 'Marine Twelve drove into the bow quarter.' : 'Shallow Water Four closed from the opposite bank.') : stars >= 4 ? 'Twenty-seven drove into the quarter. Hold it or break their line.' : 'Twenty-seven is trying to turn the hull.', 2.4);
+    this.game.toast(backup ? '인터셉터 램' : '순찰 램', backup ? (role === 1 ? 'Marine 12호가 선수 사분면으로 돌진.' : '천해 4호가 반대쪽 기슭에서 접근.') : stars >= 4 ? '27호가 사분면으로 돌진. 버티거나 라인을 끊으세요.' : '27호가 선체를 돌리려 합니다.', 2.4);
     return true;
   }
 
@@ -2803,7 +2803,7 @@ export class EncounterDirector {
         this.updateAgent(A, dt, t, C.x, C.z, C.plan.approachSpeed, 18); targetDistance = Math.hypot(C.x - A.x, C.z - A.z);
         if (targetDistance < 7.5) {
           C.holding = true; C.remaining = C.plan.duration;
-          if (!C.announced) { C.announced = true; this.audio.horn(0.24); this.game.toast('FWC roadblock ahead', 'Shallow Water Four is broadside on your line. Change cut or stop.', 3); }
+          if (!C.announced) { C.announced = true; this.audio.horn(0.24); this.game.toast('FWC 도로 차단 앞', '천해 4호가 라인에 횡단. 수로를 바꾸거나 멈추세요.', 3); }
         }
       }
       this.updatePatrolSearchlight(e, R, t, visual, p.pos.x, p.pos.y);
@@ -2868,7 +2868,7 @@ export class EncounterDirector {
     this.updatePatrolSearchlight(e, this.rigs.patrol, t, Boolean(e.visual), e.visual ? p.pos.x : A.search?.targetX ?? tx, e.visual ? p.pos.y : A.search?.targetZ ?? tz);
     d = Math.hypot(A.x - p.pos.x, A.z - p.pos.y); this.addPatrolObstacle(A);
     const blink = Math.floor(t * 5) % 2; this.rigs.patrol.blue.light.intensity = blink ? 80 : 5; this.rigs.patrol.red.light.intensity = blink ? 5 : 80;
-    if (d < 150) this.known(e, e.wanted ? 'FWC intercept' : 'FWC patrol', e.wanted ? 'They matched the hull. Idle and let them come alongside.' : 'Blue lights. They want the prop at idle.');
+    if (d < 150) this.known(e, e.wanted ? 'FWC intercept' : 'FWC patrol', e.wanted ? '그들이 선체와 나란히. 유속으로 두고 나란히 오도록 하세요.' : '파란등. 프로펠러를 유속으로 두고 싶어합니다.');
     if (e.known) this.point(A.x, A.z, 'FWC patrol', '#5aa7ff');
     if (e.state === 'approach' && d < 38) { e.state = 'check'; this.audio.horn(0.28); }
     if (e.state === 'check') {
@@ -2877,15 +2877,15 @@ export class EncounterDirector {
       let checkTime = e.recognized ? 2.8 : goodwill <= -2 ? 6 : 4.5;
       if (this.reputation) checkTime = this.reputation.patrolCheckTime(checkTime);
       if (p.speed * MPH > (e.wanted ? 10 : 16) && d < 42) {
-        this.beginPatrolPursuit(e, 'failure to stop', true); this.audio.warn(); this.game.toast('Failure to idle', '수배 등급 상승. 27호가 이 선체를 추적합니다.', 3);
+        this.beginPatrolPursuit(e, 'failure to stop', true); this.audio.warn(); this.game.toast('유속 위반', '수배 등급 상승. 27호가 이 선체를 추적합니다.', 3);
       } else if (e.comply > checkTime) {
         this.audio.checkpoint();
         if (this.law && this.law.confiscate()) {
           this.pay(-Math.round(200 * (this.reputation ? this.reputation.fineFactor() : 1)), 'Cargo seizure');
-          this.complete('Cargo seized', 'FWC took the package and wrote the hull up.', 0, 0, '', 'patrol-seizure');
+          this.complete('Cargo seized', 'FWC가 소포를 가져가고 선체를 기록했습니다.', 0, 0, '', 'patrol-seizure');
         } else {
           if (this.law) this.law.cleanCheck();
-          this.complete('Patrol cleared you', e.recognized ? 'They know the hull. Keep it clean.' : 'Clean hull. Carry on.', 0, 0, '', 'patrol-cleared');
+          this.complete('순찰대 통과', e.recognized ? '그들은 선체를 알고 있습니다. 깨끗하게 하세요.' : '깔끔한 선체. 계속하세요.', 0, 0, '', 'patrol-cleared');
         }
         return;
       }
@@ -2909,13 +2909,13 @@ export class EncounterDirector {
       this.law?.setPursuitVisual?.(visual); this.reportPatrolVisualTransition(e, priorSharedVisual, visual);
       const stopped = nearest < 19 && p.speed * MPH < 4.5 && !p.airborne && p.wipeT <= 0;
       e.surrender = stopped ? e.surrender + dt : Math.max(0, e.surrender - dt * 1.4);
-      if (stopped) this.setPrompt(`hold idle <i>· ${e.units > 1 ? 'patrol line alongside' : 'patrol alongside'} · ${Math.max(0, 4 - e.surrender).toFixed(1)}s</i>`, 'STOP');
+      if (stopped) this.setPrompt(`유속 유지 <i>· ${e.units > 1 ? '순찰 라인 나란히' : '순찰 나란히'} · ${Math.max(0, 4 - e.surrender).toFixed(1)}s</i>`, 'STOP');
       if (e.surrender >= 4) { this.resolvePatrolStop(e); return; }
       e.lostT = pursuitLostProgress(e.lostT, dt, visual, e.soundContact);
       this.markPatrolSearch(e, heat);
       if (canEscapePursuit(heat, e.pursuit, e.lostT, this.environment.restrictedVisibility || 0)) {
         if (this.law) this.law.escaped();
-        this.complete('Visual broken', 'The patrol line lost the hull, but FWC kept the wanted report open.', 0, 0, '', 'patrol-escaped');
+        this.complete('시야 놓침', '순찰 라인이 선체를 놓쳤지만 FWC는 수배 기록을 열어두었습니다.', 0, 0, '', 'patrol-escaped');
         return;
       }
     }
@@ -2929,38 +2929,38 @@ export class EncounterDirector {
     if (e.state === 'waiting') this.updateAgent(A, dt, t, e.x + Math.sin(t * 0.12) * 45, e.z + Math.cos(t * 0.12) * 45, 5.2, 18);
     else this.updateAgent(A, dt, t, p.pos.x + p.vel.x * 0.8, p.pos.y + p.vel.y * 0.8, e.hostile ? 13.8 : 12.2, 0);
     this.addBoatObstacle(A, 'smuggler');
-    if (dp < 105) this.known(e, e.hostile ? 'Backchannel bait' : 'Unmarked package', e.trusted ? 'The johnboat crew recognizes you. They are waiting for a signal.' : e.hostile ? 'They left it where this hull would find it.' : 'It was dropped in the channel. Somebody is watching it.');
-    if (e.known && R.pack.visible) this.point(e.x, e.z, 'unmarked package', '#e5c063');
+    if (dp < 105) this.known(e, e.hostile ? '백채널 미끼' : '무표시 소포', e.trusted ? '존보트 팀이 당신을 알아봅니다. 신호 대기 중입니다.' : e.hostile ? '그들은 이 선체가 찾을 자리에 두고 갔습니다.' : '수로에 버려졌습니다. 누군가 지켜보고 있습니다.');
+    if (e.known && R.pack.visible) this.point(e.x, e.z, '무표시 소포', '#e5c063');
     if (e.state === 'waiting' && dp < 8 && p.speed * MPH < 8 && this.canInteract()) {
-      this.setPrompt(`take the unmarked package <i>· F flag the johnboat</i>`);
+      this.setPrompt(`무표시 소포 회수 <i>· F 존보트에 신호</i>`);
       if (this.alternate) {
         this.clearPrompt(); R.pack.visible = false;
-        if (this.reputation) this.reputation.change('runners', e.trusted ? 0.55 : 1, 'package-returned', 'You flagged the johnboat and left their package alone.', true);
+        if (this.reputation) this.reputation.change('runners', e.trusted ? 0.55 : 1, 'package-returned', '존보트를 신고하고 소포는 손대지 않았습니다.', true);
         if (this.law) this.law.cool(0.2);
-        this.audio.horn(0.16); this.complete('Package returned', e.trusted ? 'They nod once. The line stays open.' : 'The johnboat crew pays a finder’s cut.', e.trusted ? 140 : 90, 0, '', 'package-returned'); return;
+        this.audio.horn(0.16); this.complete('소포 반송 완료', e.trusted ? '그들은 한 번 끄덕입니다. 회선이 계속 열려 있습니다.' : '존보트 팀이 찾이비 보수를 지불합니다.', e.trusted ? 140 : 90, 0, '', 'package-returned'); return;
       }
       if (this.interact) {
         this.clearPrompt(); R.pack.visible = false; e.state = 'chase'; e.chase = e.hostile ? 52 : e.trusted ? 46 : 38; this.pay(260, 'Package taken');
         if (this.reputation) {
-          this.reputation.change('runners', e.trusted ? -3 : -2, 'package-stolen', e.trusted ? '백채널이 이 선체를 보증한 후 소포를 받으셨습니다.' : 'You took a package the backchannel was watching.', true);
+          this.reputation.change('runners', e.trusted ? -3 : -2, 'package-stolen', e.trusted ? '백채널이 이 선체를 보증한 후 소포를 받으셨습니다.' : '백채널이 주시하던 소포를 가져갔습니다.', true);
           this.reputation.change('locals', -0.35, 'package-stolen', '수로 도난 소식이 캠프에 닿았습니다.', false);
         }
         if (this.law) this.law.addContraband();
-        this.audio.warn(); this.game.toast(e.hostile ? 'They were waiting for you' : 'That was not abandoned', e.hostile ? 'The johnboat was already on the throttle.' : '존보트가 다가옵니다.', 3.2);
+        this.audio.warn(); this.game.toast(e.hostile ? '그들이 당신을 기다리고 있었습니다' : '버려진 것이 아니었습니다', e.hostile ? '존보트가 이미 스로틀 위에 있었습니다.' : '존보트가 다가옵니다.', 3.2);
       }
     }
     if (e.state === 'chase') {
       e.chase -= dt; const d = Math.hypot(A.x - p.pos.x, A.z - p.pos.y), run = Math.hypot(p.pos.x - e.originX, p.pos.y - e.originZ);
       this.point(A.x, A.z, 'johnboat', '#f05a36');
-      if (d < 16 && !e.yelled) { e.yelled = true; this.game.toast(e.hostile ? '“Knew you would take it.”' : '“Put it back!”', '존보트의 남자들', 2.2); }
-      if (e.chase <= 0 || run > 340) this.complete('Lost the johnboat', 'The package is yours now. Whatever is in it.', 0, 0, '', 'package-taken');
+      if (d < 16 && !e.yelled) { e.yelled = true; this.game.toast(e.hostile ? '“갖고 가실 줄 알았습니다.”' : '“돌려놔요!”', '존보트의 남자들', 2.2); }
+      if (e.chase <= 0 || run > 340) this.complete('존보트 놓침', '소포가 이제 당신 것입니다. 안에 무엇이든.', 0, 0, '', 'package-taken');
     }
   }
 
   updateSalvage(e, dt, t) {
     const R = this.rigs.salvage, p = this.phys, d = Math.hypot(e.x - p.pos.x, e.z - p.pos.y);
     R.wreck.position.y = this.water.waveHeight(e.x, e.z, t) - 0.35; R.wreck.rotation.z = Math.sin(t * 0.7 + e.ph) * 0.05;
-    if (d < 130) this.known(e, 'Storm wreckage', 'Fuel drums are washing away from a sunken skiff.');
+    if (d < 130) this.known(e, '폭풍 잔해', '연료통이 침몰한 스키프에서 떠내려가고 있습니다.');
     if (d < 70) { const o = this.fixedObs; o.x = e.x; o.z = e.z; o.r = 2.1; o.tag = 'wreck'; this.obs.push(o); }
     let nearest = null, nearestD = Infinity;
     for (const q of e.pieces) {
@@ -2977,22 +2977,22 @@ export class EncounterDirector {
       if (qd < 70) { const o = this.drumObs[q.index]; o.x = q.x; o.z = q.z; this.obs.push(o); }
     }
     if (e.known) {
-      if (nearest) this.point(nearest.x, nearest.z, 'loose fuel drum', '#f3ede0');
-      else if (e.ruptured) this.point(e.lastSpillX, e.lastSpillZ, 'fuel sheen', '#d8b06a');
-      else this.point(e.x, e.z, 'storm wreckage', '#f3ede0');
+      if (nearest) this.point(nearest.x, nearest.z, '떠다니는 연료통', '#f3ede0');
+      else if (e.ruptured) this.point(e.lastSpillX, e.lastSpillZ, '기름막', '#d8b06a');
+      else this.point(e.x, e.z, '폭풍 잔해', '#f3ede0');
     }
     if (nearest && nearestD < 7.5 && this.canInteract()) {
       const mph = p.speed * MPH;
-      if (mph < 5.5) { this.setPrompt('recover the fuel drum <i>· idle alongside</i>'); if (this.interact) this.recoverDrum(e, nearest); }
-      else this.setPrompt(`ease below 5 mph for the loose drum <i>· ${Math.round(mph)} mph</i>`, 'IDLE');
+      if (mph < 5.5) { this.setPrompt('연료통 회수 <i>· 나란히 유속</i>'); if (this.interact) this.recoverDrum(e, nearest); }
+      else this.setPrompt(`떠다니는 연료통 위해 5mph 이하로 줄이세요 <i>· ${Math.round(mph)} mph</i>`, 'IDLE');
     }
     if (e.handled >= e.pieces.length) {
-      if (!e.ruptured) { if (this.law) this.law.cool(0.15); this.complete('Wreckage cleared', 'Three drums recovered before they split.', 140, 1, '폭풍 수로에서 흘러다니는 연료통을 치웠습니다.', 'salvage-cleared'); return; }
+      if (!e.ruptured) { if (this.law) this.law.cool(0.15); this.complete('잔해 수거 완료', '세 통 모두 터지기 전에 회수했습니다.', 140, 1, '폭풍 수로에서 흘러다니는 연료통을 치웠습니다.', 'salvage-cleared'); return; }
       if (e.resolveT <= 0) e.resolveT = 4.8;
       e.resolveT -= dt;
       if (e.resolveT <= 0) {
-        const line = e.found === 2 ? 'Two drums recovered. One split and the sheen was reported.' : e.found === 1 ? 'One drum recovered. Two split; the sheen was reported.' : 'All three split. The sheen was marked for response.';
-        this.complete('Fuel sheen reported', line, 0, 0, '', 'salvage-spill'); return;
+        const line = e.found === 2 ? '두 통 회수. 한 통 터졌고 기름막은 보고됨.' : e.found === 1 ? '한 통 회수. 두 통 터졌고 기름막은 보고됨.' : '세 통 모두 터짐. 기름막이 대응 요청됨.';
+        this.complete('연료막 보고 완료', line, 0, 0, '', 'salvage-spill'); return;
       }
     }
   }
@@ -3011,9 +3011,9 @@ export class EncounterDirector {
     Object.assign(A, { x, z, heading, speed: 4.2, want: 7.5, turn: 0, decisionT: 0, active: true });
     A.mesh.position.set(x, this.water.waveHeight(x, z, 0) - 0.05, z); A.mesh.rotation.set(0, heading, 0); A.mesh.visible = true;
     if (choice === 'fwc') {
-      this.audio.checkpoint(); this.game.toast('Net position reported', 'FWC says leave the monofilament in place and hold clear.', 3.2);
+      this.audio.checkpoint(); this.game.toast('어망 위치 보고', 'FWC는 모노필라멘트를 제자리에 두고 멀리 떨어지라 합니다.', 3.2);
     } else {
-      this.audio.horn(0.16); this.game.toast('Backchannel tipped', 'A dark johnboat is coming to lift the net before FWC sees it.', 3.2);
+      this.audio.horn(0.16); this.game.toast('백채널에 통보', 'FWC가 보기 전에 어두운 존보트가 그물을 들어올리러 옵니다.', 3.2);
     }
   }
 
@@ -3021,19 +3021,19 @@ export class EncounterDirector {
     if (e.state === 'secured') return;
     e.state = 'secured'; e.resolveT = 5; this.rigs.netline.visible = false;
     if (e.choice === 'fwc') {
-      this.pay(240, 'FWC net recovery');
+      this.pay(240, 'FWC 그물 회수');
       if (this.reputation) {
-        this.reputation.change('fwc', 1.1, 'illegal-net', 'You held the illegal net in place until FWC could seize it.', true);
-        this.reputation.change('locals', 0.55, 'illegal-net', 'The camps heard you got a killing net out of the cut.', false);
-        this.reputation.change('runners', -0.7, 'illegal-net', 'The backchannel lost a set and knows who held the scene.', false);
+        this.reputation.change('fwc', 1.1, 'illegal-net', 'FWC가 압수할 때까지 불법 그물을 그 자리에 유지했습니다.', true);
+        this.reputation.change('locals', 0.55, 'illegal-net', '캠프 주민들이 당신이 살육 그물을 수로에서 꺼냈다는 소식을 들었습니다.', false);
+        this.reputation.change('runners', -0.7, 'illegal-net', '백채널이 어구를 잃었고 누가 현장을 지켰는지 알고 있습니다.', false);
       }
       if (this.law) this.law.cool(0.45);
-      this.game.toast('Monofilament secured', 'Twenty-seven has the net and the entangled fish aboard.', 3.4);
+      this.game.toast('모노필라멘트 확보', '27호가 그물과 걸린 물고기를 회수했습니다.', 3.4);
     } else {
-      this.pay(330, 'Backchannel recovery');
+      this.pay(330, '백채널 회수');
       if (this.reputation) {
-        this.reputation.change('runners', 1.15, 'net-warning', 'You warned the net crew before FWC reached the cut.', true);
-        this.reputation.change('locals', -0.45, 'net-warning', 'The illegal set went back aboard instead of into evidence.', false);
+        this.reputation.change('runners', 1.15, 'net-warning', 'FWC가 수로에 도착하기 전에 그물팀에 경고했습니다.', true);
+        this.reputation.change('locals', -0.45, 'net-warning', '불법 어구가 증거가 아닌 보트에 다시 실렸습니다.', false);
         this.reputation.change('fwc', -0.4, 'net-warning', 'FWC가 사라진 불법 어구 주변 무전 트래픽을 기록했습니다.', false);
       }
       if (this.law) this.law.add(0.45, 'illegal net crew tipped off', false);
@@ -3048,15 +3048,15 @@ export class EncounterDirector {
     e.hitCd = Math.max(0, e.hitCd - dt);
     R.position.y = this.water.waveHeight(e.x, e.z, t) + 0.02; R.rotation.z = Math.sin(t * 0.68 + e.heading) * (0.004 + this.environment.values.sea * 0.006);
     R.userData.net.material.opacity = 0.46 - e.snag * 0.18;
-    if (d < 125) this.known(e, 'Illegal gill net', 'A monofilament wall is hanging from the float line. Fish are still hitting it.');
-    if (e.known && e.state !== 'secured') this.point(e.x, e.z, 'illegal gill net', '#f06c38');
+    if (d < 125) this.known(e, '불법 자망', '모노필라멘트 벽이 부표 줄에서 매달려 있습니다. 물고기가 여전히 걸려 있습니다.');
+    if (e.known && e.state !== 'secured') this.point(e.x, e.z, '불법 자망', '#f06c38');
 
     if (e.state !== 'recovering' && e.state !== 'secured') {
       Object.assign(this.netObs, { ax: e.ax, az: e.az, bx: e.bx, bz: e.bz }); this.obs.push(this.netObs);
     }
     if (e.state === 'waiting') {
       if (d < 17 && p.speed * MPH < 7 && this.canInteract()) {
-        this.setPrompt('report the illegal net to FWC <i>· F warn the crew on CH 72</i>');
+        this.setPrompt('FWC에 불법 어망 신고 <i>· F 72채널로 팀에 경고</i>');
         if (this.interact) this.beginNetRecovery(e, 'fwc'); else if (this.alternate) this.beginNetRecovery(e, 'runners');
       }
       return;

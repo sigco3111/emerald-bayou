@@ -53,7 +53,7 @@ test('helping the offender transfers the visible fuel and enters the normal want
   assert.equal(director.active.state, 'escaping');
   assert.equal(director.rigs.victim.boat.userData.fuel.visible, false);
   assert.equal(director.rigs.runner.boat.userData.fuel.visible, true);
-  assert.deepEqual(law, [['add', 1.45, 'aided theft from a work skiff', true]]);
+  assert.deepEqual(law, [['add', 1.45, '작업 스키프의 연료 절도 공범', true]]);
   assert.equal(director.resolveShakedown('aided'), true);
 
   assert.equal(director.stats.resolved, 1);

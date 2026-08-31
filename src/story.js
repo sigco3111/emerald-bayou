@@ -159,7 +159,7 @@ export class StoryDirector {
         const remaining = Math.max(0, (this.state.cargoUntil - Date.now()) / 1000);
         if (remaining > 0) {
           this.law.hotCargoT = Math.max(this.law.hotCargoT, remaining);
-          this.law.attention = Math.max(this.law.attention, 1.2); this.law.lastReason = 'unmarked cargo reported in the channel';
+          this.law.attention = Math.max(this.law.attention, 1.2); this.law.lastReason = '수로에서 무표지 화물 신고';
         }
       }
     }
@@ -267,8 +267,8 @@ export class StoryDirector {
   baseMarker() {
     const stage = this.state.stage, C = this.state.coords;
     if (stage === 'search') return { ...(this.state.approached ? { x: this.state.caseX, z: this.state.caseZ } : { x: C.search.x + 64, z: C.search.z - 42 }), color: '#e5c063', label: this.state.approached ? 'Leon의 컨트롤러 케이스' : 'Leon의 마지막 무전 좌표', story: true };
-    if (stage === 'delivery') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#e5c063', label: this.state.branch === 'runner' ? 'Lost Key handoff' : 'Old Mill handoff', story: true }; }
-    if (stage === 'complete' && this.state.consequence) { const p = C.search; return { x: p.x, z: p.z, color: this.state.ending === 'runner' ? '#ff493d' : '#65ff89', label: this.state.ending === 'runner' ? 'unreliable West Cut light' : 'restored West Cut light', story: false }; }
+    if (stage === 'delivery') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#e5c063', label: this.state.branch === 'runner' ? 'Lost Key 핸드오프' : 'Old Mill 핸드오프', story: true }; }
+    if (stage === 'complete' && this.state.consequence) { const p = C.search; return { x: p.x, z: p.z, color: this.state.ending === 'runner' ? '#ff493d' : '#65ff89', label: this.state.ending === 'runner' ? '불안정한 West Cut 등대' : 'West Cut 등대 복구', story: false }; }
     return null;
   }
 
@@ -307,8 +307,8 @@ export class StoryDirector {
     const contract = this.contracts?.hud(); if (contract) return contract;
     const s = this.state, mark = this.marker();
     if (!this.busy()) return null;
-    if (s.stage === 'search') return { title: 'Running Dark', obj: s.approached ? '빨간 컨트롤러 케이스 회수' : 'Find Leon’s maintenance skiff', sub: `${regionAt((mark || s.coords.search).x, (mark || s.coords.search).z).name} · ${this.game.dist((mark || s.coords.search).x, (mark || s.coords.search).z) < 300 ? 'slow down and look for the yellow hull' : 'last radio fix on the chart'}` };
-    if (s.stage === 'choice') return { title: 'Running Dark', obj: 'Who gets the controller?', sub: 'E · Old Mill restores the light  ·  F · Lost Key pays $800' };
+    if (s.stage === 'search') return { title: 'Running Dark', obj: s.approached ? '빨간 컨트롤러 케이스 회수' : 'Leon의 정비 스키프 찾기', sub: `${regionAt((mark || s.coords.search).x, (mark || s.coords.search).z).name} · ${this.game.dist((mark || s.coords.search).x, (mark || s.coords.search).z) < 300 ? 'slow down and look for the yellow hull' : '마지막 무전 좌표가 차트에'}` };
+    if (s.stage === 'choice') return { title: 'Running Dark', obj: '누가 컨트롤러를 가져가나?', sub: 'E · Old Mill이 등대 복구  ·  F · Lost Key가 800달러 지급' };
     const d = this.destination(); return { title: 'Running Dark', obj: `케이스를 ${s.branch === 'runner' ? 'Lost Key' : 'Old Mill'}로 가져가세요`, sub: `${regionAt(d.x, d.z).name} · 6 mph 이하로 도착` };
   }
 
@@ -359,11 +359,11 @@ export class StoryDirector {
     const d = Math.hypot(S.caseX - this.phys.pos.x, S.caseZ - this.phys.pos.y);
     if (!S.approached && d < 175) {
       S.approached = true; this.persist();
-      this.call('CH 68', 'LEON DOSS · OLD MILL', 'That is her. Nobody aboard. The red case went over the stern.', 3, 'approach');
+      this.call('CH 68', 'LEON DOSS · OLD MILL', '그 보트가 맞습니다. 승객 없음. 빨간 케이스가 선미에서 떨어졌습니다.', 3, 'approach');
     }
     const m = this.marker(); this.game.wpTarget = m ? { x: m.x, z: m.z, label: m.label, color: m.color, story: true } : null;
     if (d < 11 && this.phys.speed * MPH < 6 && this.canInteract()) {
-      this.setPrompt('<b>E</b> recover Leon’s red controller case'); if (this.interact) this.pickup();
+      this.setPrompt('<b>E</b> Leon의 빨간 컨트롤러 케이스 회수'); if (this.interact) this.pickup();
     } else this.clearPrompt();
   }
 
@@ -377,7 +377,7 @@ export class StoryDirector {
 
   updateDelivery(dt, t) {
     const dest = this.destination(), mesh = this.state.branch === 'runner' ? this.rigs.lostKey : this.rigs.oldMill;
-    this.placeBoat(mesh, dest, t); this.game.wpTarget = { x: dest.x, z: dest.z, label: this.state.branch === 'runner' ? 'Lost Key handoff' : 'Old Mill handoff', color: this.state.branch === 'runner' ? '#5b8fff' : '#e5c063', story: true };
+    this.placeBoat(mesh, dest, t); this.game.wpTarget = { x: dest.x, z: dest.z, label: this.state.branch === 'runner' ? 'Lost Key 핸드오프' : 'Old Mill 핸드오프', color: this.state.branch === 'runner' ? '#5b8fff' : '#e5c063', story: true };
     if (this.state.branch === 'runner' && this.state.cargoUntil) {
       const remaining = Math.max(0, (this.state.cargoUntil - Date.now()) / 1000);
       this.law.hotCargoT = remaining > 0 ? remaining : Math.min(this.law.hotCargoT, dt);
@@ -385,11 +385,11 @@ export class StoryDirector {
     const d = Math.hypot(dest.x - this.phys.pos.x, dest.z - this.phys.pos.y), ratio = this.routeStart > 0 ? d / this.routeStart : 0;
     if (this.routeBand === 0 && ratio < 0.66) {
       this.state.routeBand = this.routeBand = 1; this.persist();
-      if (this.state.branch === 'runner') this.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Tower Boat, keep your radio open. We have traffic about a missing navigation controller.', 3, 'runner-route-one');
-      else this.call('CH 72', 'CAL ROOK · LOST KEY', 'Old Mill is the long way to make no money. Last offer.', 2, 'local-route-one');
+      if (this.state.branch === 'runner') this.call('FWC TAC', 'WARDEN SOTO · FWC 27', '타워 보트, 무전 열어두세요. 분실된 항법 컨트롤러 관련 통화가 있습니다.', 3, 'runner-route-one');
+      else this.call('CH 72', 'CAL ROOK · LOST KEY', 'Old Mill은 돈을 못 버는 먼 길. 마지막 제안.', 2, 'local-route-one');
     } else if (this.routeBand === 1 && ratio < 0.3) {
       this.state.routeBand = this.routeBand = 2; this.persist();
-      this.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'LEON DOSS · OLD MILL', this.state.branch === 'runner' ? 'Blue work light is mine. Come alongside slow.' : 'Blue skiff at Old Mill. Put the cage to idle before you come alongside.', 2, 'route-two');
+      this.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'LEON DOSS · OLD MILL', this.state.branch === 'runner' ? '파란 작업등은 내 것. 천천히 나란히 오세요.' : 'Old Mill의 파란 스키프. 나란히 오기 전 케이지를 유속으로.', 2, 'route-two');
     }
     if (d < 12 && this.phys.speed * MPH < 6 && this.canInteract()) {
       this.setPrompt(`<b>E</b> 컨트롤러를 ${this.state.branch === 'runner' ? 'Cal Rook' : 'Leon Doss'}에게 전달`); if (this.interact) this.finish();

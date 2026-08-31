@@ -198,13 +198,13 @@ export class StormLine {
     this.captureT = this.separationT = this.lostT = 0; this.warnBand = 0; this.configure(); this.restore();
     if (this.P.environment.key !== 'hurricane' && this.P.environment.key !== 'tropical') this.P.environment.setWeather('tropical', false, true);
     if (branch === 'runner') {
-      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Lost Key shed is taking water. The cold box and generator are on my work skiff. Meet me here and lead us to the mangrove cache before Soto closes the cut.', 4, 'high-water-offer-runner');
+      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Lost Key 비축장이 물에 잠기고 있습니다. 콜드 박스와 발전기가 내 작업 스키프에 있습니다. Soto가 해협을 막기 전에 여기서 만나 맹그로브 비축장으로 안내해 주세요.', 4, 'high-water-offer-runner');
       this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', '타워 보트, Lost Key 통행에서 떨어져 계세요. 응급 명령이 도난 클리닉 화물을 합법화하지 않습니다.', 3, 'high-water-soto-warning');
     } else {
-      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'Split Pine dock is under. Nolan, the cold box and our generator are moving to Old Mill. The intake is full of grass. Meet the aid skiff and lead us through.', 4, 'high-water-offer-rescue');
-      this.P.call('CH 16', 'MARA KEENE · TOWER', 'Hurricane bands are crossing the backcountry. Old Mill has the nearest high-water berth.', 3, 'high-water-mara-warning');
+      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'Split Pine 독이 물에 잠겼습니다. Nolan, 콜드 박스, 발전기가 Old Mill로 이동 중입니다. 흡입구가 풀로 가득 찼습니다. 구조 스키프를 만나 안내해 주세요.', 4, 'high-water-offer-rescue');
+      this.P.call('CH 16', 'MARA KEENE · TOWER', '허리케인 띠가 백컨트리를 지나가고 있습니다. Old Mill에 가장 가까운 고수 정박지가 있습니다.', 3, 'high-water-mara-warning');
     }
-    this.P.game.toast('High Water', branch === 'runner' ? 'Cal needs a lead boat out of Lost Key.' : 'June and Nolan are evacuating Split Pine.', 3.5);
+    this.P.game.toast('고수위', branch === 'runner' ? 'Cal이 Lost Key 밖으로 인도할 보트가 필요합니다.' : 'June와 Nolan이 Split Pine에서 대피 중입니다.', 3.5);
     this.persist(); return true;
   }
 
@@ -215,11 +215,11 @@ export class StormLine {
     Object.assign(this.state, { convoyX: p.x, convoyZ: p.z, convoyHeading: p.heading });
     this.P.clearPrompt();
     if (this.state.branch === 'runner') {
-      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'I will hold thirty yards off your stern. Keep speed through the bends. If you stop, that patrol will put a line on us.', 4, 'high-water-start-runner');
-      this.P.game.toast('Cal is following', 'Keep his skiff moving and inside the lead line.', 3);
+      this.P.call('CH 72', 'CAL ROOK · LOST KEY', '당신 선미에서 30야드 떨어져서 유지하겠습니다. 굽이굽이에서 속도를 유지하세요. 멈추면 그 순찰선이 우리에게 라인을 겁니다.', 4, 'high-water-start-runner');
+      this.P.game.toast('Cal이 따라오는 중', '그의 스키프가 계속 움직이며 인도를 받도록 하세요.', 3);
     } else {
-      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'We are off the berth. Keep us in your wake and do not outrun the blue lamp.', 4, 'high-water-start-rescue');
-      this.P.game.toast('Aid skiff underway', 'Lead June and Nolan to Old Mill.', 3);
+      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', '정박지를 떠났습니다. 우리의 선미 쪽에 붙어 계시고 파란 등불을 추월하지 마세요.', 4, 'high-water-start-rescue');
+      this.P.game.toast('구조 스키프 출항', 'June와 Nolan을 Old Mill로 인솔하세요.', 3);
     }
     this.persist();
   }
@@ -227,7 +227,7 @@ export class StormLine {
   escalateStorm() {
     if (this.state.weatherEscalated) return;
     this.state.weatherEscalated = true; this.P.environment.setWeather('hurricane', false, true);
-    this.P.call('WX-3', 'MARINE WEATHER · KEY WEST', 'Hurricane core band entering the backcountry. Surge is over the low docks. Floating debris is crossing marked water.', 4, 'high-water-core-band');
+    this.P.call('WX-3', 'MARINE WEATHER · KEY WEST', '허리케인 중심 띠가 백컨트리에 진입했습니다. 저지대 독 위로 해일이 넘쳤습니다. 표지 수역 위로 부유 잔해가 떠내려가고 있습니다.', 4, 'high-water-core-band');
     this.persist();
   }
 
@@ -252,14 +252,14 @@ export class StormLine {
     this.chaseActive = true; this.captureT = this.lostT = 0;
     if (restoring && this.state.branch === 'runner') {
       this.P.law.attention = Math.max(this.P.law.attention, 1.25);
-      this.P.law.lastReason = 'aiding an evasive vessel'; this.P.law.setPursuit(true);
+      this.P.law.lastReason = '도주 선체 지원'; this.P.law.setPursuit(true);
     }
     if (!restoring) {
       this.state.chaseStarted = true; this.state.chaseCleared = false; this.state.chaseLife = this.state.branch === 'runner' ? 44 : 40;
       if (this.state.branch === 'runner') { this.P.law.add(1.25, 'aiding an evasive vessel', true); this.P.law.setPursuit(true); }
       if (this.P.hazards && !this.P.hazards.spout.active) this.P.hazards.spawnSpout(false, false);
-      if (this.state.branch === 'runner') this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Cal Rook, Tower Boat: reduce speed and hold your line. Both vessels are directed to stop.', 4, 'high-water-patrol');
-      else this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'June, put the generator in the water and turn north. Tower Boat, move away from her stern.', 4, 'high-water-runner');
+      if (this.state.branch === 'runner') this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Cal Rook, 타워 보트: 속도를 줄이고 진로를 유지하세요. 두 선박 모두 정지 명령입니다.', 4, 'high-water-patrol');
+      else this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'June, 발전기를 물에 넣고 북쪽으로 돌리세요. 타워 보트, 그녀의 선미에서 떨어지세요.', 4, 'high-water-runner');
     }
     this.persist(); return true;
   }
@@ -281,16 +281,16 @@ export class StormLine {
     if (this.hitCd > 0 || into < 2.6) return;
     this.hitCd = 4; this.captureT = Math.max(0, this.captureT - 1.4);
     if (this.state.branch === 'runner') {
-      this.P.game.toast('FWC hull struck', 'Soto is adding the collision to the stop.', 2.6);
-      this.P.law.violation(0.75, 'FWC vessel struck', true);
-    } else this.P.game.toast('Runner knocked off line', 'June has room to keep moving.', 2.5);
+      this.P.game.toast('FWC 선체 피격', 'Soto가 정지에 충돌을 추가하고 있습니다.', 2.6);
+      this.P.law.violation(0.75, 'FWC 선박 피격', true);
+    } else this.P.game.toast('추격선 이탈', 'June는 움직일 공간이 있습니다.', 2.5);
   }
 
   convoyHit(into, nx, nz) {
     if (!this.convoy.active) return;
     this.convoy.shx += -nx * into * 0.34; this.convoy.shz += -nz * into * 0.34; this.convoy.speed *= 0.68;
     if (this.hitCd <= 0 && into > 2.5) {
-      this.hitCd = 3.5; this.P.game.toast('Convoy struck', this.state.branch === 'runner' ? 'Cal lost speed in the turn.' : 'Nolan is still aboard. Give June room.', 2.5);
+      this.hitCd = 3.5; this.P.game.toast('호송대 피격', this.state.branch === 'runner' ? 'Cal이 회전에서 속도를 잃었습니다.' : 'Nolan은 여전히 탑승 중. June에게 공간을 주세요.', 2.5);
     }
   }
 
@@ -299,8 +299,8 @@ export class StormLine {
     const patrol = this.state.branch === 'runner'; this.stopChaser(true, false);
     if (patrol) {
       this.P.law.cool(0.45);
-      this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', reason === 'berth' ? 'Twenty-seven cannot enter that pocket on this surge. Tower Boat remains on the call sheet.' : 'Twenty-seven lost both stern lights in the rain. Units hold the outer cuts.', 3, 'high-water-patrol-lost');
-    } else this.P.call('CH 72', 'CAL ROOK · LOST KEY', reason === 'berth' ? 'Old Mill has too many hands on that dock. Keep the generator.' : 'I lost the blue lamp in the rain. This is not settled.', 3, 'high-water-runner-lost');
+      this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', reason === 'berth' ? '27호는 이번 해일에서 그 포켓에 진입할 수 없습니다. 타워 보트는 호출 시트에 그대로 남아 있습니다.' : '27호가 비 속에서 두 선미 등불을 잃었습니다. 부대는 외곽 해협을 유지하세요.', 3, 'high-water-patrol-lost');
+    } else this.P.call('CH 72', 'CAL ROOK · LOST KEY', reason === 'berth' ? 'Old Mill에 그 독에 너무 많은 인원이 있습니다. 발전기를 유지하세요.' : '비 속에서 파란 등불을 잃었습니다. 이 일은 끝나지 않았습니다.', 3, 'high-water-runner-lost');
     this.persist();
   }
 
@@ -313,7 +313,7 @@ export class StormLine {
     if (d > 335) this.lostT += dt; else this.lostT = Math.max(0, this.lostT - dt * 0.45);
     if (playerGap < 440) this.state.chaseLife = Math.max(0, this.state.chaseLife - dt);
     if (this.captureT > 4.4) {
-      this.fail(patrol ? 'Soto boxed Cal against the mangroves and seized the storm load.' : 'Cal’s crew got a line on June’s generator.'); return;
+      this.fail(patrol ? 'Soto가 Cal을 맹그로브에 몰아넣고 폭풍 화물을 압수했습니다.' : 'Cal의 선원들이 June의 발전기에 라인을 걸었습니다.'); return;
     }
     if (this.state.chaseLife <= 0 || this.lostT > 7.5) { this.clearChase('weather'); return; }
     this.state.chaserX = A.x; this.state.chaserZ = A.z; this.state.chaserHeading = A.heading;
@@ -323,9 +323,9 @@ export class StormLine {
   updateRendezvous(t) {
     const p = this.startPoint(); this.P.placeBoat(this.convoyMesh(), p, t); this.placeResult(t);
     const d = Math.hypot(p.x - this.P.phys.pos.x, p.z - this.P.phys.pos.y);
-    this.P.game.wpTarget = { x: p.x, z: p.z, label: this.state.branch === 'runner' ? 'Cal’s loaded skiff' : 'Split Pine aid skiff', color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', story: true };
+    this.P.game.wpTarget = { x: p.x, z: p.z, label: this.state.branch === 'runner' ? 'Cal이 실은 스키프' : 'Split Pine 구조 스키프', color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', story: true };
     if (d < 13 && this.P.phys.speed * MPH < 6 && this.P.canInteract()) {
-      this.P.setPrompt(`<b>E</b> lead ${this.state.branch === 'runner' ? 'Cal to the mangrove cache' : 'June and Nolan to Old Mill'}`);
+      this.P.setPrompt(`<b>E</b> ${this.state.branch === 'runner' ? 'Cal을 맹그로브 비축장으로 인솔' : 'June와 Nolan을 Old Mill로 인솔'}`);
       if (this.P.interact) this.startEscort();
     } else this.P.clearPrompt();
   }
@@ -353,7 +353,7 @@ export class StormLine {
     else if (this.state.routeBand === 1 && ratio < 0.68) { this.state.routeBand = 2; this.spawnChaser(false); this.persist(); }
     else if (this.state.routeBand === 2 && ratio < 0.3) {
       this.state.routeBand = 3; this.persist();
-      this.P.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'LEON DOSS · OLD MILL', this.state.branch === 'runner' ? 'Blue floodlight ahead. Put me against the dark side of the power skiff.' : 'Old Mill has the gold floodlight up. Bring June inside it and hold there.', 3, 'high-water-final-leg');
+      this.P.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'LEON DOSS · OLD MILL', this.state.branch === 'runner' ? '앞에 파란 플래드라이트. 전원 스키프의 어두운 쪽에 나를 대주세요.' : 'Old Mill에 황금 플래드라이트가 켜졌습니다. June를 그 안으로 들이고 거기서 버텨주세요.', 3, 'high-water-final-leg');
     }
     if (!this.chaseActive && this.state.routeBand >= 2 && !this.state.chaseCleared) {
       this.chaseDelay -= dt;
@@ -362,13 +362,13 @@ export class StormLine {
     this.updateChaser(dt, t); if (this.state.stage !== 'escort') return;
     if (gap > 220) this.separationT += dt; else this.separationT = Math.max(0, this.separationT - dt * 0.7);
     if (this.separationT > 7 && this.warnBand < 1) {
-      this.warnBand = 1; this.P.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'JUNE BELL · SPLIT PINE', 'Tower Boat, you are out of my light. Ease back and pick us up.', 3, 'high-water-separated');
+      this.warnBand = 1; this.P.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'JUNE BELL · SPLIT PINE', '타워 보트, 내 등불에서 벗어났습니다. 속도를 줄이고 우리를 다시 수습하세요.', 3, 'high-water-separated');
     }
-    if (this.separationT > 28) { this.fail('The convoy lost the tower boat in the hurricane rain.'); return; }
+    if (this.separationT > 28) { this.fail('호송대가 허리케인 비 속에서 타워 보트를 잃었습니다.'); return; }
     if (destD < 34 && this.chaseActive) this.clearChase('berth');
-    this.P.game.wpTarget = { x: D.x, z: D.z, label: this.state.branch === 'runner' ? 'mangrove storm cache' : 'Old Mill storm berth', color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', story: true };
+    this.P.game.wpTarget = { x: D.x, z: D.z, label: this.state.branch === 'runner' ? '맹그로브 폭풍 비축장' : 'Old Mill 폭풍 정박지', color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', story: true };
     if (destD < 22 && gap < 70 && C.speed * MPH < 11 && p.speed * MPH < 7 && this.P.canInteract()) {
-      this.P.setPrompt(`<b>E</b> secure ${this.state.branch === 'runner' ? 'Cal’s storm load' : 'the evacuation skiff'}`);
+      this.P.setPrompt(`<b>E</b> ${this.state.branch === 'runner' ? 'Cal의 폭풍 화물' : '대피 스키프'} 확보`);
       if (this.P.interact) this.finish();
     } else this.P.clearPrompt();
     Object.assign(this.state, { convoyX: C.x, convoyZ: C.z, convoyHeading: C.heading });
@@ -386,18 +386,18 @@ export class StormLine {
     this.P.clearPrompt(); this.P.game.wpTarget = null; this.P.law.setPursuit(false);
     if (branch === 'runner') {
       this.P.game.addCash(1450);
-      this.P.reputation.change('runners', 2, 'high-water-cache', 'You kept Cal’s clinic cargo and generator ahead of the hurricane patrol.', true);
-      this.P.reputation.change('locals', -1.2, 'high-water-cache', 'Old Mill heard the generator went into a hidden mangrove cache.', false);
-      this.P.reputation.change('fwc', -0.75, 'high-water-cache', 'FWC lost the Lost Key convoy in hurricane traffic.', false);
-      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Power skiff is dry and the cold box never warmed. Fourteen fifty. Soto can wait for daylight.', 4, 'high-water-finish-runner');
-      this.P.game.bountyToast('Storm cache supplied <b>+$1,450</b>');
+      this.P.reputation.change('runners', 2, 'high-water-cache', '허리케인 순찰선 앞서 Cal의 클리닉 화물과 발전기를 확보했습니다.', true);
+      this.P.reputation.change('locals', -1.2, 'high-water-cache', 'Old Mill 주민들은 발전기가 숨겨진 맹그로브 비축장으로 들어갔다는 소식을 들었습니다.', false);
+      this.P.reputation.change('fwc', -0.75, 'high-water-cache', 'FWC가 허리케인 통행 속에서 Lost Key 호송대를 잃었습니다.', false);
+      this.P.call('CH 72', 'CAL ROOK · LOST KEY', '전원 스키프는 마르고 콜드 박스는 따뜻해진 적이 없습니다. 1,450. Soto는 아침을 기다릴 수 있습니다.', 4, 'high-water-finish-runner');
+      this.P.game.bountyToast('폭풍 비축장 보급 <b>+$1,450</b>');
     } else {
       this.P.game.addCash(900);
-      this.P.reputation.change('locals', 2.1, 'high-water-refuge', 'You brought June, Nolan and emergency power into the Old Mill storm berth.', true);
-      this.P.reputation.change('fwc', 0.55, 'high-water-refuge', 'The Split Pine evacuation reached a listed storm refuge.', false);
-      this.P.reputation.change('runners', -0.9, 'high-water-refuge', 'Cal’s crew lost the generator in the hurricane rain.', false);
-      this.P.call('CH 68', 'JUNE BELL · OLD MILL', 'Lines are fast. Nolan is inside and the cold box is on shore power. Nine hundred from the emergency fund.', 4, 'high-water-finish-rescue');
-      this.P.game.bountyToast('Evacuation completed <b>+$900</b>');
+      this.P.reputation.change('locals', 2.1, 'high-water-refuge', 'June, Nolan, 그리고 응급 전원을 Old Mill 폭풍 정박지로 데려왔습니다.', true);
+      this.P.reputation.change('fwc', 0.55, 'high-water-refuge', 'Split Pine 대피가 공인된 폭풍 대피소에 도착했습니다.', false);
+      this.P.reputation.change('runners', -0.9, 'high-water-refuge', 'Cal의 선원들이 허리케인 비 속에서 발전기를 잃었습니다.', false);
+      this.P.call('CH 68', 'JUNE BELL · OLD MILL', '라인이 단단히 묶였습니다. Nolan은 안쪽에 있고 콜드 박스는 해안 전원에 연결됐습니다. 응급 기금에서 9백.', 4, 'high-water-finish-rescue');
+      this.P.game.bountyToast('대피 완료 <b>+$900</b>');
     }
     this.P.audio.complete(); this.persist();
   }
@@ -409,7 +409,7 @@ export class StormLine {
     if (patrol) this.P.law.cited();
     Object.assign(this.state, { stage: 'failed', retryAt: Date.now() + 30000, offerAt: Date.now() + 30000, chaseLife: 0 });
     this.P.call(patrol ? 'FWC TAC' : 'CH 72', patrol ? 'WARDEN SOTO · FWC 27' : 'CAL ROOK · LOST KEY', reason, 4, 'high-water-failed');
-    this.P.game.toast('High Water failed', reason, 3.8); this.P.audio.fail(); this.persist();
+    this.P.game.toast('고수위 실패', reason, 3.8); this.P.audio.fail(); this.persist();
   }
 
   departureCargo() {
@@ -423,41 +423,41 @@ export class StormLine {
     this.state.consequence = true;
     this.P.startDeparture(this.convoyMesh(), this.destination(), this.departureCargo(), this.state.branch === 'runner' ? 0.82 : 0.9, this.state.branch !== 'runner');
     if (this.P.environment.key === 'hurricane') this.P.environment.setWeather('tropical', false, false);
-    if (this.state.branch === 'runner') this.P.call('CH 16', 'MARA KEENE · TOWER', 'Lost Key has power somewhere in the mangroves. Split Pine is running on lanterns. FWC will sort out the rest after the water falls.', 3, 'high-water-aftermath-runner');
-    else this.P.call('CH 16', 'MARA KEENE · TOWER', 'Old Mill storm light is on and Split Pine’s people are accounted for. That berth stays on the chart.', 3, 'high-water-aftermath-rescue');
+    if (this.state.branch === 'runner') this.P.call('CH 16', 'MARA KEENE · TOWER', 'Lost Key에 전력이 맹그로브 어딘가에 있습니다. Split Pine는 랜턴으로 운영 중입니다. FWC는 물이 빠진 후에 나머지를 처리할 것입니다.', 3, 'high-water-aftermath-runner');
+    else this.P.call('CH 16', 'MARA KEENE · TOWER', 'Old Mill 폭풍 등불이 켜졌고 Split Pine 주민들이 모두 확인됐습니다. 그 정박지는 해도에 그대로 남습니다.', 3, 'high-water-aftermath-rescue');
     this.persist(); return true;
   }
 
   permanentMarker() {
     if (this.state.stage !== 'complete') return null;
     const p = this.resultPoint(), runner = this.state.ending === 'runner';
-    return { x: p.x, z: p.z, color: runner ? '#5b8fff' : '#f0d989', label: runner ? 'Lost Key storm cache' : 'Old Mill storm refuge', story: false };
+    return { x: p.x, z: p.z, color: runner ? '#5b8fff' : '#f0d989', label: runner ? 'Lost Key 폭풍 비축장' : 'Old Mill 폭풍 대피소', story: false };
   }
 
   marker() {
     const s = this.state.stage;
-    if (s === 'rendezvous') { const p = this.startPoint(); return { x: p.x, z: p.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? 'Cal’s loaded skiff' : 'Split Pine evacuation skiff', story: true }; }
-    if (s === 'escort') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? 'mangrove storm cache' : 'Old Mill storm berth', story: true }; }
+    if (s === 'rendezvous') { const p = this.startPoint(); return { x: p.x, z: p.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? 'Cal이 실은 스키프' : 'Split Pine 대피 스키프', story: true }; }
+    if (s === 'escort') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? '맹그로브 폭풍 비축장' : 'Old Mill 폭풍 정박지', story: true }; }
     return this.permanentMarker();
   }
 
   hud() {
     if (!this.busy()) return null;
     if (this.state.stage === 'rendezvous') {
-      const p = this.startPoint(); return { title: 'High Water', obj: this.state.branch === 'runner' ? 'Meet Cal’s loaded skiff' : 'Meet the Split Pine evacuation skiff', sub: `${regionAt(p.x, p.z).name} · come alongside under 6 mph` };
+      const p = this.startPoint(); return { title: '고수위', obj: this.state.branch === 'runner' ? 'Cal이 실은 스키프를 만나라' : 'Split Pine 대피 스키프를 만나라', sub: `${regionAt(p.x, p.z).name} · 6 mph 이하로 나란히` };
     }
     const C = this.convoy, gap = Math.hypot(C.x - this.P.phys.pos.x, C.z - this.P.phys.pos.y);
-    const pressure = this.chaseActive ? ` · ${this.captureT > 2 ? 'boarding line close' : 'pursuer in the rain'}` : '';
-    return { title: 'High Water', obj: this.state.branch === 'runner' ? 'Lead Cal to the storm cache' : 'Lead June and Nolan to Old Mill', sub: `Convoy ${gap < 55 ? 'in your wake' : gap < 150 ? 'falling back' : 'out of sight'} · ${Math.round(gap * 3.28084)} ft${pressure}` };
+    const pressure = this.chaseActive ? ` · ${this.captureT > 2 ? '탑승 라인 접근' : '비 속 추격자'}` : '';
+    return { title: '고수위', obj: this.state.branch === 'runner' ? 'Cal을 폭풍 비축장으로 인솔하라' : 'June와 Nolan을 Old Mill로 인솔하라', sub: `호송대 ${gap < 55 ? '선미 추격 중' : gap < 150 ? '뒤처지는 중' : '시야에서 사라짐'} · ${Math.round(gap * 3.28084)} ft${pressure}` };
   }
 
   menuLine() {
     const s = this.state;
-    if (s.stage === 'dormant') return this.eligible() ? 'High Water · storm call pending' : 'High Water · locked';
-    if (s.stage === 'rendezvous') return `High Water · meet ${s.branch === 'runner' ? 'Cal at Lost Key' : 'June at Split Pine'}`;
-    if (s.stage === 'escort') return `High Water · ${s.branch === 'runner' ? 'Lost Key convoy' : 'Split Pine evacuation'} underway`;
-    if (s.stage === 'failed') return 'High Water · regrouping';
-    return `High Water · ${s.ending === 'runner' ? 'storm cache powered' : 'Old Mill refuge powered'}`;
+    if (s.stage === 'dormant') return this.eligible() ? '고수위 · 폭풍 호출 대기 중' : '고수위 · 잠김';
+    if (s.stage === 'rendezvous') return `고수위 · ${s.branch === 'runner' ? 'Cal을 Lost Key에서' : 'June를 Split Pine에서'} 만나라`;
+    if (s.stage === 'escort') return `고수위 · ${s.branch === 'runner' ? 'Lost Key 호송대' : 'Split Pine 대피'} 진행 중`;
+    if (s.stage === 'failed') return '고수위 · 재정비 중';
+    return `고수위 · ${s.ending === 'runner' ? '폭풍 비축장 전력 공급' : 'Old Mill 대피소 전력 공급'}`;
   }
 
   placeResult(t) {

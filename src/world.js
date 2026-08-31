@@ -16,8 +16,8 @@ import { WakeStampPool } from './wakestamps.js';
 const CAMP_CELL = 1600, TRAP_CELL = 700;
 const CAMP_CACHE_LIMIT = 160, SITE_CACHE_LIMIT = 384, TRAP_CACHE_LIMIT = 256;
 const BLOCK_RADIUS = 30, BLOCK_RADIUS_SQ = BLOCK_RADIUS * BLOCK_RADIUS;
-const FIRST = ['Turner', 'Cooter', 'Mullet', 'Lostman', 'Chokoloskee', 'Sawgrass', 'Gator Hole', 'Possum', 'Broad River', 'Hell\'s Bay', 'Whitewater', 'Shark Point', 'Tarpon', 'Buzzard', 'Cane Patch', 'Rookery', 'Onion Key', 'Lopez', 'Watson', 'Panther', 'Kingfisher', 'Snake Bight', 'Cormorant', 'Moss Hammock', 'Cypress Knee', 'Otter', 'Bream Hole', 'Halfway', 'Ten Mile', 'Dead River'];
-const SECOND = ['Camp', 'Landing', 'Fish Camp', 'Station', 'Bend', 'Dock', 'Camp', 'Landing'];
+const FIRST = ['Turner', 'Cooter', 'Mullet', 'Lostman', 'Chokoloskee', 'Sawgrass', '악어 굴', 'Possum', '브로드 리버', '지옥의 베이', 'Whitewater', '상어 포인트', 'Tarpon', 'Buzzard', '갈대 밭', 'Rookery', '어니언 키', 'Lopez', 'Watson', 'Panther', 'Kingfisher', '뱀 만', 'Cormorant', '이끼 야자섬', '사이프러스 무릎', 'Otter', '도미 굴', 'Halfway', '텐 마일', '데드 리버'];
+const SECOND = ['Camp', 'Landing', '어선 캠프', 'Station', 'Bend', 'Dock', 'Camp', 'Landing'];
 const hash2 = (i, j) => { let h = (i * 374761393 + j * 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return (h ^ (h >>> 16)) >>> 0; };
 
 // Removing an Object3D does not release its WebGL buffers. Release geometry only when no retained render tree uses

@@ -231,7 +231,7 @@ export class Fishing {
   }
 
   makeVisuals() {
-    this.rodRoot = new THREE.Group(); this.rodRoot.name = 'player fishing rod'; this.rodRoot.position.set(-0.82, 0.9, -0.46); this.rodRoot.rotation.set(-0.46, 0.05, 0.34, 'YXZ');
+    this.rodRoot = new THREE.Group(); this.rodRoot.name = '플레이어 낚싯대'; this.rodRoot.position.set(-0.82, 0.9, -0.46); this.rodRoot.rotation.set(-0.46, 0.05, 0.34, 'YXZ');
     this.rodMaterial = new THREE.MeshStandardMaterial({ color: 0x202522, roughness: 0.55, metalness: 0.42 });
     this.rodMesh = new THREE.Mesh(mergedRodGeometry(), this.rodMaterial); this.rodMesh.castShadow = false; this.rodRoot.add(this.rodMesh);
     this.reelMaterial = new THREE.MeshStandardMaterial({ color: 0x9b8d69, roughness: 0.34, metalness: 0.78 });
@@ -241,11 +241,11 @@ export class Fishing {
     this.linePositions = new Float32Array(FISHING_LIMITS.linePoints * 3); this.lineGeometry = new THREE.BufferGeometry();
     const lineAttribute = new THREE.BufferAttribute(this.linePositions, 3); lineAttribute.setUsage(THREE.DynamicDrawUsage); this.lineGeometry.setAttribute('position', lineAttribute);
     this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xd8ddd3, transparent: true, opacity: 0.78, depthWrite: false });
-    this.line = new THREE.Line(this.lineGeometry, this.lineMaterial); this.line.name = 'fishing line'; this.line.frustumCulled = false; this.line.visible = false; this.line.renderOrder = 44; this.scene.add(this.line);
+    this.line = new THREE.Line(this.lineGeometry, this.lineMaterial); this.line.name = '낚싯줄'; this.line.frustumCulled = false; this.line.visible = false; this.line.renderOrder = 44; this.scene.add(this.line);
     this.lureMaterial = new THREE.MeshStandardMaterial({ color: 0xf05f38, emissive: 0x4a0d03, emissiveIntensity: 0.35, roughness: 0.45 });
-    this.lure = new THREE.Mesh(new THREE.SphereGeometry(0.065, 9, 7), this.lureMaterial); this.lure.name = 'topwater lure'; this.lure.castShadow = false; this.lure.visible = false; this.scene.add(this.lure);
+    this.lure = new THREE.Mesh(new THREE.SphereGeometry(0.065, 9, 7), this.lureMaterial); this.lure.name = '탑워터 루어'; this.lure.castShadow = false; this.lure.visible = false; this.scene.add(this.lure);
     this.fishMaterial = new THREE.MeshStandardMaterial({ color: 0x7d866c, roughness: 0.4, metalness: 0.22 });
-    this.catchMesh = new THREE.Mesh(mergedFishGeometry(), this.fishMaterial); this.catchMesh.name = 'landed fish'; this.catchMesh.castShadow = false; this.catchMesh.visible = false; this.scene.add(this.catchMesh);
+    this.catchMesh = new THREE.Mesh(mergedFishGeometry(), this.fishMaterial); this.catchMesh.name = '어획한 물고기'; this.catchMesh.castShadow = false; this.catchMesh.visible = false; this.scene.add(this.catchMesh);
   }
 
   blocking() { return this.state !== 'idle'; }
@@ -254,7 +254,7 @@ export class Fishing {
     const code = typeof event === 'string' ? event : event?.code;
     if (code !== 'KeyC' && code !== 'KeyX') return false;
     event?.preventDefault?.();
-    if (code === 'KeyX') { if (this.state === 'fight' || this.state === 'gator') this.cutLine(); else if (this.blocking()) this.cancel('Line reeled in', true); return true; }
+    if (code === 'KeyX') { if (this.state === 'fight' || this.state === 'gator') this.cutLine(); else if (this.blocking()) this.cancel('줄을 감았습니다', true); return true; }
     if (this.state === 'idle') this.start();
     else if (this.state === 'bite' && !event?.repeat) this.setHook();
     else if (this.state === 'fight' || this.state === 'gator') this.reeling = true;
@@ -264,13 +264,13 @@ export class Fishing {
 
   canStart() {
     const game = this.game, phys = this.phys, weather = this.environment.values || {};
-    if (!game.playing || game.paused || game.state || game.menuOpen || game.mapOpen || game.resultOpen) return { ok: false, reason: 'Finish the current work first.' };
-    if (game.story?.blocking?.() || game.aftermath?.blocking?.() || game.encounters?.active || game.incidents?.active || game.discoveries?.active?.known || game.law?.pursuit || game.life?.traffic?.activeCollision?.()) return { ok: false, reason: 'This is not quiet water.' };
-    if (phys.airborne || phys.wipeT > 0 || phys.wet < 0.62 || phys.landFac > 0.25) return { ok: false, reason: 'The hull needs to be floating cleanly.' };
-    if (phys.speed > 0.9 || Math.abs(phys.throttle) > 0.16) return { ok: false, reason: 'Bring the hull to idle first.' };
-    if ((weather.storm || 0) > 0.78 || (weather.wind || 0) * (this.environment.gust || 1) > 20 || (weather.hail || 0) > 0.35) return { ok: false, reason: 'The deck is moving too hard to cast.' };
+    if (!game.playing || game.paused || game.state || game.menuOpen || game.mapOpen || game.resultOpen) return { ok: false, reason: '먼저 현재 작업을 끝내세요.' };
+    if (game.story?.blocking?.() || game.aftermath?.blocking?.() || game.encounters?.active || game.incidents?.active || game.discoveries?.active?.known || game.law?.pursuit || game.life?.traffic?.activeCollision?.()) return { ok: false, reason: '고요한 물이 아닙니다.' };
+    if (phys.airborne || phys.wipeT > 0 || phys.wet < 0.62 || phys.landFac > 0.25) return { ok: false, reason: '선체가 깨끗하게 떠 있어야 합니다.' };
+    if (phys.speed > 0.9 || Math.abs(phys.throttle) > 0.16) return { ok: false, reason: '먼저 선체를 정지 상태로.' };
+    if ((weather.storm || 0) > 0.78 || (weather.wind || 0) * (this.environment.gust || 1) > 20 || (weather.hail || 0) > 0.35) return { ok: false, reason: '갑판이 너무 흔들려 캐스트할 수 없습니다.' };
     const target = this.findCastTarget();
-    if (!target) return { ok: false, reason: 'No clear water off the bow.' };
+    if (!target) return { ok: false, reason: '선수 앞에 깨끗한 물이 없습니다.' };
     return { ok: true, target };
   }
 
@@ -302,7 +302,7 @@ export class Fishing {
 
   start() {
     const check = this.canStart();
-    if (!check.ok) { this.game.toast('Cannot cast', check.reason, 2.1); return false; }
+    if (!check.ok) { this.game.toast('캐스트 불가', check.reason, 2.1); return false; }
     const session = this.session, target = check.target, snapshot = this.readSnapshot(target.x, target.z);
     Object.assign(session, {
       t: 0, x: target.x, z: target.z, startX: target.x, startZ: target.z, waitT: 4.8 + (1 - snapshot.potential) * 12 + this.random() * 6,
@@ -331,7 +331,7 @@ export class Fishing {
     const gator = this.gators?.attractToHookedFish?.(this, session.x, session.z, splash, this.environment.waterLevel) || null;
     if (!gator) return null;
     session.alligator = gator; session.alligatorDistance = Math.hypot(gator.pos.x - session.x, gator.pos.z - session.z);
-    if (first) { this.audio?.warn?.(); this.game.toast('Alligator on the fish', 'Pull it clear, or press X to cut the line.', 3.2); }
+    if (first) { this.audio?.warn?.(); this.game.toast('악어가 물고기를 쳤다', '빨리 끌어내거나 X를 눌러 줄을 끊으세요.', 3.2); }
     return gator;
   }
 
@@ -348,10 +348,10 @@ export class Fishing {
   cutLine() {
     if (this.state !== 'fight' && this.state !== 'gator') return false;
     if (this.state === 'gator') {
-      this.cancel('', false); this.game.toast('Line cut', 'The pull came off the stern. Smart.', 2.7); return true;
+      this.cancel('', false); this.game.toast('줄 끊음', '선미에서 잡아당김이 사라졌습니다. 현명한 판단이에요.', 2.7); return true;
     }
     const threatened = Boolean(this.session.alligator); this.store.missed = whole(this.store.missed + 1); this.dirty = true;
-    this.cancel('', false); this.game.toast('Line cut', threatened ? 'The fish is gone, but the gator is off the boat.' : 'The fish is gone. Cast again when the water settles.', 2.4); return true;
+    this.cancel('', false); this.game.toast('줄 끊음', threatened ? '물고기는 사라졌지만 악어는 보트에서 떨어졌습니다.' : '물고기가 사라졌습니다. 물이 가라앉으면 다시 캐스트하세요.', 2.4); return true;
   }
 
   alligatorTake(gator) {
@@ -369,16 +369,16 @@ export class Fishing {
       session.runStrength = 1.18; session.startedRun = true; session.fightT = 0; session.pull = 1;
       this.store.gatorHooks = whole(this.store.gatorHooks + 1); this.state = 'gator'; this.reeling = false; this.phys.towDrag = 0.025;
       this.life?.fish?.splash?.(x, z, 1.55, this.phys.pos.x, this.phys.pos.y); this.audio?.warn?.(); this.audio?.bellow?.(0.68, gator.pos.x, gator.pos.z);
-      this.game.toast('Treble in the old bull', `${session.gatorLengthFt.toFixed(1)} ft · about ${session.gatorWeightLb.toLocaleString()} lb · X cuts the line`, 3.8);
+      this.game.toast('올드불에 트리플 훅', `${session.gatorLengthFt.toFixed(1)} ft · 약 ${session.gatorWeightLb.toLocaleString()} lb · X로 줄을 끊습니다`, 3.8);
       return 'hooked';
     }
     this.life?.fish?.splash?.(x, z, 1.15, this.phys.pos.x, this.phys.pos.y); this.cancel('', false);
-    this.game.toast('Alligator took the fish', `${name} gone in one strike.`, 3.1); return true;
+    this.game.toast('악어가 물고기를 가져갔습니다', `${name} 한 방에 사라졌습니다.`, 3.1); return true;
   }
 
   missedBite() {
     const session = this.session; this.store.missed = whole(this.store.missed + 1); this.dirty = true; session.species = null; session.biteT = 0;
-    session.waitT = 6 + (1 - session.potential) * 8 + this.random() * 7; this.state = 'waiting'; this.audio?.plip?.(0.12); this.game.toast('Missed it', 'Leave the lure still. The water will settle.', 1.7);
+    session.waitT = 6 + (1 - session.potential) * 8 + this.random() * 7; this.state = 'waiting'; this.audio?.plip?.(0.12); this.game.toast('놓쳤습니다', '루어를 가만히 두세요. 물이 가라앉습니다.', 1.7);
   }
 
   beginBite() {
@@ -389,9 +389,9 @@ export class Fishing {
 
   updateWaiting(dt) {
     const session = this.session, snapshot = this.readSnapshot(); session.potential = snapshot.potential;
-    if (snapshot.storm > 0.86 || snapshot.wind > 23) { this.cancel('Weather took the line', true); return; }
+    if (snapshot.storm > 0.86 || snapshot.wind > 23) { this.cancel('날씨로 인해 줄이 끊겼습니다', true); return; }
     this.currents?.flowAt?.(session.x, session.z, this.flow); session.x += this.flow.x * dt * 0.72; session.z += this.flow.y * dt * 0.72;
-    if (Math.hypot(session.x - this.phys.pos.x, session.z - this.phys.pos.y) > session.lineLimit) { this.cancel('Line reeled in', false); return; }
+    if (Math.hypot(session.x - this.phys.pos.x, session.z - this.phys.pos.y) > session.lineLimit) { this.cancel('줄을 감았습니다', false); return; }
     session.waitT -= dt * (0.58 + snapshot.potential * 0.9);
     if (session.waitT <= 0) this.beginBite();
   }
@@ -419,7 +419,7 @@ export class Fishing {
 
   updateGatorFight(dt) {
     const session = this.session, gator = session.hookedGator;
-    if (!gator?.pos || gator.hookSource !== this) { this.cancel('The old bull threw the hook', true); return; }
+    if (!gator?.pos || gator.hookSource !== this) { this.cancel('올드불이 훅을 던졌습니다', true); return; }
     this.fightInput.dt = dt; this.fightInput.reeling = this.reeling; this.fightInput.power = 1.55;
     const outcome = alligatorFightStep(session, this.fightInput, this.random);
     if (session.startedRun) {
@@ -447,13 +447,13 @@ export class Fishing {
   finishGatorFight() {
     const session = this.session, length = session.gatorLengthFt, seconds = Math.round(session.fightT);
     this.cancel('', false); this.audio?.tone?.(410, 0.08, 0.08, 'triangle');
-    this.game.toast('Treble pulled free', `${length.toFixed(1)} ft bull · ${seconds} seconds on the line`, 3.3);
+    this.game.toast('트리플 풀려나옴', `${length.toFixed(1)} ft 수컷 · ${seconds}초간 줄에 걸림`, 3.3);
   }
 
   loseGator(reason = 'lost') {
     if (reason === 'snapped' || reason === 'collision') this.store.snapped = whole(this.store.snapped + 1);
     this.dirty = true; this.audio?.warn?.(); this.cancel('', false);
-    this.game.toast(reason === 'collision' ? 'Line broke on the hit' : reason === 'snapped' ? 'Treble straightened' : 'Old bull broke off', reason === 'snapped' ? 'Too much drag. The hook opened up.' : 'The wake went quiet.', 2.9);
+    this.game.toast(reason === 'collision' ? '충돌로 줄이 끊김' : reason === 'snapped' ? '트리플이 펴졌습니다' : '올드불이 줄을 끊고 도망감', reason === 'snapped' ? '드래그가 너무 셌습니다. 훅이 벌어졌습니다.' : '물결이 조용해졌습니다.', 2.9);
   }
 
   landCatch() {
@@ -464,12 +464,12 @@ export class Fishing {
     this.store.recent.length = Math.min(this.store.recent.length, FISHING_LIMITS.recent); this.dirty = true; this.game.persist(); this.dirty = false;
     this.state = 'landed'; this.reeling = false; this.audio?.fishingReel?.(0, 0); this.audio?.tone?.(490, 0.08, 0.075, 'triangle');
     this.game.bounties?.event?.('fishspecies', species.id);
-    this.game.toast(session.isBest ? 'New boat record' : species.name, `${session.lengthIn.toFixed(1)} in total length · release it when ready`, 3.2);
+    this.game.toast(session.isBest ? '신기록' : species.name, `총 길이 ${session.lengthIn.toFixed(1)} in · 준비되면 놓아주세요`, 3.2);
   }
 
   loseFish(snapped) {
     if (snapped) this.store.snapped = whole(this.store.snapped + 1); else this.store.missed = whole(this.store.missed + 1);
-    this.dirty = true; this.audio?.fishingReel?.(0, 0); this.audio?.warn?.(); this.cancel(snapped ? 'Line broke' : 'Hook thrown', true);
+    this.dirty = true; this.audio?.fishingReel?.(0, 0); this.audio?.warn?.(); this.cancel(snapped ? '줄이 끊겼습니다' : '훅이 풀렸습니다', true);
   }
 
   release() {
@@ -483,7 +483,7 @@ export class Fishing {
     this.phys.towDrag = 0;
     this.audio?.fishingReel?.(0, 0); this.state = 'idle'; this.reeling = false; this.rodRoot.visible = false; this.line.visible = false; this.lure.visible = false; this.catchMesh.visible = false;
     if (this.dirty) { this.game.persist(); this.dirty = false; }
-    if (announce && message) this.game.toast(message, 'C casts again when the hull is back at idle.', 1.8);
+    if (announce && message) this.game.toast(message, '선체가 다시 정지 상태가 되면 C로 다시 캐스트합니다.', 1.8);
   }
 
   interruption() {
@@ -499,7 +499,7 @@ export class Fishing {
     }
     if (!this.blocking()) return;
     if (!enabled) { this.reeling = false; this.audio?.fishingReel?.(0, 0); return; }
-    if (this.interruption()) { if (this.state === 'gator') this.loseGator(this.phys.hit > 5.5 ? 'collision' : 'lost'); else this.cancel('Line abandoned', true); return; }
+    if (this.interruption()) { if (this.state === 'gator') this.loseGator(this.phys.hit > 5.5 ? 'collision' : 'lost'); else this.cancel('줄을 버렸습니다', true); return; }
     const session = this.session; session.t += dt;
     if (this.state === 'casting' && session.t >= 0.82) { this.state = 'waiting'; session.t = 0; this.life?.fish?.splash?.(session.x, session.z, 0.22, this.phys.pos.x, this.phys.pos.y); }
     else if (this.state === 'waiting') this.updateWaiting(dt);
@@ -558,30 +558,30 @@ export class Fishing {
   }
 
   waterLabel() {
-    const session = this.session, hour = this.environment.hour, tide = Math.abs(this.environment.tideRate) < 0.035 ? 'slack water' : this.environment.tideRate > 0 ? 'rising water' : 'falling water';
-    const light = hour < 5.6 || hour > 20.1 ? 'night' : hour < 8 ? 'first light' : hour > 17.6 ? 'last light' : 'daylight';
-    const quality = session.potential > 0.67 ? 'good water' : session.potential > 0.38 ? 'fair water' : 'slow water';
+    const session = this.session, hour = this.environment.hour, tide = Math.abs(this.environment.tideRate) < 0.035 ? '정체수' : this.environment.tideRate > 0 ? '밀물' : '썰물';
+    const light = hour < 5.6 || hour > 20.1 ? '밤' : hour < 8 ? '여명' : hour > 17.6 ? '석양' : '대낮';
+    const quality = session.potential > 0.67 ? '좋은 물' : session.potential > 0.38 ? '괜찮은 물' : '느린 물';
     return `${light} · ${tide} · ${quality}`;
   }
 
   hud() {
     if (!this.blocking()) return null;
-    const session = this.session, title = `Fishing · ${session.regionName || 'open water'}`;
-    if (this.state === 'casting') return { title, obj: 'Casting off the starboard bow', sub: 'Let the topwater lure settle.', timer: '', warn: false };
-    if (this.state === 'waiting') return { title, obj: 'Watch the lure', sub: `${this.waterLabel()} · C sets the hook when it goes under · X reels in`, timer: '', warn: false };
-    if (this.state === 'bite') return { title, obj: 'Strike now', sub: 'C · set the hook', timer: `${Math.max(0, session.biteT).toFixed(1)}<small>seconds</small>`, warn: true };
+    const session = this.session, title = `낚시 · ${session.regionName || '열린 수면'}`;
+    if (this.state === 'casting') return { title, obj: '우현 선수에서 캐스팅', sub: '탑워터 루어가 가라앉도록 두세요.', timer: '', warn: false };
+    if (this.state === 'waiting') return { title, obj: '루어를 지켜보세요', sub: `${this.waterLabel()} · C는 루어가 잠길 때 훅을 건다 · X는 줄을 감는다`, timer: '', warn: false };
+    if (this.state === 'bite') return { title, obj: '지금 훅을 거세요', sub: 'C · 훅 세팅', timer: `${Math.max(0, session.biteT).toFixed(1)}<small>초</small>`, warn: true };
     if (this.state === 'gator') {
       const danger = session.tension > 0.88, running = session.runT > 0;
-      const sub = danger ? 'Let go of C before the treble opens.' : running ? 'He is towing the hull. Give him line or press X to cut free.' : 'The pull eased. Hold C and gain line. X cuts free.';
-      return { title: `Heavy tackle · ${session.regionName || 'open water'}`, obj: `${session.gatorLengthFt.toFixed(1)} ft old bull · about ${session.gatorWeightLb.toLocaleString()} lb`, sub, timer: `${Math.round(session.tension * 100)}%<small>line tension</small>`, warn: true };
+      const sub = danger ? '트리플이 벌어지기 전에 C에서 손을 떼세요.' : running ? '그가 선체를 끌고 있습니다. 줄을 내주거나 X를 눌러 끊으세요.' : '당김이 풀렸습니다. C를 누르고 줄을 감으세요. X로 끊습니다.';
+      return { title: `헤비 태클 · ${session.regionName || '열린 수면'}`, obj: `${session.gatorLengthFt.toFixed(1)} ft 올드불 · 약 ${session.gatorWeightLb.toLocaleString()} lb`, sub, timer: `${Math.round(session.tension * 100)}%<small>줄 장력</small>`, warn: true };
     }
     if (this.state === 'fight') {
       const danger = session.tension > 0.86, slack = session.tension < 0.14, alligator = session.alligator && Number.isFinite(session.alligatorDistance);
-      const sub = alligator ? `Alligator ${Math.max(1, Math.round(session.alligatorDistance))} m off · pull the fish clear or X cuts the line` : danger ? 'Let go of C. The line is close to breaking.' : slack ? 'Hold C and take up the slack.' : `${this.reeling ? 'Reeling' : 'Fish running'} · hold C to reel · release it during a hard run · X cuts the line`;
-      return { title, obj: session.species?.name || 'Fish on', sub, timer: `${Math.round(session.tension * 100)}%<small>line tension</small>`, warn: Boolean(alligator) || danger || slack };
+      const sub = alligator ? `악어가 ${Math.max(1, Math.round(session.alligatorDistance))} m 떨어진 곳에서 · 물고기를 끌어내거나 X는 줄을 끊습니다` : danger ? 'C에서 손을 떼세요. 줄이 끊어질 것 같습니다.' : slack ? 'C를 누르고 슬랙을 잡으세요.' : `${this.reeling ? '릴링 중' : '물고기가 달아남'} · C를 누르면 릴 · 강한 러닝 중에는 손을 떼세요 · X는 줄 끊기`;
+      return { title, obj: session.species?.name || '물고기를 잡음', sub, timer: `${Math.round(session.tension * 100)}%<small>줄 장력</small>`, warn: Boolean(alligator) || danger || slack };
     }
-    if (this.state === 'landed') return { title, obj: `${session.species?.name || 'Catch'} · ${session.lengthIn.toFixed(1)} in`, sub: `${session.isBest ? 'New boat record · ' : ''}measured over the gunwale · C release`, timer: `${session.lengthIn.toFixed(1)}<small>in total length</small>`, warn: false };
-    return { title, obj: `Releasing ${session.species?.name || 'the catch'}`, sub: 'Head first, back into the current.', timer: '', warn: false };
+    if (this.state === 'landed') return { title, obj: `${session.species?.name || '잡은 물고기'} · ${session.lengthIn.toFixed(1)} in`, sub: `${session.isBest ? '신기록 · ' : ''}현측에서 측정함 · C로 방류`, timer: `${session.lengthIn.toFixed(1)}<small>in 총 길이</small>`, warn: false };
+    return { title, obj: `${session.species?.name || '잡은 것'} 방류 중`, sub: '머리부터 먼저, 흐름 속으로 다시.', timer: '', warn: false };
   }
 
   menuEntries() {

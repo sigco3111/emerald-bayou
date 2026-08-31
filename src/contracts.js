@@ -44,7 +44,7 @@ function serviceCase() {
 }
 
 function coldBox() {
-  const g = new THREE.Group(); g.name = 'Split Pine cold-chain cooler';
+  const g = new THREE.Group(); g.name = 'Split Pine 콜드체인 콜러';
   const blue = new THREE.MeshStandardMaterial({ color: 0x4f8295, roughness: 0.58, metalness: 0.03 });
   const white = new THREE.MeshStandardMaterial({ color: 0xe7e7df, roughness: 0.62, metalness: 0.02 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x252a28, roughness: 0.76, metalness: 0.24 });
@@ -153,7 +153,7 @@ export class ResidentContracts {
     const service = serviceCase(), cold = coldBox(), parcel = canvasParcel(), aid = channelAid();
     const receiver = buildSkiff({ crew: true }); recolor(receiver, 0x3b2d28); receiver.name = 'contract recipient skiff'; receiver.visible = false;
     const receiverLamp = signal(receiver, 0x4e8fff, 0, 1.34, -0.2, 62);
-    const patrol = buildSkiff({ crew: true }); recolor(patrol, 0x315c4e); patrol.name = 'FWC contract patrol'; patrol.visible = false;
+    const patrol = buildSkiff({ crew: true }); recolor(patrol, 0x315c4e); patrol.name = 'FWC 계약 순찰'; patrol.visible = false;
     const blue = signal(patrol, 0x267cff, -0.28, 1.37, -0.18, 72), red = signal(patrol, 0xff382b, 0.28, 1.37, -0.18, 72);
     const search = new THREE.SpotLight(0xe9f3e4, 0, 115, 0.3, 0.68, 1.5); search.position.set(0, 1.5, -0.65);
     const searchTarget = new THREE.Object3D(); searchTarget.position.set(0, 0.1, -38); search.target = searchTarget; patrol.add(search, searchTarget);
@@ -309,7 +309,7 @@ export class ResidentContracts {
   decline(offer) {
     delete this.state.offers[offer.resident]; this.state.cooldowns[offer.resident] = this.environment.minutes + 240; this.clearPrompt();
     const entry = this.entry(offer.resident);
-    this.call(entry.channel, `${entry.name} · ${entry.place}`, offer.resident === 'cal' ? 'Copy. The parcel will find another hull.' : 'Copy. I will keep asking the water.', 1, `decline:${offer.id}`);
+    this.call(entry.channel, `${entry.name} · ${entry.place}`, offer.resident === 'cal' ? '알겠습니다. 소포는 다른 선체를 찾을 겁니다.' : '알겠습니다. 계속 물에서 찾겠습니다.', 1, `decline:${offer.id}`);
     this.persist();
   }
 
@@ -339,14 +339,14 @@ export class ResidentContracts {
     this.attachCargoToBoat(a); this.clearPrompt(); this.audio.pickup();
     if (a.resident === 'leon') {
       this.call('CH 68', 'LEON DOSS · OLD MILL', `배터리 가동 중. ${a.dest.label}이 해도에 표시됩니다. 그늘 쪽에 정박하고 새 장치에 완전 충전 사이클을 주세요.`, 2, `start:${a.id}`);
-      this.game.toast('Channel service aboard', `${a.dest.label} · 노란 케이스 건조 유지`, 3.1);
+      this.game.toast('채널 서비스 적재', `${a.dest.label} · 노란 케이스 건조 유지`, 3.1);
     } else if (a.resident === 'june') {
       this.call('CH 68', 'JUNE BELL · SPLIT PINE', `${a.dest.campName}이 독에서 대기 중. 뚜껑 밀봉이 풀리면 그들에게 연락하기 전에 저한테 연락하세요.`, 2, `start:${a.id}`);
       this.game.toast('Cold box aboard', `냉장 시간 ${Math.ceil(a.deadlineMinutes - this.environment.minutes)}분 남음`, 3.1);
     } else {
       this.law.addContraband();
       this.call('CH 72', 'CAL ROOK · LOST KEY', `${a.dest.recipient}가 ${regionAt(a.dest.x, a.dest.z).name}에 파란 등불 1개. 16번 채널엔 이름 없습니다.`, 3, `start:${a.id}`);
-      this.game.toast('Unmanifested parcel aboard', 'FWC traffic can now identify the hull.', 3.1);
+      this.game.toast('미신고 소포 적재', 'FWC 통신이 이제 선체를 식별할 수 있습니다.', 3.1);
     }
     this.persist(); return true;
   }
@@ -371,13 +371,13 @@ export class ResidentContracts {
     if (a.stage === 'transit') {
       if (d < 10 && mph < 4.5 && this.canInteract(true)) {
         this.setPrompt(`<b>E</b> 정박 후 ${a.dest.label} 서비스`);
-        if (this.P.interact) { a.stage = 'servicing'; a.serviceT = 0; this.clearPrompt(); this.audio.checkpoint(); this.game.toast('Service cycle started', 'Hold inside 30 ft and under 3 mph.', 2.7); this.persist(); }
+        if (this.P.interact) { a.stage = 'servicing'; a.serviceT = 0; this.clearPrompt(); this.audio.checkpoint(); this.game.toast('서비스 사이클 시작', '30 ft 이내, 3 mph 이하 유지.', 2.7); this.persist(); }
       } else this.clearPrompt();
     } else if (a.stage === 'servicing') {
       this.clearPrompt();
       const holding = d < 9.2 && mph < 3.3 && this.environment.values.storm < 0.94;
       a.serviceT = clamp(a.serviceT + dt * (holding ? 1 : -0.38), 0, 8);
-      if (!holding && a.serviceT > 0.3 && this.hitCd <= 0) { this.hitCd = 3; this.game.toast(this.environment.values.storm >= 0.94 ? 'Service paused' : 'Line will not hold', this.environment.values.storm >= 0.94 ? 'Wait for the core wind to pass.' : 'Bring the stern back inside 30 ft.', 2.2); }
+      if (!holding && a.serviceT > 0.3 && this.hitCd <= 0) { this.hitCd = 3; this.game.toast(this.environment.values.storm >= 0.94 ? 'Service paused' : '줄이 버티지 못함', this.environment.values.storm >= 0.94 ? '핵심 바람이 지나갈 때까지 대기.' : '선미를 30 ft 안으로 돌려놓으세요.', 2.2); }
       if (a.serviceT >= 7.5) this.finishLeon(a);
     }
   }
@@ -386,10 +386,10 @@ export class ResidentContracts {
     const cargo = this.rigs.service; cargo.removeFromParent(); this.rigs.aid.group.add(cargo); cargo.position.set(0.46, 0.36, 0.15); cargo.rotation.set(0, 0.4, 0); cargo.visible = true;
     this.releaseLoad(a); this.game.addCash(a.reward);
     this.reputation.change('locals', 0.65, 'resident-light-service', `Leon Doss를 위해 ${a.dest.label}을(를) 다시 가동시켰습니다.`, true);
-    this.reputation.change('fwc', 0.45, 'resident-light-service', 'A failed channel aid was serviced before it became a navigation report.', false);
+    this.reputation.change('fwc', 0.45, 'resident-light-service', '고장 난 채널 표지가 항법 신고가 되기 전에 서비스되었습니다.', false);
     this.state.notes.push({ x: a.dest.x, z: a.dest.z, heading: a.dest.heading, label: `${a.dest.label} 서비스 완료`, color: '#6fe08b', contract: true, expiresMinutes: this.environment.minutes + 4320 });
     if (this.state.notes.length > 6) this.state.notes.shift();
-    this.call('CH 68', 'LEON DOSS · OLD MILL', 'I have the return flash. Green is clean and the load is steady. Money is on your tower account.', 3, `finish:${a.id}`);
+    this.call('CH 68', 'LEON DOSS · OLD MILL', '귀환 신호를 받았습니다. 초록 통과, 화물 안정. 돈은 타워 계정에 입금됩니다.', 3, `finish:${a.id}`);
     this.game.bountyToast(`채널 표지 서비스 완료 <b>+$${a.reward}</b>`); this.audio.complete(); this.resolve(a, 'serviced', true);
   }
 
@@ -399,9 +399,9 @@ export class ResidentContracts {
     const rain = clamp(finite(this.environment.values.rain)), storm = clamp(finite(this.environment.values.storm));
     const exposed = a.stage === 'overboard' ? 0.0026 : 0, late = now > a.deadlineMinutes ? 0.0028 : 0;
     a.cold = clamp(a.cold - dm * (0.00072 + solar * (0.00072 - rain * 0.00025) + exposed + (1 - a.seal) * 0.0016 + late));
-    if (a.cold < 0.5 && !a.warnedCold) { a.warnedCold = true; this.audio.warn(); this.game.toast('Cold reserve falling', `냉장 ${Math.round(a.cold * 100)}% · 뚜껑 밀봉 유지하고 ${a.dest.campName}으로`, 2.8); }
+    if (a.cold < 0.5 && !a.warnedCold) { a.warnedCold = true; this.audio.warn(); this.game.toast('냉장 여력 감소', `냉장 ${Math.round(a.cold * 100)}% · 뚜껑 밀봉 유지하고 ${a.dest.campName}으로`, 2.8); }
     if ((a.cold < 0.2 || now > a.deadlineMinutes + 30) && !a.warnedWarm) {
-      a.warnedWarm = true; this.call('CH 68', 'JUNE BELL · SPLIT PINE', 'That box is outside the clean window. Get it onto the dock. They may still save part of the load.', 3, `warm:${a.id}`);
+      a.warnedWarm = true; this.call('CH 68', 'JUNE BELL · SPLIT PINE', '그 박스는 깨끗한 시간창을 벗어났습니다. 독에 올려놓으세요. 화물의 일부라도 살릴 수 있습니다.', 3, `warm:${a.id}`);
     }
     if (storm > 0.92 && a.stage === 'overboard') a.cold = Math.max(0, a.cold - dm * 0.0008);
   }
@@ -411,8 +411,8 @@ export class ResidentContracts {
     const q = this.rigs.cold; q.removeFromParent(); this.scene.add(q); a.stage = 'overboard'; a.cargoX = this.phys.pos.x; a.cargoZ = this.phys.pos.y; a.cargoHeading = this.phys.heading + 0.7; a.droppedMinutes = this.environment.minutes;
     q.position.set(a.cargoX, this.water.waveHeight(a.cargoX, a.cargoZ, 0), a.cargoZ); q.visible = true; this.releaseLoad(a);
     a.seal = clamp(a.seal - 0.12); a.cold = clamp(a.cold - 0.08); this.audio.warn();
-    this.call('CH 68', 'JUNE BELL · SPLIT PINE', 'I saw the stop on the tracker. The box floats, but the drain plug is not a miracle. Get it back aboard.', 3, `overboard:${a.id}`);
-    this.game.toast('Cold box overboard', why, 3); this.persist();
+    this.call('CH 68', 'JUNE BELL · SPLIT PINE', '추적기에 정지 신호가 보였습니다. 박스는 뜨지만 배수 플러그는 기적이 아닙니다. 다시 태우세요.', 3, `overboard:${a.id}`);
+    this.game.toast('콜드 박스 추락', why, 3); this.persist();
   }
 
   checkColdImpact(a) {
@@ -422,8 +422,8 @@ export class ResidentContracts {
     if (force < 4.8) return;
     this.hitCd = 2.4; const damage = clamp((force - 4.2) * 0.035, 0.04, 0.25);
     a.seal = clamp(a.seal - damage); a.cold = clamp(a.cold - damage * 0.18);
-    if ((this.phys.wipeT > 0 && force > 6.7) || force > 10.2 || Math.abs(this.phys.roll) > 1.08) this.dropColdBox(a, 'The landing tore it off the deck. Turn back for the white lid.');
-    else { this.audio.knock(0.24); this.game.toast('Cooler seal took a hit', `${Math.round(a.seal * 100)}% 밀봉`, 2.2); this.persistT = Math.min(this.persistT, 1); }
+    if ((this.phys.wipeT > 0 && force > 6.7) || force > 10.2 || Math.abs(this.phys.roll) > 1.08) this.dropColdBox(a, '착지 충격으로 갑판에서 떨어졌습니다. 흰 뚜껑을 찾으러 돌아가세요.');
+    else { this.audio.knock(0.24); this.game.toast('콜러 밀봉 손상', `${Math.round(a.seal * 100)}% 밀봉`, 2.2); this.persistT = Math.min(this.persistT, 1); }
   }
 
   updateOverboard(a, dt, t) {
@@ -434,7 +434,7 @@ export class ResidentContracts {
     if (d < 70) { this.cargoObs.x = a.cargoX; this.cargoObs.z = a.cargoZ; this.obs.push(this.cargoObs); }
     if (d < 7.5 && this.phys.speed * MPH < 5 && this.canInteract(true)) {
       this.setPrompt('<b>E</b> lift June’s cold box back aboard');
-      if (this.P.interact) { a.stage = 'transit'; a.seal = clamp(a.seal - 0.06); a.cold = clamp(a.cold - 0.04); this.attachCargoToBoat(a); this.clearPrompt(); this.audio.pickup(); this.game.toast('Cold box recovered', `냉장 ${Math.round(a.cold * 100)}% · 밀봉 ${Math.round(a.seal * 100)}%`, 2.8); this.persist(); }
+      if (this.P.interact) { a.stage = 'transit'; a.seal = clamp(a.seal - 0.06); a.cold = clamp(a.cold - 0.04); this.attachCargoToBoat(a); this.clearPrompt(); this.audio.pickup(); this.game.toast('콜드 박스 회수', `냉장 ${Math.round(a.cold * 100)}% · 밀봉 ${Math.round(a.seal * 100)}%`, 2.8); this.persist(); }
     } else this.clearPrompt();
   }
 
@@ -454,15 +454,15 @@ export class ResidentContracts {
     const q = this.rigs.cold; q.removeFromParent(); this.scene.add(q); q.position.set(a.dest.displayX, a.dest.displayY, a.dest.displayZ); q.rotation.set(0, a.dest.heading + Math.PI / 2, 0); q.visible = true; this.releaseLoad(a);
     if (good) {
       this.game.addCash(reward); this.reputation.change('locals', quality > 0.82 ? 0.9 : 0.55, 'resident-cold-chain', `June Bell의 콜드 박스가 ${a.dest.campName}에 밀봉 가능한 상태로 도착.`, true);
-      this.reputation.change('fwc', 0.2, 'resident-cold-chain', 'A remote medical cold-chain load reached its logged camp.', false);
+      this.reputation.change('fwc', 0.2, 'resident-cold-chain', '원격 의료 콜드체인 화물이 기록된 캠프에 도착했습니다.', false);
       if (quality > 0.88) this.state.stats.perfectCold = (this.state.stats.perfectCold || 0) + 1;
-      this.call('CH 68', `${a.dest.campName.toUpperCase()} · 독`, quality > 0.82 ? 'Box is cold and both latches are clean. Tell June we have it.' : 'Box is here. Seal took work, but the load is still in range.', 2, `finish:${a.id}`);
+      this.call('CH 68', `${a.dest.campName.toUpperCase()} · 독`, quality > 0.82 ? '박스 냉장 정상, 잠금 둘 다 깨끗. June에게 받았다고 전하세요.' : '박스 도착. 밀봉에 손상 있지만 화물은 여전히 유효.', 2, `finish:${a.id}`);
       this.game.bountyToast(`콜드체인 배달 완료 <b>+$${reward}</b>`); this.audio.complete(); this.resolve(a, 'delivered', true);
     } else {
       this.reputation.change('locals', -0.55, 'resident-cold-chain-spoiled', `The cold-chain load reached ${a.dest.campName} too warm to use.`, true);
-      this.reputation.change('fwc', -0.15, 'resident-cold-chain-spoiled', 'A logged cold-chain load was written off after transport.', false);
-      this.call('CH 68', `${a.dest.campName.toUpperCase()} · DOCK`, 'Temperature strip is black. We cannot use this. Call Split Pine.', 3, `spoiled:${a.id}`);
-      this.game.toast('Cold load written off', 'No payment · the camp could not use it.', 3); this.audio.warn(); this.resolve(a, 'spoiled', false);
+      this.reputation.change('fwc', -0.15, 'resident-cold-chain-spoiled', '기록된 콜드체인 화물이 운송 후 폐기 처리되었습니다.', false);
+      this.call('CH 68', `${a.dest.campName.toUpperCase()} · DOCK`, '온도 표시가 까맣습니다. 사용 불가. Split Pine에 연락하세요.', 3, `spoiled:${a.id}`);
+      this.game.toast('콜드 화물 폐기', '지급 없음 · 캠프가 사용 불가.', 3); this.audio.warn(); this.resolve(a, 'spoiled', false);
     }
   }
 
@@ -482,8 +482,8 @@ export class ResidentContracts {
     const at = this.incidents.spot(true); if (!at) return false;
     this.setAgent(this.rigs.patrolAgent, at.x, at.z, at.heading, 6.5); a.patrolStage = 'approach'; a.inspectionT = 0; a.captureT = 0; a.evadeT = 0;
     Object.assign(a, { patrolX: at.x, patrolZ: at.z, patrolHeading: at.heading, patrolSpeed: 6.5 });
-    this.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Tower Boat, reduce speed and hold your line. We have a directed cargo check for that hull.', 4, `patrol:${a.id}`);
-    this.game.toast('Directed FWC stop', 'Blue lights are working toward your wake.', 2.8); this.law.add(0.55, 'directed cargo check'); this.persist(); return true;
+    this.call('FWC TAC', 'WARDEN SOTO · FWC 27', '타워 보트, 속도 줄이고 라인을 유지하세요. 그 선체에 대한 지시 화물 점검이 있습니다.', 4, `patrol:${a.id}`);
+    this.game.toast('지시 FWC 정지', '파란등이 파도 쪽으로 접근 중.', 2.8); this.law.add(0.55, 'directed cargo check'); this.persist(); return true;
   }
 
   restoreAgent(A, a, patrol = true) {
@@ -502,8 +502,8 @@ export class ResidentContracts {
     if (a.patrolStage === 'pursuit') return;
     a.patrolStage = 'pursuit'; a.runBonus = true; a.captureT = 0; a.evadeT = 0; this.clearPrompt();
     this.law.setPursuit(true); this.law.add(0.85, 'failed to heave to for cargo inspection');
-    this.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Tower Boat is refusing the stop. Twenty-seven is in pursuit. Clear the channel.', 4, `run:${a.id}`);
-    this.game.toast('FWC pursuit', 'Lose the patrol in the cuts or make the blue-light handoff.', 3); this.persist();
+    this.call('FWC TAC', 'WARDEN SOTO · FWC 27', '타워 보트가 정지를 거부 중. 27호가 추격 중. 수로를 비우세요.', 4, `run:${a.id}`);
+    this.game.toast('FWC pursuit', '수로에서 순찰을 따돌리거나 파란등 인계 중 하나.', 3); this.persist();
   }
 
   makeDeparturePoint(x, z, heading, distance = 420) {
@@ -522,21 +522,21 @@ export class ResidentContracts {
   surrenderCal(a, forced = false) {
     const A = this.rigs.patrolAgent, q = this.rigs.parcel; q.removeFromParent(); this.rigs.patrol.add(q); q.position.set(0.52, 0.56, -0.85); q.rotation.set(0, -0.2, 0); q.visible = true; this.releaseLoad(a);
     this.law.hotCargoT = Math.max(this.law.hotCargoT, 1); this.law.confiscate(); this.law.setPursuit(false);
-    this.reputation.change('fwc', forced ? -0.35 : 0.25, forced ? 'resident-cargo-seized' : 'resident-cargo-surrendered', forced ? 'FWC had to board the tower hull for the unmanifested parcel.' : 'You heaved to and surrendered an unmanifested parcel.', true);
-    this.reputation.change('runners', forced ? -0.9 : -0.65, 'resident-cargo-lost', 'Cal Rook’s parcel went onto an FWC evidence boat.', false);
+    this.reputation.change('fwc', forced ? -0.35 : 0.25, forced ? 'resident-cargo-seized' : 'resident-cargo-surrendered', forced ? 'FWC가 미신고 소포 때문에 타워 선체에 승선해야 했습니다.' : '정지하고 미신고 소포를 넘겼습니다.', true);
+    this.reputation.change('runners', forced ? -0.9 : -0.65, 'resident-cargo-lost', 'Cal Rook의 소포가 FWC 증거 보트로 넘어갔습니다.', false);
     this.state.stats.seizures = (this.state.stats.seizures || 0) + 1; this.patrolDepart(a);
-    this.call('FWC TAC', 'WARDEN SOTO · FWC 27', forced ? 'Parcel is aboard Twenty-seven. Tower Boat will receive the citation by radio.' : 'Tower Boat is stopped. Parcel is aboard Twenty-seven. Resume normal traffic.', 3, `seize:${a.id}`);
-    this.game.toast(forced ? 'Parcel seized' : 'Parcel surrendered', 'No payment · Cal will hear where it went.', 3); this.audio.warn(); this.resolve(a, forced ? 'seized' : 'surrendered', false);
+    this.call('FWC TAC', 'WARDEN SOTO · FWC 27', forced ? '소포가 27호에. 타워 보트는 무전으로 단속 통지를 받습니다.' : '타워 보트 정지. 소포 27호에. 정상 통행 재개.', 3, `seize:${a.id}`);
+    this.game.toast(forced ? 'Parcel seized' : '소포 항복', '지급 없음 · Cal이 어디로 갔는지 듣게 됩니다.', 3); this.audio.warn(); this.resolve(a, forced ? 'seized' : 'surrendered', false);
   }
 
   finishCal(a) {
     const q = this.rigs.parcel; q.removeFromParent(); this.rigs.receiver.add(q); q.position.set(-0.5, 0.58, -0.82); q.rotation.set(0, 0.22, 0); q.visible = true; this.releaseLoad(a);
     const reward = a.reward + (a.runBonus ? 150 : 0); this.game.addCash(reward);
     this.reputation.change('runners', a.runBonus ? 1.25 : 0.85, 'resident-runner-handoff', `Cal Rook’s sealed parcel reached ${a.dest.recipient}.`, true);
-    if (a.runBonus) this.reputation.change('fwc', -0.55, 'resident-runner-escape', 'The tower hull carried unmanifested cargo through a directed stop.', false);
+    if (a.runBonus) this.reputation.change('fwc', -0.55, 'resident-runner-escape', '타워 선체가 지시 정지를 통과하며 미신고 화물을 운반했습니다.', false);
     this.law.hotCargoT = 0; this.law.setPursuit(false); this.law.cool(a.runBonus ? 0.2 : 0.55);
     const R = this.rigs.receiverAgent; this.setAgent(R, a.dest.x, a.dest.z, a.dest.heading, 0.5); const out = this.makeDeparturePoint(a.dest.x, a.dest.z, a.dest.heading); a.departX = out.x; a.departZ = out.z;
-    this.call('CH 72', `${a.dest.recipient} · ${regionAt(a.dest.x, a.dest.z).name.toUpperCase()}`, a.runBonus ? 'Seal is mine and Soto is not. Cal added the trouble money.' : 'Seal is clean. Cal’s number is good.', 3, `finish:${a.id}`);
+    this.call('CH 72', `${a.dest.recipient} · ${regionAt(a.dest.x, a.dest.z).name.toUpperCase()}`, a.runBonus ? '밀봉은 내 것이고 Soto 것은 아닙니다. Cal이 trouble money를 추가했습니다.' : '밀봉 깨끗. Cal 번호 유효.', 3, `finish:${a.id}`);
     this.game.bountyToast(`Unmanifested handoff <b>+$${reward}</b>`); this.audio.complete(); this.resolve(a, 'delivered', true);
   }
 
@@ -546,17 +546,17 @@ export class ResidentContracts {
     const d = Math.hypot(A.x - this.phys.pos.x, A.z - this.phys.pos.y), severe = this.environment.values.storm > 0.96;
     if (severe && ['approach', 'inspection', 'pursuit'].includes(a.patrolStage)) {
       a.patrolStage = 'departing'; this.law.setPursuit(false); this.patrolDepart(a);
-      this.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Twenty-seven is breaking off for weather. Tower Boat, this stop is not cleared; it is postponed.', 3, `weather-break:${a.id}`);
+      this.call('FWC TAC', 'WARDEN SOTO · FWC 27', '27호가 날씨로 이탈. 타워 보트, 이번 정지는 해제가 아니라 연기입니다.', 3, `weather-break:${a.id}`);
     }
     if (a.patrolStage === 'approach') {
       this.incidents.updateAgent(A, dt, t, this.phys.pos.x, this.phys.pos.y, 10.6, 24); this.updatePatrolLights(t, false);
-      if (d < 52) { a.patrolStage = 'inspection'; a.inspectionT = 0; this.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Bring it under six knots and heave to. Keep both hands where I can see them.', 4, `inspection:${a.id}`); }
+      if (d < 52) { a.patrolStage = 'inspection'; a.inspectionT = 0; this.call('FWC TAC', 'WARDEN SOTO · FWC 27', '6 노트 이하로 줄이고 정지. 양손이 보이게.', 4, `inspection:${a.id}`); }
     } else if (a.patrolStage === 'inspection') {
       this.incidents.updateAgent(A, dt, t, this.phys.pos.x, this.phys.pos.y, 8.8, 20); this.updatePatrolLights(t, true); a.inspectionT += dt;
       if (d < 62 && this.canInteract(true)) {
         this.setPrompt('<b>E</b> heave to and surrender the parcel <i>· F hold the line and run</i>');
         if (this.P.interact) {
-          if (this.phys.speed * MPH < 7) this.surrenderCal(a, false); else { this.audio.warn(); this.game.toast('Still making way', 'Come below 7 mph before Soto boards.', 1.8); }
+          if (this.phys.speed * MPH < 7) this.surrenderCal(a, false); else { this.audio.warn(); this.game.toast('여전히 진행 중', 'Soto가 승선하기 전에 7 mph 이하로.', 1.8); }
         } else if (this.P.alternate) this.beginRun(a);
       }
       if (!a.resolved && ((a.inspectionT > 4 && this.phys.speed * MPH > 13) || d > 88)) this.beginRun(a);
@@ -567,8 +567,8 @@ export class ResidentContracts {
       if (a.captureT > 4.3) { this.surrenderCal(a, true); return; }
       if (a.evadeT > 7) {
         a.patrolStage = 'departing'; this.law.setPursuit(false); this.patrolDepart(a);
-        this.call('CH 72', 'CAL ROOK · LOST KEY', 'Twenty-seven lost your wake. Do not celebrate on the radio. Finish the run.', 3, `escaped:${a.id}`);
-        this.game.toast('Patrol lost', 'The parcel is still hot until the handoff.', 2.8); this.persist();
+        this.call('CH 72', 'CAL ROOK · LOST KEY', '27호가 파도를 놓쳤습니다. 무전으로 자축하지 마세요. 운행을 끝내세요.', 3, `escaped:${a.id}`);
+        this.game.toast('Patrol lost', '핸드오프 전까지 소포는 여전히 hot입니다.', 2.8); this.persist();
       }
     } else if (a.patrolStage === 'departing') {
       this.incidents.updateAgent(A, dt, t, a.departX, a.departZ, 10.5, 4); this.updatePatrolLights(t, false);
@@ -621,7 +621,7 @@ export class ResidentContracts {
   boatObstacle(A, tag) {
     return { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag, onHit: (into, nx, nz) => {
       if (A.active) { A.shx += -nx * into * 0.48; A.shz += -nz * into * 0.48; A.speed *= 0.58; }
-      if (tag === 'FWC patrol' && into > 2.7 && this.hitCd <= 0) { this.hitCd = 4; this.law.violation(0.8, 'FWC vessel struck during cargo stop', true); }
+      if (tag === 'FWC patrol' && into > 2.7 && this.hitCd <= 0) { this.hitCd = 4; this.law.violation(0.8, '화물 정지 중 FWC 선체 피격', true); }
     } };
   }
 
@@ -667,19 +667,19 @@ export class ResidentContracts {
   hud() {
     const a = this.state.active; if (!a || a.resolved) return null;
     if (a.resident === 'leon') {
-      if (a.stage === 'servicing') return { title: 'Leon Doss · Channel Work', obj: 'Hold station while the replacement cycles', sub: `${Math.round(a.serviceT / 7.5 * 100)}% · inside 30 ft · under 3 mph${this.environment.values.storm >= 0.94 ? ' · core wind has paused the work' : ''}` };
-      return { title: 'Leon Doss · Channel Work', obj: `Carry the service battery to ${a.dest.label}`, sub: `${regionAt(a.dest.x, a.dest.z).name} · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))}` };
+      if (a.stage === 'servicing') return { title: 'Leon Doss · 채널 작업', obj: '교체 사이클 동안 위치 유지', sub: `${Math.round(a.serviceT / 7.5 * 100)}% · inside 30 ft · under 3 mph${this.environment.values.storm >= 0.94 ? ' · core wind has paused the work' : ''}` };
+      return { title: 'Leon Doss · 채널 작업', obj: `Carry the service battery to ${a.dest.label}`, sub: `${regionAt(a.dest.x, a.dest.z).name} · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))}` };
     }
     if (a.resident === 'june') {
       const left = Math.ceil(a.deadlineMinutes - this.environment.minutes), status = left >= 0 ? `${left} min cold window` : `${Math.abs(left)} min outside window`;
-      if (a.stage === 'overboard') return { title: 'June Bell · Cold Chain', obj: 'Recover the cold box from the current', sub: `${Math.round(a.cold * 100)}% cold · ${Math.round(a.seal * 100)}% seal · ${fmtDist(Math.hypot(a.cargoX - this.phys.pos.x, a.cargoZ - this.phys.pos.y))}` };
-      return { title: 'June Bell · Cold Chain', obj: `Deliver the sealed cooler to ${a.dest.campName}`, sub: `${Math.round(a.cold * 100)}% cold · ${Math.round(a.seal * 100)}% seal · ${status}` };
+      if (a.stage === 'overboard') return { title: 'June Bell · 콜드체인', obj: '콜드 박스를 조류에서 회수', sub: `${Math.round(a.cold * 100)}% cold · ${Math.round(a.seal * 100)}% seal · ${fmtDist(Math.hypot(a.cargoX - this.phys.pos.x, a.cargoZ - this.phys.pos.y))}` };
+      return { title: 'June Bell · 콜드체인', obj: `Deliver the sealed cooler to ${a.dest.campName}`, sub: `${Math.round(a.cold * 100)}% cold · ${Math.round(a.seal * 100)}% seal · ${status}` };
     }
     const patrol = this.rigs.patrolAgent, pd = patrol.active ? fmtDist(Math.hypot(patrol.x - this.phys.pos.x, patrol.z - this.phys.pos.y)) : '';
-    if (a.patrolStage === 'inspection') return { title: 'Cal Rook · No Manifest', obj: 'FWC wants the hull stopped', sub: `${pd} · E heave to and surrender · F run` };
-    if (a.patrolStage === 'pursuit') return { title: 'Cal Rook · No Manifest', obj: 'Lose FWC or reach the blue-light handoff', sub: `${pd} to patrol · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))} to ${a.dest.recipient}` };
-    if (a.patrolStage === 'approach') return { title: 'Cal Rook · No Manifest', obj: `Get the parcel to ${a.dest.recipient}`, sub: `Directed FWC stop closing · ${pd}` };
-    return { title: 'Cal Rook · No Manifest', obj: `Take the sealed parcel to ${a.dest.recipient}`, sub: `${regionAt(a.dest.x, a.dest.z).name} · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))}` };
+    if (a.patrolStage === 'inspection') return { title: 'Cal Rook · 무신고', obj: 'FWC가 선체 정지를 원함', sub: `${pd} · E heave to and surrender · F run` };
+    if (a.patrolStage === 'pursuit') return { title: 'Cal Rook · 무신고', obj: 'Lose FWC or reach the blue-light handoff', sub: `${pd} to patrol · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))} to ${a.dest.recipient}` };
+    if (a.patrolStage === 'approach') return { title: 'Cal Rook · 무신고', obj: `Get the parcel to ${a.dest.recipient}`, sub: `Directed FWC stop closing · ${pd}` };
+    return { title: 'Cal Rook · 무신고', obj: `Take the sealed parcel to ${a.dest.recipient}`, sub: `${regionAt(a.dest.x, a.dest.z).name} · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))}` };
   }
 
   menuLine() {

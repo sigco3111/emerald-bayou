@@ -159,18 +159,18 @@ function frameGeometry() {
 function translated(geometry, y) { geometry.translate(0, y, 0); geometry.computeBoundingSphere(); return geometry; }
 
 function statusText(state) {
-  if (state === 'dim') return 'light dim';
-  if (state === 'dark') return 'unlit';
-  if (state === 'off-station') return 'off station';
-  if (state === 'damaged') return 'down';
-  return 'on station';
+  if (state === 'dim') return '등불이 어둡다';
+  if (state === 'dark') return '소등됨';
+  if (state === 'off-station') return '제자리 이탈';
+  if (state === 'damaged') return '쓰러짐';
+  return '정상 배치';
 }
 
 export class NavigationAids {
   constructor(options) {
     Object.assign(this, options); // scene, terrain, world, water, phys, game, audio, environment, currents, regions, radio, law, reputation, condition
     this.store = ensureNavigationAidSave(this.game.save);
-    this.root = new THREE.Group(); this.root.name = 'streamed navigation aids'; this.scene.add(this.root);
+    this.root = new THREE.Group(); this.root.name = '스트리밍 항로 표지'; this.scene.add(this.root);
     this.meshes = this.makeMeshes(); this.aids = Array.from({ length: MAX_AIDS }, (_, index) => this.makeSlot(index));
     this.candidates = []; this.obs = []; this.phys.addObs('navigation-aids', this.obs);
     this._dummy = new THREE.Object3D(); this._lantern = new THREE.Object3D(); this._flow = new THREE.Vector2();
@@ -310,11 +310,11 @@ export class NavigationAids {
     aid.hitCd = 2.8; this.store.stats.strikes++; this.game.tricks?.bust('MARKER');
     if (into >= 4.4 && aid.state !== 'damaged') {
       this.addDamage(aid, 'damaged', 'collision', -nx * clamp(into * 0.62, 2, 7), -nz * clamp(into * 0.62, 2, 7), (nx - nz) * 0.28);
-      this.law?.violation(0.42 + Math.min(0.42, into * 0.035), `marker ${aid.number} strike reported`, true);
-      this.reputation?.change('fwc', -0.28, 'navigation-aid-strike', `FWC logged damage to marker ${aid.number}.`, false);
-      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `Marker ${aid.number} is down after a vessel strike. Units copy the tower airboat in the cut.`, priority: 3, key: `nav-aid:strike:${aid.id}:${this.environment.day}`, cooldown: 90 });
-      this.game.toast(`Marker ${aid.number} down`, 'FWC has the hull and position.', 3.2);
-    } else this.game.toast(`Marker ${aid.number} struck`, 'The steel float did not move much.', 2.2);
+      this.law?.violation(0.42 + Math.min(0.42, into * 0.035), `표지 ${aid.number}호 충돌 신고됨`, true);
+      this.reputation?.change('fwc', -0.28, 'navigation-aid-strike', `FWC가 표지 ${aid.number}호의 손상을 기록했습니다.`, false);
+      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `표지 ${aid.number}호가 선박 충돌로 쓰러졌습니다. 수로는 타워 에어보트의 위치로 통제합니다.`, priority: 3, key: `nav-aid:strike:${aid.id}:${this.environment.day}`, cooldown: 90 });
+      this.game.toast(`표지 ${aid.number}호 쓰러짐`, 'FWC가 선체와 위치를 확보했습니다.', 3.2);
+    } else this.game.toast(`표지 ${aid.number}호 충격`, '강철 부표가 크게 움직이지는 않았습니다.', 2.2);
     this.game.persist();
   }
 
@@ -325,8 +325,8 @@ export class NavigationAids {
     const failure = stormFailureDecision(weather, seed, available.length); if (!failure) return false;
     const aid = available[failure.index]; if (!aid) return false;
     this.addDamage(aid, failure.state, weather, failure.dx, failure.dz, failure.tilt); this.store.stats.weatherFailures++; this.weatherEvents++;
-    const line = failure.state === 'off-station' ? 'dragged off station' : failure.state === 'damaged' ? 'knocked down' : failure.state === 'dark' ? 'lost its light' : 'is running dim';
-    this.radio?.transmit({ channel: 'WX-3', speaker: 'MARINE WX-3', text: `Marker ${aid.number} ${line} in ${regionAt(aid.x, aid.z).name}. Give that side of the cut room.`, priority: weather === 'hurricane' ? 4 : 2, key: `nav-aid:weather:${aid.id}:${this.environment.day}`, cooldown: 90 });
+    const line = failure.state === 'off-station' ? '제자리 이탈' : failure.state === 'damaged' ? '쓰러짐' : failure.state === 'dark' ? '등불 소실' : '희미하게 점등';
+    this.radio?.transmit({ channel: 'WX-3', speaker: 'MARINE WX-3', text: `${regionAt(aid.x, aid.z).name}에서 표지 ${aid.number}호가 ${line}. 수로 그쪽에 공간을 남겨두세요.`, priority: weather === 'hurricane' ? 4 : 2, key: `nav-aid:weather:${aid.id}:${this.environment.day}`, cooldown: 90 });
     this.game.persist(); return true;
   }
 
@@ -344,7 +344,7 @@ export class NavigationAids {
       // Maintenance happens outside the rendered working area. A marker never snaps upright in front of the player.
       if (report && Math.hypot(report.x - this.phys.pos.x, report.z - this.phys.pos.y) < 760) continue;
       record.state = 'normal'; record.dx = 0; record.dz = 0; record.tilt = 0; record.resolvedAt = this.environment.minutes; this.store.stats.repairs++; changed = true;
-      if (report && Math.hypot(report.x - this.phys.pos.x, report.z - this.phys.pos.y) < 1800) this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC MAINTENANCE', text: `Marker ${report.number} is back on station and showing its proper light.`, priority: 1, key: `nav-aid:repaired:${record.id}:${record.day}`, cooldown: 99999 });
+      if (report && Math.hypot(report.x - this.phys.pos.x, report.z - this.phys.pos.y) < 1800) this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC MAINTENANCE', text: `표지 ${report.number}호가 제자리로 돌아와 정상 등불을 표시하고 있습니다.`, priority: 1, key: `nav-aid:repaired:${record.id}:${record.day}`, cooldown: 99999 });
     }
     if (!changed) return;
     for (let index = 0; index < this.active; index++) this.applyState(this.aids[index]);
@@ -360,7 +360,7 @@ export class NavigationAids {
   }
 
   setPrompt(aid) {
-    this.game.el.prompt.innerHTML = `<b>E</b> report marker ${aid.number} ${statusText(aid.state)}`; this.game.el.prompt.classList.add('on');
+    this.game.el.prompt.innerHTML = `<b>E</b> 표지 ${aid.number}호 ${statusText(aid.state)} 신고`; this.game.el.prompt.classList.add('on');
     this.game.el.prompt.dataset.navigationAid = aid.id; this.prompting = true; this.nearFault = aid;
   }
 
@@ -377,9 +377,9 @@ export class NavigationAids {
     const report = { id: aid.id, number: aid.number, side: aid.side, state: record.state, x: Math.round(aid.actualX), z: Math.round(aid.actualZ), region: aid.region, day: this.environment.day, hour: Math.round(this.environment.hour * 10) / 10 };
     const previous = this.store.reports.findIndex(entry => entry.id === aid.id); if (previous >= 0) this.store.reports.splice(previous, 1);
     this.store.reports.push(report); if (this.store.reports.length > MAX_REPORTS) this.store.reports.shift();
-    this.store.stats.reports++; this.applyState(aid); this.game.addCash(45); this.reputation?.change('fwc', 0.22, 'navigation-aid-report', `FWC copied the exact position for marker ${aid.number}.`, false);
-    this.audio?.checkpoint?.(); this.game.toast(`Marker ${aid.number} reported`, 'Exact position copied · +$45', 3.4);
-    this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `Tower Boat, marker ${aid.number} ${statusText(record.state)} copied in ${regionAt(aid.x, aid.z).name}. Maintenance will work it on the next safe tide.`, priority: 2, key: `nav-aid:reported:${aid.id}:${this.environment.day}`, cooldown: 99999 });
+    this.store.stats.reports++; this.applyState(aid); this.game.addCash(45); this.reputation?.change('fwc', 0.22, 'navigation-aid-report', `FWC가 표지 ${aid.number}호의 정확한 위치를 복사했습니다.`, false);
+    this.audio?.checkpoint?.(); this.game.toast(`표지 ${aid.number}호 신고`, '정확한 위치 복사 완료 · +$45', 3.4);
+    this.radio?.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `타워 보트, ${regionAt(aid.x, aid.z).name}에서 표지 ${aid.number}호 ${statusText(record.state)} 상태로 기록됨. 다음 안전한 조수에 정비 보트가 출동합니다.`, priority: 2, key: `nav-aid:reported:${aid.id}:${this.environment.day}`, cooldown: 99999 });
     this.clearPrompt(); this.game.persist(); return true;
   }
 
@@ -407,7 +407,7 @@ export class NavigationAids {
     const out = [];
     for (const report of this.store.reports) {
       const record = this.recordFor(report.id); if (!record || record.state === 'normal') continue;
-      out.push({ x: report.x, z: report.z, label: `marker ${report.number} · ${statusText(record.state)}`, color: report.side === 'red' ? '#d84a3d' : '#49b878' });
+      out.push({ x: report.x, z: report.z, label: `표지 ${report.number}호 · ${statusText(record.state)}`, color: report.side === 'red' ? '#d84a3d' : '#49b878' });
     }
     return out;
   }
@@ -420,7 +420,7 @@ export class NavigationAids {
     }
     if (!nearest) return [];
     const place = regionAt(nearest.x, nearest.z).name, condition = statusText(nearest.state);
-    return [['CH 16', nearest.reported ? 'FWC MAINTENANCE' : 'LOCAL SKIFF', nearest.reported ? `Marker ${nearest.number} is logged ${condition} in ${place}. Work boat will reach it when the weather opens.` : `Marker ${nearest.number} is ${condition} in ${place}. Stay off that side of the cut.`]];
+    return [['CH 16', nearest.reported ? 'FWC MAINTENANCE' : 'LOCAL SKIFF', nearest.reported ? `${place}에서 표지 ${nearest.number}호가 ${condition} 상태로 기록됨. 날씨가 풀리면 정비 보트가 출동합니다.` : `${place}에서 표지 ${nearest.number}호가 ${condition} 상태. 수로 그쪽은 피하세요.`]];
   }
 
   update(dt, time, enabled = true) {

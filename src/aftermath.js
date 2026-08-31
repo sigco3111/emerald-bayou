@@ -113,7 +113,7 @@ function makeBlockageRig(scene, site, onHit) {
   const workLamp = signal(workboat, 0x2c83ff, 0, 1.36, -0.2, 62); workboat.visible = false; scene.add(workboat);
   const agent = makeReceiverAgent(workboat); agent.role = 'storm-maintenance';
   const obstacle = { ax: 0, az: 0, bx: 0, bz: 0, r: 0.75, tag: 'storm-debris', onHit };
-  const workObstacle = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'FWC maintenance skiff' };
+  const workObstacle = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'FWC 정비 스키프' };
   return { group, rope, strobe, buoys, obstacle, workboat, workLamp, agent, workObstacle, ownedGeometries: [ropeGeo], ownedMaterials: workboatPaint ? [workboatPaint] : [] };
 }
 
@@ -131,7 +131,7 @@ function makeSurvivorRig(scene, site) {
   const receiverLamp = signal(receiver, 0x2c83ff, 0, 1.36, -0.2, 62); receiver.visible = false; scene.add(receiver);
   const agent = makeReceiverAgent(receiver);
   const wreckObstacle = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'swamped skiff' };
-  const receiverObstacle = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'FWC recovery skiff' };
+  const receiverObstacle = { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag: 'FWC 회수 스키프' };
   return { root, skiff, survivor, bag, strobe, receiver, receiverLamp, agent, wreckObstacle, receiverObstacle, ownedGeometries: [], ownedMaterials: receiverPaint ? [receiverPaint] : [] };
 }
 
@@ -301,12 +301,12 @@ export class StormRecovery {
       const at = this.findSpot(nearby ? 92 : 300, nearby ? 135 : 760); if (!at) continue;
       const site = this.makeSite(type, at, peak); this.sites.push(site); this.buildRig(site); made++;
       const region = regionAt(site.x, site.z);
-      if (type === 'blockage') this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: `Storm check in ${region.name}: snapped cypress and roofing across a working cut. Orange strobe is on it. Mark it or pull it clear.`, priority: 3, key: `aftermath:blockage:${idSafe(site.id)}`, cooldown: 0 });
-      else this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `Swamped skiff in ${region.name}, one injured person still aboard. Tower Boat has the nearest shallow-water hull. Recovery skiff is holding outside the cut.`, priority: 3, key: `aftermath:survivor:${idSafe(site.id)}`, cooldown: 0 });
+      if (type === 'blockage') this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: `${region.name}의 폭풍 점검: 가동 중인 해협에 부러진 사이프러스와 지붕재가 흩어져 있습니다. 주황 스트로브가 그 위에서 켜져 있습니다. 표시하거나 끌어내세요.`, priority: 3, key: `aftermath:blockage:${idSafe(site.id)}`, cooldown: 0 });
+      else this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `${region.name}에 침수된 스키프가 있고 부상자 한 명이 아직 탑승 중입니다. 타워 보트가 가장 가까운 천수역 선체를 보유하고 있습니다. 구조 스키프는 해협 바깥에서 대기 중입니다.`, priority: 3, key: `aftermath:survivor:${idSafe(site.id)}`, cooldown: 0 });
     }
     if (!made) return false;
     this.state.stats.generated += made; this.state.lastBatchMinutes = this.environment.minutes; this.state.lastBatchAt = Date.now(); this.state.pendingPeak = 0;
-    this.game.toast('Storm aftermath', `${made} recovery ${made === 1 ? 'call is' : 'calls are'} on the chart.`, 3.4); this.persist(); return true;
+    this.game.toast('폭풍 여파', `${made}개의 복구 ${made === 1 ? '호출이' : '호출들이'} 해도에 있습니다.`, 3.4); this.persist(); return true;
   }
 
   trackWeather() {
@@ -331,13 +331,13 @@ export class StormRecovery {
     const d = Math.hypot(site.x - this.phys.pos.x, site.z - this.phys.pos.y);
     site.stage = 'tow'; site.ropeLength = clamp(d + 1.2, 7, 16); site.strain = 0; this.towSite = site;
     this.rigs.get(site.id).rope.visible = true; this.clearPrompt(); this.audio.checkpoint();
-    this.game.toast('Tow line fast', 'Ease the cypress into the marked pocket. F drops the line.', 3); this.persist();
+    this.game.toast('견인 라인 고정', '표시된 포켓으로 사이프러스를 부드럽게 밀어 넣으세요. F가 라인을 놓습니다.', 3); this.persist();
   }
 
   dropTow(parted = false) {
     const site = this.towSite; if (!site) return;
     site.stage = 'open'; site.strain = 0; this.rigs.get(site.id).rope.visible = false; this.towSite = null; this.phys.towDrag = 0;
-    this.game.toast(parted ? 'Tow line parted' : 'Tow line dropped', parted ? 'Too much strain. Come back alongside and reset it.' : 'The obstruction is still in the cut.', 2.8); this.persist();
+    this.game.toast(parted ? '견인 라인 절단' : '견인 라인 해제', parted ? '장력이 너무 큽니다. 다시 나란히 붙어 재설정하세요.' : '장애물이 여전히 해협에 남아 있습니다.', 2.8); this.persist();
   }
 
   maintenanceStart(site) {
@@ -367,9 +367,9 @@ export class StormRecovery {
     site.stage = 'marked'; site.clearAt = this.environment.minutes + 24; site.strain = 0; this.state.stats.marked++;
     const rig = this.rigs.get(site.id); for (const b of rig.buoys) b.visible = true;
     this.startMaintenance(site, rig, false);
-    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `Orange marks copied. Maintenance skiff will clear the obstruction after the squall traffic settles.`, priority: 2, key: `aftermath:marked:${idSafe(site.id)}`, cooldown: 0 });
-    this.reputation.change('fwc', 0.2, 'storm-obstruction-marked', 'You put a usable fix on storm debris blocking a working cut.', true);
-    this.game.toast('Obstruction marked', 'FWC maintenance has the fix. The debris remains until their skiff arrives.', 3); this.persist();
+    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `주황 표시 복사 완료. 폭풍 교통이 정리되면 정비 스키프가 장애물을 치웁니다.`, priority: 2, key: `aftermath:marked:${idSafe(site.id)}`, cooldown: 0 });
+    this.reputation.change('fwc', 0.2, 'storm-obstruction-marked', '가동 해협을 막은 폭풍 잔해에 사용할 수 있는 좌표를 표시했습니다.', true);
+    this.game.toast('장애물 표시 완료', 'FWC 정비팀이 좌표를 확보했습니다. 잔해는 그들의 스키프가 도착할 때까지 남습니다.', 3); this.persist();
   }
 
   resolveBlockage(site, method = 'tow') {
@@ -384,13 +384,13 @@ export class StormRecovery {
     for (const b of rig.buoys) b.visible = false;
     this.state.stats.cleared++;
     if (method === 'tow') {
-      this.game.addCash(site.reward); this.reputation.change('locals', 0.65, 'storm-cut-cleared', 'You pulled a storm-felled cypress out of a working cut.', true);
-      this.reputation.change('fwc', 0.3, 'storm-cut-cleared', 'FWC logged the channel obstruction cleared by the tower boat.', false);
-      this.game.bountyToast(`Storm cut reopened <b>+$${site.reward}</b>`); this.audio.complete();
-      this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: 'Cut is open. I can see the cypress against the bank and clean water through the middle.', priority: 2, key: `aftermath:clear:${idSafe(site.id)}`, cooldown: 0 });
+      this.game.addCash(site.reward); this.reputation.change('locals', 0.65, 'storm-cut-cleared', '가동 해협에서 폭풍으로 쓰러진 사이프러스를 끌어냈습니다.', true);
+      this.reputation.change('fwc', 0.3, 'storm-cut-cleared', 'FWC가 타워 보트가 해협 장애물을 치웠다고 기록했습니다.', false);
+      this.game.bountyToast(`폭풍 해협 재개방 <b>+$${site.reward}</b>`); this.audio.complete();
+      this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: '해협이 열렸습니다. 사이프러스가 둑에 붙었고 가운데로 깨끗한 물이 흐릅니다.', priority: 2, key: `aftermath:clear:${idSafe(site.id)}`, cooldown: 0 });
     } else {
-      const pay = 90; this.game.addCash(pay); this.game.bountyToast(`Maintenance fix confirmed <b>+$${pay}</b>`); this.audio.checkpoint();
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC MAINTENANCE', text: 'Marked obstruction is against the bank. Working cut is open again. Good coordinates, Tower Boat.', priority: 2, key: `aftermath:workboat:${idSafe(site.id)}`, cooldown: 0 });
+      const pay = 90; this.game.addCash(pay); this.game.bountyToast(`정비 보수 확인 <b>+$${pay}</b>`); this.audio.checkpoint();
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC MAINTENANCE', text: '표시된 장애물이 둑에 닿았습니다. 가동 해협이 다시 열렸습니다. 좋은 좌표입니다, 타워 보트.', priority: 2, key: `aftermath:workboat:${idSafe(site.id)}`, cooldown: 0 });
     }
     this.persist();
   }
@@ -398,7 +398,7 @@ export class StormRecovery {
   hitBlockage(site, into, nx, nz) {
     if (!OPEN_STAGES.has(site.stage) || into < 1.3) return;
     site.vx -= nx * into * 0.34; site.vz -= nz * into * 0.34; site.spin += (Math.random() - 0.5) * into * 0.07;
-    if (this.hitCd <= 0 && into > 2.4) { this.hitCd = 3.5; this.audio.knock(clamp(into / 8, 0.2, 0.9)); this.game.toast('Storm obstruction', 'Roofing and cypress under the hull. Back off before the prop takes it.', 2.5); }
+    if (this.hitCd <= 0 && into > 2.4) { this.hitCd = 3.5; this.audio.knock(clamp(into / 8, 0.2, 0.9)); this.game.toast('폭풍 장애물', '선체 아래에 지붕재와 사이프러스가 있습니다. 프로펠러가 걸리기 전에 뒤로 빠지세요.', 2.5); }
   }
 
   updateRope(site, rig, t, dt) {
@@ -475,8 +475,8 @@ export class StormRecovery {
   boardSurvivor(site) {
     if (site.stage !== 'waiting' || this.passengerSite || this.towSite) return;
     const rig = this.rigs.get(site.id); site.stage = 'aboard'; this.passengerSite = site; this.attachPassenger(site, rig); this.clearPrompt(); this.audio.pickup();
-    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: 'Tower Boat, we have your transponder. Bring the patient to the blue recovery light and idle alongside.', priority: 3, key: `aftermath:aboard:${idSafe(site.id)}`, cooldown: 0 });
-    this.game.toast('Injured boater aboard', 'FWC recovery is holding at the blue light.', 3.2); this.persist();
+    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: '타워 보트, 트랜스폰더를 확보했습니다. 환자를 파란 구조 등불에 데려오고 옆에 정지하세요.', priority: 3, key: `aftermath:aboard:${idSafe(site.id)}`, cooldown: 0 });
+    this.game.toast('부상자 탑승', 'FWC 구조팀이 파란 등불에서 대기 중입니다.', 3.2); this.persist();
   }
 
   startReceiver(site, rig, restore = false) {
@@ -487,9 +487,9 @@ export class StormRecovery {
   reportSurvivor(site) {
     if (site.stage !== 'waiting') return;
     const rig = this.rigs.get(site.id); site.stage = 'reported'; site.resolveAt = this.environment.minutes + 24; this.state.stats.reported++; this.startReceiver(site, rig, false); this.clearPrompt();
-    this.reputation.change('fwc', 0.2, 'storm-survivor-fix', 'You relayed a precise fix for a swamped storm skiff.', true);
-    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: 'Fix copied. Shallow-water recovery is inbound. Keep the orange strobe clear if you stay on scene.', priority: 3, key: `aftermath:reported:${idSafe(site.id)}`, cooldown: 0 });
-    this.game.toast('Fix relayed', 'FWC recovery is working into the cut.', 3); this.persist();
+    this.reputation.change('fwc', 0.2, 'storm-survivor-fix', '침수된 폭풍 스키프에 대해 정확한 좌표를 전달했습니다.', true);
+    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: '좌표 복사 완료. 천수역 구조팀이 접근 중입니다. 현장에 머무르면 주황 스트로브 주변을 비워두세요.', priority: 3, key: `aftermath:reported:${idSafe(site.id)}`, cooldown: 0 });
+    this.game.toast('좌표 전달', 'FWC 구조팀이 해협으로 진입 중입니다.', 3); this.persist();
   }
 
   resolveSurvivor(site, method = 'aboard') {
@@ -500,15 +500,15 @@ export class StormRecovery {
       rig.agent.active = false; site.receiverX = site.destX; site.receiverZ = site.destZ; site.receiverHeading = site.destHeading;
       rig.receiver.position.set(site.destX, this.water.waveHeight(site.destX, site.destZ, 0) - 0.05, site.destZ); rig.receiver.rotation.y = site.destHeading;
       this.attachToReceiver(site, rig); this.game.addCash(site.reward);
-      this.reputation.change('locals', 0.9, 'storm-boater-recovered', 'You carried an injured boater out of a storm cut.', true);
-      this.reputation.change('fwc', 0.4, 'storm-boater-recovered', 'You delivered a storm casualty directly to the recovery skiff.', false);
-      this.game.bountyToast(`Storm recovery completed <b>+$${site.reward}</b>`); this.audio.complete();
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: 'Patient and dry bag aboard. Pulse is steady. Tower Boat, clear our stern and take the payment call.', priority: 3, key: `aftermath:rescued:${idSafe(site.id)}`, cooldown: 0 });
+      this.reputation.change('locals', 0.9, 'storm-boater-recovered', '폭풍 해협에서 부상자를 수송했습니다.', true);
+      this.reputation.change('fwc', 0.4, 'storm-boater-recovered', '구조 스키프에 폭풍 부상자를 직접 인계했습니다.', false);
+      this.game.bountyToast(`폭풍 복구 완료 <b>+$${site.reward}</b>`); this.audio.complete();
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: '환자와 방수 가방이 탑승했습니다. 맥박 안정. 타워 보트, 선미 비우고 결제 호출을 받으세요.', priority: 3, key: `aftermath:rescued:${idSafe(site.id)}`, cooldown: 0 });
     } else {
       rig.agent.active = false; site.receiverX = site.x; site.receiverZ = site.z; site.receiverHeading = rig.agent.heading;
       rig.receiver.position.set(site.x, this.water.waveHeight(site.x, site.z, 0) - 0.05, site.z); rig.receiver.rotation.y = site.receiverHeading; this.attachToReceiver(site, rig);
-      this.game.addCash(70); this.game.bountyToast('Recovery fix confirmed <b>+$70</b>'); this.audio.checkpoint();
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: 'Patient is off the swamped hull. Your orange-strobe fix put us straight on it.', priority: 2, key: `aftermath:reported-clear:${idSafe(site.id)}`, cooldown: 0 });
+      this.game.addCash(70); this.game.bountyToast('복구 좌표 확인 <b>+$70</b>'); this.audio.checkpoint();
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC RECOVERY', text: '환자가 침수 선체에서 내렸습니다. 주황 스트로브 좌표 덕분에 바로 들어왔습니다.', priority: 2, key: `aftermath:reported-clear:${idSafe(site.id)}`, cooldown: 0 });
     }
     this.state.stats.rescued++; if (this.game.wpTarget?.recovery) this.game.wpTarget = null; this.persist();
   }
@@ -558,12 +558,12 @@ export class StormRecovery {
     this.interactiveNear = null;
     if (!this.canInteract()) { this.clearPrompt(); this.interact = this.alternate = false; return; }
     if (this.towSite) {
-      this.interactiveNear = this.towSite; this.setPrompt('<b>F</b> drop the tow line'); if (this.alternate) this.dropTow(false);
+      this.interactiveNear = this.towSite; this.setPrompt('<b>F</b> 견인 라인을 놓아라'); if (this.alternate) this.dropTow(false);
       this.interact = this.alternate = false; return;
     }
     if (this.passengerSite) {
       const site = this.passengerSite, d = Math.hypot(site.destX - this.phys.pos.x, site.destZ - this.phys.pos.y); this.interactiveNear = site;
-      if (d < 14 && this.phys.speed * MPH < 6) { this.setPrompt('<b>E</b> transfer the injured boater to FWC recovery'); if (this.interact) this.resolveSurvivor(site, 'aboard'); }
+      if (d < 14 && this.phys.speed * MPH < 6) { this.setPrompt('<b>E</b> 부상자를 FWC 구조팀에 인계하라'); if (this.interact) this.resolveSurvivor(site, 'aboard'); }
       else this.clearPrompt();
       this.interact = this.alternate = false; return;
     }
@@ -575,10 +575,10 @@ export class StormRecovery {
     this.interactiveNear = nearest;
     if (!nearest || this.phys.speed * MPH >= 6) this.clearPrompt();
     else if (nearest.type === 'blockage') {
-      this.setPrompt('<b>E</b> set a tow line <i>· F mark it for FWC maintenance</i>');
+      this.setPrompt('<b>E</b> 견인 라인을 붙여라 <i>· F FWC 정비팀에 표시하라</i>');
       if (this.interact) this.attachTow(nearest); else if (this.alternate) this.markBlockage(nearest);
     } else {
-      this.setPrompt('<b>E</b> take the injured boater aboard <i>· F relay the fix to FWC</i>');
+      this.setPrompt('<b>E</b> 부상자를 태워라 <i>· F FWC에 좌표를 전달하라</i>');
       if (this.interact) this.boardSurvivor(nearest); else if (this.alternate) this.reportSurvivor(nearest);
     }
     this.interact = this.alternate = false;
@@ -597,22 +597,22 @@ export class StormRecovery {
   hud() {
     const site = this.activeHudSite(); if (!site) return null;
     const region = regionAt(site.x, site.z).name;
-    if (site.stage === 'tow') return { title: 'Storm Recovery', obj: 'Tow the obstruction out of the working cut', sub: `${fmtDist(Math.hypot(site.x - site.clearX, site.z - site.clearZ))} to the marked pocket · ${site.strain > 0.7 ? 'line under heavy strain' : 'keep steady tension'} · F drop line` };
-    if (site.stage === 'aboard') return { title: 'Storm Recovery', obj: 'Bring the injured boater to FWC recovery', sub: `${fmtDist(Math.hypot(this.phys.pos.x - site.destX, this.phys.pos.y - site.destZ))} · idle alongside the blue light` };
-    if (site.stage === 'open') return { title: 'Storm Recovery', obj: 'Storm obstruction ahead', sub: `${region} · tow it clear or mark it for maintenance` };
+    if (site.stage === 'tow') return { title: '폭풍 복구', obj: '가동 해협에서 장애물을 견인해라', sub: `${fmtDist(Math.hypot(site.x - site.clearX, site.z - site.clearZ))} 표시 포켓까지 · ${site.strain > 0.7 ? '라인에 강한 장력' : '일정한 장력을 유지'} · F 라인 해제` };
+    if (site.stage === 'aboard') return { title: '폭풍 복구', obj: '부상자를 FWC 구조팀에 데려가라', sub: `${fmtDist(Math.hypot(this.phys.pos.x - site.destX, this.phys.pos.y - site.destZ))} · 파란 등불 옆에 정지` };
+    if (site.stage === 'open') return { title: '폭풍 복구', obj: '전방에 폭풍 장애물', sub: `${region} · 견인해 치우거나 정비팀에 표시` };
     if (site.stage === 'marked') {
-      const A = this.rigs.get(site.id)?.agent, distance = A?.active ? ` · maintenance skiff ${fmtDist(Math.hypot(A.x - site.x, A.z - site.z))} out` : '';
-      return { title: 'Storm Recovery', obj: 'Marked obstruction remains in the cut', sub: `${region}${distance}` };
+      const A = this.rigs.get(site.id)?.agent, distance = A?.active ? ` · 정비 스키프 ${fmtDist(Math.hypot(A.x - site.x, A.z - site.z))} 떨어짐` : '';
+      return { title: '폭풍 복구', obj: '표시된 장애물이 해협에 남아 있습니다', sub: `${region}${distance}` };
     }
-    if (site.stage === 'reported') return { title: 'Storm Recovery', obj: 'FWC recovery is inbound', sub: `${region} · keep the orange strobe clear` };
-    return { title: 'Storm Recovery', obj: 'Injured boater on a swamped skiff', sub: `${region} · take them aboard or relay the fix` };
+    if (site.stage === 'reported') return { title: '폭풍 복구', obj: 'FWC 구조팀이 접근 중', sub: `${region} · 주황 스트로브 주변을 비워두세요` };
+    return { title: '폭풍 복구', obj: '침수된 스키프 위의 부상자', sub: `${region} · 태우거나 좌표를 전달하세요` };
   }
 
   markers() {
     return this.sites.filter(s => !['cleared', 'rescued'].includes(s.stage)).map(site => ({
       x: site.stage === 'aboard' ? site.destX : site.x, z: site.stage === 'aboard' ? site.destZ : site.z,
       color: site.type === 'blockage' ? '#f07a2e' : '#79d6a0',
-      label: site.stage === 'tow' ? 'storm obstruction under tow' : site.stage === 'marked' ? 'marked storm obstruction' : site.stage === 'aboard' ? 'FWC recovery pickup' : site.stage === 'reported' ? 'FWC storm recovery' : site.type === 'blockage' ? 'storm obstruction' : 'swamped skiff',
+      label: site.stage === 'tow' ? '견인 중인 폭풍 장애물' : site.stage === 'marked' ? '표시된 폭풍 장애물' : site.stage === 'aboard' ? 'FWC 구조 픽업' : site.stage === 'reported' ? 'FWC 폭풍 복구' : site.type === 'blockage' ? '폭풍 장애물' : '침수 스키프',
     }));
   }
 
@@ -626,8 +626,8 @@ export class StormRecovery {
       const A = this.rigs.get(site.id).agent;
       if (A.active) emitMapMarker(this.game, A.x, A.z, 'boat', '#5aa7ff', A.heading);
     }
-    if (this.towSite) this.game.wpTarget = { x: this.towSite.clearX, z: this.towSite.clearZ, label: 'clear-water pocket', color: '#f07a2e', recovery: true };
-    else if (this.passengerSite) this.game.wpTarget = { x: this.passengerSite.destX, z: this.passengerSite.destZ, label: 'FWC recovery', color: '#79d6a0', recovery: true };
+    if (this.towSite) this.game.wpTarget = { x: this.towSite.clearX, z: this.towSite.clearZ, label: '맑은 물 포켓', color: '#f07a2e', recovery: true };
+    else if (this.passengerSite) this.game.wpTarget = { x: this.passengerSite.destX, z: this.passengerSite.destZ, label: 'FWC 복구', color: '#79d6a0', recovery: true };
     else if (this.game.wpTarget?.recovery) this.game.wpTarget = null;
   }
 

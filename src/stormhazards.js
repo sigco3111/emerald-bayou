@@ -138,7 +138,7 @@ function makeStrike(scene) {
 }
 
 function makeDownburst() {
-  const group = new THREE.Group(); group.name = 'downburst rain foot'; group.visible = false;
+  const group = new THREE.Group(); group.name = '다운버스트 비 풋'; group.visible = false;
   const geometry = new THREE.TorusGeometry(1, 0.015, 6, 72), position = geometry.attributes.position;
   const colors = new Float32Array(position.count * 3);
   for (let i = 0; i < position.count; i++) {
@@ -253,11 +253,11 @@ export class StormHazards {
     if (airborne) {
       this.stats.airborneSpawns++;
       if (debug || this.airNoticeT <= 0) {
-        this.alert('Windborne debris', d.kind === 'sheet' ? 'Loose sheet metal is crossing the water.' : 'Loose lumber is crossing the water.', 4);
+        this.alert('바람에 실려 온 잔해', d.kind === 'sheet' ? '헐거워진 양철이 수면을 가로지르고 있습니다.' : '흘러다니는 목재가 수면을 가로지르고 있습니다.', 4);
         this.airNoticeT = 14;
       }
     }
-    if (debug) this.game.toast(airborne ? 'Debris in the air' : 'Debris in the channel', airborne ? 'Keep the cage pointed into it.' : 'Slow down. It can catch under the hull.', 2.7);
+    if (debug) this.game.toast(airborne ? '공중 잔해' : '수로 속 잔해', airborne ? '케이지가 그쪽을 향하도록 두세요.' : '속도를 줄이세요. 선체 아래에 끼일 수 있습니다.', 2.7);
     return true;
   }
 
@@ -282,8 +282,8 @@ export class StormHazards {
     if (wasAirborne) { this.landDebris(d, 0); this.stats.airborneHits++; }
     d.hitCd = 0.75; d.vx -= nx * impact * 0.42; d.vz -= nz * impact * 0.42; d.spin += (Math.random() - 0.5) * impact * 0.22;
     this.audio.knock(clamp(impact / 8, 0.2, 0.9)); this.game.shake = Math.max(this.game.shake, clamp(impact / 14, 0.08, 0.45));
-    this.alert(wasAirborne ? 'Flying debris' : 'Debris strike', wasAirborne ? (d.kind === 'sheet' ? 'Sheet metal hit the cage.' : 'Lumber hit the cage.') : impact > 5 ? 'Check the prop and hull.' : 'Something hard passed under the cage.', 2.6);
-    if (impact > 3) this.game.toast(wasAirborne ? 'Windborne strike' : 'Storm debris', wasAirborne ? 'The cage took the impact.' : impact > 6 ? 'Hard hit under the stern.' : 'Branches under the hull.', 2.3);
+    this.alert(wasAirborne ? '비행 중인 잔해' : '잔해 충돌', wasAirborne ? (d.kind === 'sheet' ? '양철이 케이지에 부딪쳤습니다.' : '목재가 케이지에 부딪쳤습니다.') : impact > 5 ? '프로펠러와 선체를 점검하세요.' : '딱딱한 물체가 케이지 아래를 지나갔습니다.', 2.6);
+    if (impact > 3) this.game.toast(wasAirborne ? '바람에 의한 충돌' : '폭풍 잔해', wasAirborne ? '케이지가 충격을 흡수했습니다.' : impact > 6 ? '선미 아래 강한 충격.' : '선체 아래에 잔가지가 있습니다.', 2.3);
     for (let i = 0; i < 18; i++) this.spray.emit(d.x + (Math.random() - 0.5) * 2, this.water.level + 0.08, d.z + (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 3, 0.8 + Math.random() * 2, (Math.random() - 0.5) * 3, 0.018 + Math.random() * 0.025, 0.35 + Math.random() * 0.35, 0.65);
     this.stats.debrisHits = (this.stats.debrisHits || 0) + 1; this.game.persist();
   }
@@ -351,8 +351,8 @@ export class StormHazards {
     });
     const D = this.downburst; D.group.visible = true; D.group.position.set(D.x, this.water.level + 0.11, D.z); D.group.scale.setScalar(D.startRadius); D.ring.material.opacity = 0;
     this.downburstT = 125 + Math.random() * 145; this.stats.downbursts++; this.game.persist();
-    this.environment.alert('Wet downburst', 'A rain foot is spreading across the water.', 5.5); this.audio.warn(); this.radio?.downburstCall(D);
-    if (debug) this.game.toast('Downburst ahead', close ? 'The gust front is almost on the boat.' : 'Watch the wind spread out from the rain core.', 3);
+    this.environment.alert('습한 다운버스트', '강우 풋이 수면 위로 퍼져나가고 있습니다.', 5.5); this.audio.warn(); this.radio?.downburstCall(D);
+    if (debug) this.game.toast('전방 다운버스트', close ? '돌풍 전선이 보트 바로 옆에 도달했습니다.' : '비 코어에서 바람이 퍼져나가는 것을 주시하세요.', 3);
     return true;
   }
 
@@ -410,8 +410,8 @@ export class StormHazards {
     if (state.coreRain > 0.18) this.game.shake = Math.max(this.game.shake, state.coreRain * 0.055);
     if (!D.hit && state.intensity > 0.5) {
       D.hit = true; this.stats.downburstHits++; this.game.persist();
-      this.alert('Downburst outflow', 'The gust front is on the boat.', 3.8);
-      this.game.toast('Wind shift', 'Keep the bow into the outflow and clear the open crossing.', 2.8);
+      this.alert('다운버스트 돌풍', '돌풍 전선이 보트에 닿았습니다.', 3.8);
+      this.game.toast('바람 전환', '선수를 돌풍 쪽으로 향하게 하고 열린 수면을 비워두세요.', 2.8);
     }
     this.downburstMarker.x = D.x; this.downburstMarker.z = D.z; this.downburstMarker.clamp = state.distance < 560; this.game.mapMarkers.push(this.downburstMarker);
     if (D.age >= D.duration || Math.hypot(D.x - this.phys.pos.x, D.z - this.phys.pos.y) > 640) this.endDownburst();
@@ -433,13 +433,13 @@ export class StormHazards {
       for (let i = 0; i < 20; i++) this.plume.emit(strike.x + (Math.random() - 0.5) * 2, strike.y + 0.1, strike.z + (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2.5, 1.8 + Math.random() * 4, (Math.random() - 0.5) * 2.5, 0.35 + Math.random() * 0.45, 1.2, 0.8 + Math.random() * 0.45, 0.45);
     }
     const d = Math.hypot(strike.x - this.phys.pos.x, strike.z - this.phys.pos.y);
-    if (d < 150) { this.audio.shot(clamp(1 - d / 190, 0.16, 0.65), strike.x, strike.z); this.alert('Lightning strike', `${fmtDist(d)} off the boat.`, 3.2); }
+    if (d < 150) { this.audio.shot(clamp(1 - d / 190, 0.16, 0.65), strike.x, strike.z); this.alert('낙뢰', `보트에서 ${fmtDist(d)} 떨어진 곳.`, 3.2); }
     if (d < 52) {
       const q = 1 - d / 52;
       this.condition.damage(0.35 + q * 1.25, 1.2 + q * 5.2); this.condition.powerCut = Math.max(this.condition.powerCut, 0.7 + q * 1.1);
       const dx = this.phys.pos.x - strike.x, dz = this.phys.pos.y - strike.z, dl = Math.hypot(dx, dz) || 1;
       this.phys.vel.x += dx / dl * (0.8 + q * 2.2); this.phys.vel.y += dz / dl * (0.8 + q * 2.2); this.phys.angVel += (Math.random() - 0.5) * q * 1.2;
-      this.game.shake = Math.max(this.game.shake, 0.45 + q * 0.45); this.game.toast('Lightning in the water', 'The engine stumbled. Keep clear of the open channel.', 3.1);
+      this.game.shake = Math.max(this.game.shake, 0.45 + q * 0.45); this.game.toast('물 위 벼락', '엔진이 비틀거렸습니다. 열린 수로에서 떨어져 계세요.', 3.1);
       this.stats.nearStrikes = (this.stats.nearStrikes || 0) + 1; this.game.persist();
     }
   }
@@ -461,8 +461,8 @@ export class StormHazards {
     const S = this.spout; Object.assign(S, { active: true, x: at.x, z: at.z, motionX: wind.x * speed, motionZ: wind.z * speed, life: debug ? 46 : 35 + Math.random() * 30, maxLife: debug ? 46 : 65, spin: Math.random() * 6.28, emit: 0, damageCd: 0 });
     S.maxLife = S.life; S.group.visible = true; S.group.position.set(S.x, this.water.level, S.z); S.group.scale.setScalar(0.01);
     this.spoutT = 80 + Math.random() * 90; this.stats.spouts = (this.stats.spouts || 0) + 1; this.game.persist();
-    this.environment.alert('Waterspout', 'Funnel on the water. Give it room.', 5.5); this.audio.warn(); this.radio?.waterspoutCall(S);
-    if (debug) this.game.toast('Waterspout', close ? 'Too close. Turn out and use full power.' : 'A funnel has touched down across the channel.', close ? 3.1 : 1.8);
+    this.environment.alert('워터스파우트', '수면에 깔때기가 생겼습니다. 거리를 두세요.', 5.5); this.audio.warn(); this.radio?.waterspoutCall(S);
+    if (debug) this.game.toast('워터스파우트', close ? '너무 가깝습니다. 방향을 틀어 최대 출력으로 벗어나세요.' : '수로 건너편에 깔때기가 내려왔습니다.', close ? 3.1 : 1.8);
     return true;
   }
 
@@ -509,7 +509,7 @@ export class StormHazards {
       if (d < 18 && S.damageCd <= 0) {
         S.damageCd = 0.8; this.condition.damage(0.55 + pull * 1.15, 0.2 + pull * 0.7); this.audio.knock(0.22 + pull * 0.25);
         this.phys.vy += pull * 0.8; this.phys.wipeT = Math.max(this.phys.wipeT, 0.35 + pull * 0.9);
-        this.game.toast('Inside the spray ring', 'The funnel is pulling the stern around.', 2.2);
+        this.game.toast('스프레이 링 내부', '깔때기가 선미를 끌어당기고 있습니다.', 2.2);
       }
     }
     this.spoutMarker.x = S.x; this.spoutMarker.z = S.z; this.spoutMarker.clamp = d < 520; this.game.mapMarkers.push(this.spoutMarker);
@@ -521,11 +521,11 @@ export class StormHazards {
     let title = '', line = '';
     if (this.spout.active) {
       const d = Math.hypot(this.spout.x - this.phys.pos.x, this.spout.z - this.phys.pos.y);
-      if (d < 430) { title = 'Waterspout'; line = `${fmtDist(d)} · ${d < 70 ? 'pulling the hull' : 'moving with the wind'}`; }
+      if (d < 430) { title = '워터스파우트'; line = `${fmtDist(d)} · ${d < 70 ? '선체를 끌어당김' : '바람을 따라 이동 중'}`; }
     }
     if (!title && this.downburst.active) {
       const state = downburstSurfaceState(this.downburst, this.phys.pos.x, this.phys.pos.y, this._downburstField);
-      if (state.distance < 470) { title = 'Downburst outflow'; line = `${fmtDist(state.distance)} · ${state.intensity > 0.42 ? 'gust front on the boat' : 'rain foot spreading outward'}`; }
+      if (state.distance < 470) { title = '다운버스트 돌풍'; line = `${fmtDist(state.distance)} · ${state.intensity > 0.42 ? '돌풍 전선이 보트에 닿음' : '강우 풋이 바깥으로 퍼져나감'}`; }
     }
     if (!title && this.noticeT > 0) { title = this.noticeTitle; line = this.noticeLine; }
     this.el.classList.toggle('on', Boolean(title)); this.el.innerHTML = title ? `<span>${title}</span><small>${line}</small>` : '';

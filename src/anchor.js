@@ -94,22 +94,22 @@ export class BoatAnchor {
   }
 
   refusal(reason) {
-    this.game.toast('Anchor stays aboard', reason, 2.1);
+    this.game.toast('닻 보관 중', reason, 2.1);
     return false;
   }
 
   deploy() {
     if (this.state.active) return false;
-    if (this.game.fishing?.blocking?.()) return this.refusal('Reel the fishing line in first.');
-    if ((this.phys.towDrag || 0) > 0.003) return this.refusal('Clear the tow line first.');
-    if (this.phys.airborne || this.phys.wet < 0.5 || this.phys.landFac > 0.2) return this.refusal('The hull needs open water.');
-    if (this.phys.speed * MPH > 4.5) return this.refusal('Idle below 4.5 mph before dropping it.');
+    if (this.game.fishing?.blocking?.()) return this.refusal('먼저 낚싯줄을 감으세요.');
+    if ((this.phys.towDrag || 0) > 0.003) return this.refusal('먼저 견인 줄을 정리하세요.');
+    if (this.phys.airborne || this.phys.wet < 0.5 || this.phys.landFac > 0.2) return this.refusal('선체가 외해에 있어야 합니다.');
+    if (this.phys.speed * MPH > 4.5) return this.refusal('내리기 전 4.5 mph 이하로 감속.');
 
     const forward = this.phys.forward(this._forward);
     const x = this.phys.pos.x + forward.x * BOW_OFFSET, z = this.phys.pos.y + forward.y * BOW_OFFSET;
     const bottomY = this.terrain.heightAt(x, z), depth = this.water.level - bottomY;
-    if (depth < 0.65) return this.refusal('There is not enough water under the bow.');
-    if (depth > 8.5) return this.refusal('The bottom is beyond this rode.');
+    if (depth < 0.65) return this.refusal('선수 아래 물이 부족합니다.');
+    if (depth > 8.5) return this.refusal('바닥이 이 닻줄의 범위 밖에 있습니다.');
 
     const sample = this.terrain.hf?.computeBase?.(x, z) || { h: bottomY, s: 1, lake: 0, prairie: 0 };
     const bottom = anchorBottomProfile(sample), rode = anchorRode(depth), state = this.state;
@@ -120,7 +120,7 @@ export class BoatAnchor {
     state.bottomKey = bottom.key; state.bottomLabel = bottom.label;
     this.phys.anchorConstraint = state; this.line.visible = true; this.updateLine();
     this.audio?.thud?.(0.16);
-    this.game.toast('Anchor away', `${bottom.label} · ${Math.round(rode.scope * FEET)} ft of rode`, 2.4);
+    this.game.toast('닻 내림', `${bottom.label} · ${Math.round(rode.scope * FEET)} ft of rode`, 2.4);
     return true;
   }
 
@@ -131,7 +131,7 @@ export class BoatAnchor {
     state.load = 0; state.force = 0; state.riskLoad = 0; state.dragT = 0;
     if (this.phys.anchorConstraint === state) this.phys.anchorConstraint = null;
     this.line.visible = false;
-    if (!silent) { this.audio?.thud?.(0.1); this.game.toast('Anchor aboard', 'The bow is free.', 1.8); }
+    if (!silent) { this.audio?.thud?.(0.1); this.game.toast('Anchor aboard', '선수가 풀렸습니다.', 1.8); }
     return true;
   }
 
@@ -169,7 +169,7 @@ export class BoatAnchor {
       }
       if (!state.warnedDrag && state.dragT > 0.55) {
         state.warnedDrag = true; this.audio?.warn?.();
-        this.game.toast('Anchor dragging', 'Ease the throttle or weigh it.', 2.5);
+        this.game.toast('닻 끌림', '스로틀을 줄이거나 닻을 거두세요.', 2.5);
       }
     } else {
       state.status = state.taut ? 'holding' : 'set'; state.dragT = Math.max(0, state.dragT - dt * 2);
@@ -197,7 +197,7 @@ export class BoatAnchor {
     const state = this.state, hud = this._hud;
     hud.active = state.active; hud.status = state.status; hud.load = clamp(state.riskLoad); hud.warning = state.status === 'dragging';
     hud.depthFeet = Math.round(state.depth * FEET); hud.scopeFeet = Math.round(state.scope * FEET);
-    hud.text = state.status === 'setting' ? `SETTING · ${hud.depthFeet} FT` : state.status === 'dragging' ? 'DRAGGING' : state.status === 'holding' ? `HOLD · ${hud.depthFeet} FT` : `SET · ${hud.depthFeet} FT`;
+    hud.text = state.status === 'setting' ? `SETTING · ${hud.depthFeet} FT` : state.status === 'dragging' ? '끌림' : state.status === 'holding' ? `HOLD · ${hud.depthFeet} FT` : `SET · ${hud.depthFeet} FT`;
     return hud;
   }
 

@@ -8,7 +8,7 @@ const smooth = (low, high, value) => {
 export const SYNODIC_MONTH_DAYS = 29.53059;
 // Day one opens close to a full moon, then the phase advances continuously with the saved world clock.
 export const LUNAR_START_AGE_DAYS = 13.75;
-export const LUNAR_PHASE_NAMES = Object.freeze(['new moon', 'waxing crescent', 'first quarter', 'waxing gibbous', 'full moon', 'waning gibbous', 'last quarter', 'waning crescent']);
+export const LUNAR_PHASE_NAMES = Object.freeze(['신월', '초승달', '상현달', '차오르는 보름달', '보름달', '이지는 보름달', '하현달', '그믐달']);
 
 export function lunarAgeAt(minutes) {
   const days = Number.isFinite(minutes) ? minutes / 1440 : 0;

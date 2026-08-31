@@ -175,7 +175,7 @@ export class DolphinPod {
 
   sight() {
     if (this.sighted) return;
-    this.sighted = true; this.nature.dolphinPodsSeen++; this.game.toast('Bottlenose pod', "Hold course. Don't turn in after them.", 3.2);
+    this.sighted = true; this.nature.dolphinPodsSeen++; this.game.toast('큰코 돌고래 무리', "Hold course. Don't turn in after them.", 3.2);
     const day = Number(this.environment.day) || 1;
     if (this.nature.dolphinAdvisoryDay !== day) {
       this.nature.dolphinAdvisoryDay = day;
@@ -187,17 +187,17 @@ export class DolphinPod {
   logRide() {
     if (this.rideLogged) return;
     this.rideLogged = true; this.nature.dolphinPasses++; this.game.bounties?.event?.('dolphinpass', 1);
-    this.game.toast('Clean dolphin pass', 'Steady course. The pod left on its own.', 3); this.audio?.pickup?.(); this.game.persist();
+    this.game.toast('Clean dolphin pass', '방향 유지. 무리가 스스로 떠났습니다.', 3); this.audio?.pickup?.(); this.game.persist();
   }
 
   disturb(reason) {
     if (this.disturbed) { this.transition('avoid'); return; }
     this.disturbed = true; this.nature.dolphinDisturbances++;
-    const fast = reason === 'high-speed pass';
+    const fast = reason === '고속 접근';
     this.game.tricks?.bust?.('WILDLIFE'); this.audio?.warn?.();
-    this.game.toast('Pod diving', fast ? 'High-speed pass reported to FWC.' : 'Break off. Do not chase or circle them.', 3.1);
+    this.game.toast('무리 잠수', fast ? 'High-speed pass reported to FWC.' : '멈추세요. 추격하거나 빙빙 돌지 마세요.', 3.1);
     this.law?.add?.(fast ? 0.62 : 0.45, `marine mammal harassment · ${reason}`, false);
-    this.reputation?.change?.('fwc', fast ? -0.38 : -0.26, 'dolphin-harassment', 'FWC logged the tower boat crowding a dolphin pod.', false);
+    this.reputation?.change?.('fwc', fast ? -0.38 : -0.26, 'dolphin-harassment', 'FWC가 타워 보트가 돌고래 무리를 휘젓고 다녔다고 기록했습니다.', false);
     this.game.persist(); this.transition('avoid');
   }
 
@@ -208,9 +208,9 @@ export class DolphinPod {
     p.hit = Math.max(p.hit, 4.6); p.hitNormal.set(dx / d, dz / d); p.hitTag = 'dolphin'; p.hitObj = animal; p.vel.multiplyScalar(0.8);
     p.vy = Math.max(p.vy, 0.8); p.rollVel += (this.rand() < 0.5 ? -1 : 1) * 1.6; p.angVel += (this.rand() - 0.5) * 1.1;
     this.game.tricks?.bust?.('WILDLIFE'); this.audio?.thud?.(1.3); this.game.shake = Math.min(1, this.game.shake + 0.62);
-    this.game.toast('Dolphin strike', 'Kill the throttle. FWC needs the position.', 3.5);
-    this.law?.add?.(1.55, 'protected dolphin strike', false);
-    this.reputation?.change?.('fwc', -1.05, 'dolphin-strike', 'A dolphin strike went into the FWC file.', true);
+    this.game.toast('돌고래 충돌', '스로틀 차단. FWC가 위치를 필요로 합니다.', 3.5);
+    this.law?.add?.(1.55, '보호 돌고래 충돌', false);
+    this.reputation?.change?.('fwc', -1.05, 'dolphin-strike', '돌고래 충돌 기록이 FWC 파일에 남았습니다.', true);
     this.game.persist(); this.transition('avoid');
   }
 
@@ -294,13 +294,13 @@ export class DolphinPod {
     input.headingAlignment = this._boatFwd.dot(this._podFwd); input.pursuitSeconds = this.pursuitT;
     const response = dolphinVesselResponse(input);
     if (response === 'avoid' && this.state !== 'avoid' && this.state !== 'depart') {
-      const reason = this.pursuitT > 2.8 ? 'vessel pursuit' : this.phys.speed > 10.5 ? 'high-speed pass' : 'close circling';
+      const reason = this.pursuitT > 2.8 ? 'vessel pursuit' : this.phys.speed > 10.5 ? '고속 접근' : 'close circling';
       this.disturb(reason);
     }
 
     if (this.state === 'travel') {
       this.travel(dt);
-      if (response === 'approach' && this.stateT > 2.2) { this.transition('approach'); this.game.toast('Pod turning in', 'Hold speed and heading. Let them choose the distance.', 2.8); }
+      if (response === 'approach' && this.stateT > 2.2) { this.transition('approach'); this.game.toast('무리 방향 전환', '속도와 방향을 유지하세요. 거리는 그들이 결정합니다.', 2.8); }
     } else if (this.state === 'approach') {
       const bow = 12.5, side = 4 * this.side;
       const targetX = this.phys.pos.x + this._boatFwd.x * bow + this._boatRight.x * side;
@@ -308,7 +308,7 @@ export class DolphinPod {
       this.moveToward(targetX, targetZ, clamp(this.phys.speed + 1.4, 3.2, 8.8), 1.05, dt);
       if (response === 'approach') this.unsteadyT = Math.max(0, this.unsteadyT - dt * 2); else this.unsteadyT += dt;
       if (distance < 15 && input.headingAlignment > 0.42 && response === 'approach') {
-        this.transition('ride'); this.game.toast('Dolphins at the bow', 'Ease back. Let them leave on their own.', 3.2);
+        this.transition('ride'); this.game.toast('선수에 돌고래', '뒤로 물러서세요. 스스로 떠나게 두세요.', 3.2);
       } else if (this.unsteadyT > 4) this.transition('depart');
     } else if (this.state === 'ride') {
       const bow = 11.5, side = 3 * this.side;
@@ -331,7 +331,7 @@ export class DolphinPod {
 
     this.updateAnimals(dt, time);
     if (!this.sighted && distance < 155) this.sight();
-    if (this.state !== 'avoid' && this.state !== 'depart' && !this.nearMissed && distance < 13 && this.phys.speed > 9.2) { this.nearMissed = true; this.disturb('high-speed pass'); }
+    if (this.state !== 'avoid' && this.state !== 'depart' && !this.nearMissed && distance < 13 && this.phys.speed > 9.2) { this.nearMissed = true; this.disturb('고속 접근'); }
     if (this.phys.speed > 2.8 && !this.phys.airborne) for (const animal of this.animals) {
       const waterY = this.water.waveHeight(animal.x, animal.z, time);
       if (animal.y > waterY - 1.25 && Math.hypot(animal.x - this.phys.pos.x, animal.z - this.phys.pos.y) < 2.35) { this.strike(animal); break; }

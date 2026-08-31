@@ -280,10 +280,10 @@ export function applyHurricanePassage(values, passage, blend = 1) {
 }
 
 const HURRICANE_ALERTS = {
-  'front-eyewall': ['Leading eyewall', 'The strongest wind and blinding rain are closing over the channel.'],
-  eye: ['Eye overhead', 'Do not trust the calm. Surge and rough water remain; the wind will return from the opposite quarter.'],
-  'back-eyewall': ['Backside eyewall', 'Wind reversing. Loose debris will move from the opposite quarter.'],
-  'trailing-bands': ['Eyewall clear', 'The worst wind has passed, but surge and trailing squalls remain.'],
+  'front-eyewall': ['선두 아이월', '가장 강한 바람과 장님이 되게 하는 비가 수로 위를 덮치고 있습니다.'],
+  eye: ['아이 정점 통과', 'Do not trust the calm. Surge and rough water remain; the wind will return from the opposite quarter.'],
+  'back-eyewall': ['후방 아이월', '바람 방향 반전. 헐거운 잔해는 반대쪽 사분면에서 이동합니다.'],
+  'trailing-bands': ['아이월 통과', '최악의 바람은 지나갔지만 해일과 후행 스콜은 계속됩니다.'],
 };
 
 // Wind values are metres per second. A hurricane is intentionally uncommon in the natural
@@ -292,12 +292,12 @@ const WEATHER = {
   fair: {
     label: 'Fair', cloud: 0.49, rain: 0, hail: 0, wind: 3.5, sea: 0.08, fog: 0.00028,
     exposure: 1.02, surge: 0, lightning: 0, storm: 0, duration: [140, 230],
-    call: 'Blue sky opening over the lower river.',
+    call: '하류 강 위로 파란 하늘이 열리고 있습니다.',
   },
   fog: {
-    label: 'Dense fog', cloud: 0.52, rain: 0, hail: 0, wind: 1.6, sea: 0.04, fog: 0.0034,
+    label: '짙은 안개', cloud: 0.52, rain: 0, hail: 0, wind: 1.6, sea: 0.04, fog: 0.0034,
     exposure: 0.9, surge: 0, lightning: 0, storm: 0.02, duration: [95, 170],
-    call: 'Dense fog in the back cuts. Slow down, listen, and sound before blind bends.',
+    call: '뒷골 수로 짙은 안개. 감속하고 막다른 커브 전 경적을 울려라.',
   },
   overcast: {
     label: 'Overcast', cloud: 0.40, rain: 0.04, hail: 0, wind: 6.5, sea: 0.28, fog: 0.00042,
@@ -312,22 +312,22 @@ const WEATHER = {
   thunderstorm: {
     label: 'Thunderstorm', cloud: 0.24, rain: 1, hail: 0.08, wind: 18, sea: 1.05, fog: 0.00096,
     exposure: 0.68, surge: 0.12, lightning: 0.9, storm: 0.9, duration: [75, 140],
-    call: 'Severe thunderstorm. Get out of the open water.',
+    call: '강한 뇌우. 외해에서 벗어나라.',
   },
   hail: {
-    label: 'Hail storm', cloud: 0.22, rain: 0.78, hail: 1, wind: 20, sea: 0.9, fog: 0.00105,
+    label: '우박 폭풍', cloud: 0.22, rain: 0.78, hail: 1, wind: 20, sea: 0.9, fog: 0.00105,
     exposure: 0.65, surge: 0.08, lightning: 0.65, storm: 0.94, duration: [45, 85],
-    call: 'Hail core overhead. Keep your face down.',
+    call: '우박 코어 머리 위. 얼굴을 가려라.',
   },
   tropical: {
-    label: 'Tropical storm', cloud: 0.20, rain: 0.94, hail: 0, wind: 25, sea: 1.45, fog: 0.00108,
+    label: '열대 폭풍', cloud: 0.20, rain: 0.94, hail: 0, wind: 25, sea: 1.45, fog: 0.00108,
     exposure: 0.63, surge: 0.32, lightning: 0.45, storm: 1, duration: [120, 210],
-    call: 'Tropical storm bands have reached the bayou.',
+    call: '열대 폭풍 밴드가 베이유에 도달했습니다.',
   },
   hurricane: {
     label: 'Hurricane', cloud: 0.16, rain: 1, hail: 0.12, wind: 36, sea: 2.15, fog: 0.00134,
     exposure: 0.56, surge: 0.9, lightning: 0.62, storm: 1, duration: [150, 250],
-    call: 'Hurricane warning. Surge is already in the backwater.',
+    call: '허리케인 경고. 해일이 이미 뒷물로 진입했습니다.',
   },
 };
 const WEATHER_ORDER = Object.keys(WEATHER);
@@ -532,7 +532,7 @@ export class Environment {
     }
     if (e.code === 'KeyH' && this.hornCooldown <= 0 && this.game.playing && !this.game.paused && !this.game.menuOpen && !this.game.mapOpen) {
       const prolonged = this.restrictedVisibility > 0.45;
-      if (prolonged) { this.audio.fogHorn(0.34); this.game.toast('Prolonged blast', 'Restricted visibility · four to six seconds', 2.2); }
+      if (prolonged) { this.audio.fogHorn(0.34); this.game.toast('Prolonged blast', '시야 제한 · 4~6초', 2.2); }
       else this.audio.horn(0.38);
       this.hornCooldown = prolonged ? 5.1 : 0.65;
       this.traffic?.signalPlayerHorn(prolonged);

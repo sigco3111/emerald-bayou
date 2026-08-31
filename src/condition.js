@@ -75,17 +75,17 @@ export class BoatCondition {
   service() {
     const at = this.serviceHere; if (!at) return;
     const S = this.state, total = this.estimate(at), hullBefore = S.hull;
-    if (total <= 1 && S.bilge < 0.01 && S.breach < 0.005 && S.cageFouling < 0.005) { this.game.toast('Boat is ready', `${at.name} · tank full · bilge dry`, 2.4); return; }
+    if (total <= 1 && S.bilge < 0.01 && S.breach < 0.005 && S.cageFouling < 0.005) { this.game.toast('보트 준비 완료', `${at.name} · 탱크 가득 · 빌지 마름`, 2.4); return; }
 
     let budget = Math.max(0, this.game.save.cash), spent = 0;
     if (budget <= 0 && at.home && S.fuel < 2.5) {
       S.fuel = 2.5; S.hull = Math.max(S.hull, 25); S.engine = Math.max(S.engine, 30); S.bilge = 0; S.breach = 0; S.cageFouling = 0; this.clearProgress = 0; this.repairHullVisuals(hullBefore);
-      this.game.persist(); this.audio.pickup(); this.game.toast('Dock fuel', 'Two and a half gallons. Enough to get working again.', 3); return;
+      this.game.persist(); this.audio.pickup(); this.game.toast('독 연료', '2.5 갤런. 다시 일할 수 있을 만큼은 됩니다.', 3); return;
     }
     if (budget <= 0 && !at.home && this.game.reputation && this.game.reputation.extendsCredit() && S.fuel < 2) {
-      S.fuel = 2; this.game.persist(); this.audio.pickup(); this.game.toast('On the camp book', 'Two gallons. Settle it when work comes in.', 3); return;
+      S.fuel = 2; this.game.persist(); this.audio.pickup(); this.game.toast('캠프 외상 정리에', '2 갤런. 일이 들어오면 정산하세요.', 3); return;
     }
-    if (budget <= 0) { this.audio.warn(); this.game.toast('No credit here', `Full service is $${total}.`, 2.5); return; }
+    if (budget <= 0) { this.audio.warn(); this.game.toast('여기서는 외상 불가', `전체 정비비는 $${total}입니다.`, 2.5); return; }
 
     const buy = (need, price, apply) => {
       const amount = Math.min(need, budget / price); if (amount <= 0) return;
@@ -102,7 +102,7 @@ export class BoatCondition {
     const charge = Math.min(this.game.save.cash, Math.ceil(spent)); if (charge) this.game.addCash(-charge);
     this.game.persist(); this.warned = {}; this.audio.checkpoint();
     const complete = this.estimate(at) <= 2;
-    this.game.toast(complete ? 'Boat serviced' : 'Partial service', `${at.name} · $${charge} · ${S.fuel.toFixed(1)} gal`, 3);
+    this.game.toast(complete ? '보트 정비 완료' : '부분 정비', `${at.name} · $${charge} · ${S.fuel.toFixed(1)} 갤런`, 3);
     this.render();
   }
 
@@ -157,8 +157,8 @@ export class BoatCondition {
     if (this.towPending || !this.needsTow()) return;
     this.towPending = true; this.towStage = 'inbound'; this.towT = 0; this.towHold = 0; this.audio.warn();
     const traffic = this.traffic || this.game.life?.traffic, dispatched = traffic?.requestTow?.() || false;
-    this.game.toast('Tow on the radio', dispatched ? 'FWC 27 is turning toward you. Hold position.' : 'The tower has your position. Hold with the boat.', 3);
-    if (dispatched) this.radio?.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: 'Tower Boat, twenty-seven copies disabled hull. Hold position and leave room on the approach.', priority: 4, key: 'tow:dispatch', cooldown: 0 });
+    this.game.toast('무전의 견인', dispatched ? 'FWC 27호가 당신 쪽으로 향하고 있습니다. 위치를 유지하세요.' : '타워가 당신 위치를 확보했습니다. 보트와 함께 멈춰 계세요.', 3);
+    if (dispatched) this.radio?.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '타워 보트, 27호가 불능 선체를 확인했습니다. 위치를 유지하고 접근 공간을 남겨두세요.', priority: 4, key: 'tow:dispatch', cooldown: 0 });
     else this.finishTow(true);
   }
 
@@ -166,15 +166,15 @@ export class BoatCondition {
     if (!this.towPending || this.towStage === 'moving') return;
     const traffic = this.traffic || this.game.life?.traffic; traffic?.cancelTow?.(); this.towStage = 'moving';
     if (!fallback) {
-      this.audio.checkpoint(); this.game.toast('Tow line aboard', 'Twenty-seven has the bow. Securing for the run home.', 2.8);
-      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: 'Line is aboard and the tower boat is secure. We are taking the slow water home.', priority: 3, key: 'tow:line-aboard', cooldown: 0 });
+      this.audio.checkpoint(); this.game.toast('견인 라인 탑승', '27호가 선수부를 잡았습니다. 귀환 항해를 위해 고정 중.', 2.8);
+      this.radio?.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '라인이 탑승했고 타워 보트는 고정되었습니다. 천천히 집으로 모시고 갑니다.', priority: 3, key: 'tow:line-aboard', cooldown: 0 });
     }
     this.game.fadeTo(() => {
       const S = this.state, charge = Math.min(120, Math.max(0, this.game.save.cash)), hullBefore = S.hull;
       this.phys.reset(this.startX, this.startZ, 0); this.phys.y = this.water.waveHeight(this.startX, this.startZ, 0);
       S.fuel = Math.max(S.fuel, 4); S.hull = Math.max(S.hull, 55); S.engine = Math.max(S.engine, 50); S.bilge = 0; S.breach = 0; S.cageFouling = 0; this.clearProgress = 0; this.repairHullVisuals(hullBefore);
       if (charge) this.game.addCash(-charge); this.game.persist(); this.towPending = false; this.towStage = ''; this.towT = 0; this.towHold = 0; this.warned = {};
-      this.game.toast('Back at the tower', charge ? `Tow and emergency work · $${charge}` : 'They will settle up with you later.', 3.2);
+      this.game.toast('타워 귀환', charge ? `견인 및 응급 작업 · $${charge}` : '나중에 정산해 주겠다고 합니다.', 3.2);
     });
   }
 
@@ -187,8 +187,8 @@ export class BoatCondition {
     if (!A || A.failed || !A.active || this.towT > 95) { this.finishTow(true); return; }
     if (A.arrived) {
       if (this.towStage !== 'line') {
-        this.towStage = 'line'; this.towHold = 0; this.audio.warn(); this.game.toast('FWC 27 alongside', 'Prop stopped. Passing the tow line.', 2.7);
-        this.radio?.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: 'Twenty-seven is alongside. Tower Boat, stay seated and reach for the yellow line.', priority: 4, key: 'tow:alongside', cooldown: 0 });
+        this.towStage = 'line'; this.towHold = 0; this.audio.warn(); this.game.toast('FWC 27호 나란히 접근', '프로펠러 정지. 견인 라인 넘기는 중.', 2.7);
+        this.radio?.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '27호가 옆에 붙었습니다. 타워 보트, 자리 지키고 노란 라인에 손을 뻗으세요.', priority: 4, key: 'tow:alongside', cooldown: 0 });
       }
       this.towHold += dt; if (this.towHold >= 2.2) this.finishTow(false);
     } else { this.towStage = 'inbound'; this.towHold = 0; }
@@ -211,12 +211,12 @@ export class BoatCondition {
       this.foulingAbuseT += dt;
       if (this.foulingAbuseT > 2.4 && !this.warned.foulingThrottle) {
         this.warned.foulingThrottle = true; this.audio.warn();
-        this.game.toast('Prop loading up', 'Throttle is tightening the wrap. Bring it back to idle.', 2.8);
+        this.game.toast('프로펠러 걸림 증가', '스로틀이 감김을 조이고 있습니다. 아이들로 되돌리세요.', 2.8);
       }
     } else { this.foulingAbuseT = Math.max(0, this.foulingAbuseT - dt * 2); if (this.foulingAbuseT <= 0) this.warned.foulingThrottle = false; }
     if (result.cleared) {
       this.clearHeld = false; this.warned.cageFouling = false; this.warned.foulingThrottle = false; this.persistT = 0;
-      this.audio.checkpoint(); this.game.toast('Cage clear', 'The prop spins clean again.', 2.6);
+      this.audio.checkpoint(); this.game.toast('케이지 청소 완료', '프로펠러가 다시 깨끗하게 돕니다.', 2.6);
     }
     const wrap = this.wrapVisual;
     if (wrap) {
@@ -234,8 +234,8 @@ export class BoatCondition {
       if (strike.breachGain > 0.035) {
         this.audio.warn(); this.warned.breach = true;
         const split = S.breach > 0.52 || strike.breachGain > 0.3;
-        this.game.toast(split ? 'Hull split open' : 'Hull breached', split ? 'Water is outrunning the bilge pump.' : 'Pump running. Get off the shallows.', 3.2);
-      } else if (S.hull < 99 || previousBreach > 0) this.game.toast('Bottom strike', `Hull ${Math.round(S.hull)}%`, 2.2);
+        this.game.toast(split ? '선체 갈라짐' : '선체 파공', split ? '물이 빌지 펌프를 앞서고 있습니다.' : '펌프 가동 중. 천수역을 벗어나세요.', 3.2);
+      } else if (S.hull < 99 || previousBreach > 0) this.game.toast('바닥 강타', `선체 ${Math.round(S.hull)}%`, 2.2);
     }
     if (p.hit > 3 && this.damageCd <= 0) {
       const hit = Math.pow(p.hit - 2.4, 1.28) * 0.48, cageImpact = p.hitTag === 'snag' || (p.hitTag === 'storm-debris' && p.hitObj?.cageImpact === true);
@@ -243,8 +243,8 @@ export class BoatCondition {
       this.damage(hit, cageImpact ? hit * 0.46 : p.hitTag === 'boat' ? hit * 0.08 : 0); this.recordHullScar(hit); this.damageCd = 0.38;
       if (fouling > 0.025) {
         S.cageFouling = clamp(S.cageFouling + fouling); this.persistT = 0; this.warned.cageFouling = true; this.audio.warn();
-        this.game.toast('Cage fouled', 'Kill the throttle. Cut the limb free once the prop stops.', 3.2);
-      } else if (hit > 5.5) this.game.toast(cageImpact ? 'Cage strike' : 'Hard strike', cageImpact ? `Engine ${Math.round(S.engine)}% · hull ${Math.round(S.hull)}%` : `Hull ${Math.round(S.hull)}%`, 2.4);
+        this.game.toast('케이지 엉킴', '스로틀을 끊으세요. 프로펠러가 멈추면 가지 청소를 하세요.', 3.2);
+      } else if (hit > 5.5) this.game.toast(cageImpact ? '케이지 강타' : '강한 충격', cageImpact ? `엔진 ${Math.round(S.engine)}% · 선체 ${Math.round(S.hull)}%` : `선체 ${Math.round(S.hull)}%`, 2.4);
     }
     if (p.impact > 4.5 && this.damageCd <= 0) {
       const hit = Math.pow(p.impact - 3.8, 1.22) * 0.24; this.damage(hit, hit * 0.08); this.damageCd = 0.25;
@@ -256,15 +256,15 @@ export class BoatCondition {
   updateWarnings() {
     const S = this.state;
     const once = (key, on, title, line) => { if (on && !this.warned[key]) { this.warned[key] = true; this.audio.warn(); this.game.toast(title, line, 2.7); } else if (!on) this.warned[key] = false; };
-    once('fuel20', S.fuel < 3.6, 'Fuel reserve', `${S.fuel.toFixed(1)} gallons. Find a marked camp.`);
-    once('fuel5', S.fuel < 0.9, 'Running on fumes', 'The tower dock can get you moving even if you are broke.');
-    once('hull50', S.hull < 50, 'Hull taking water', `Hull ${Math.round(S.hull)}% · bilge ${Math.round(S.bilge * 100)}%`);
-    once('breach', S.breach > 0.08, 'Open hull', 'The pump can hold a small tear. A split needs a dock.');
-    once('cageFouling', S.cageFouling > 0.08, 'Prop wrapped', 'Idle the prop, then hold X to cut the cage clear.');
-    once('engine35', S.engine < 35, 'Engine hurt', `${Math.round(S.engine)}% · full power is gone`);
-    once('bilge70', S.bilge > 0.7, 'Bilge high', 'The stern is getting heavy. Get to a dock.');
-    once('bilge90', S.bilge > 0.9, 'Going under', 'The engine is next. Cut power and call a tow.');
-    once('dead', this.needsTow(), 'Boat disabled', 'Press T to call a tow back to the tower.');
+    once('fuel20', S.fuel < 3.6, '연료 부족', `${S.fuel.toFixed(1)} 갤런 남음. 표시된 캠프로 가세요.`);
+    once('fuel5', S.fuel < 0.9, '연료 바닥', '돈이 없어도 타워 독에서 다시 움직일 수 있습니다.');
+    once('hull50', S.hull < 50, '선체 침수 중', `선체 ${Math.round(S.hull)}% · 빌지 ${Math.round(S.bilge * 100)}%`);
+    once('breach', S.breach > 0.08, '선체 개방', '펌프는 작은 찢김을 막을 수 있습니다. 갈라짐은 독이 필요합니다.');
+    once('cageFouling', S.cageFouling > 0.08, '프로펠러 감김', '프로펠러를 공회전시키고 X를 눌러 케이지를 청소하세요.');
+    once('engine35', S.engine < 35, '엔진 손상', `${Math.round(S.engine)}% · 최대 출력 불가`);
+    once('bilge70', S.bilge > 0.7, '빌지 상승', '선미가 무거워지고 있습니다. 독으로 가세요.');
+    once('bilge90', S.bilge > 0.9, '가라앉는 중', '엔진이 다음입니다. 전원을 끊고 견인을 요청하세요.');
+    once('dead', this.needsTow(), '보트 불능', 'T를 눌러 타워로 돌아가는 견인을 요청하세요.');
   }
 
   updatePower(dt) {
@@ -376,24 +376,24 @@ export class BoatCondition {
     if (!this.el || !this.promptEl) return;
     const S = this.state, anchor = this.anchor?.hud?.();
     const row = (name, text, pct) => `<div class="condition-row"><span>${name}</span><b>${text}</b><i><em style="width:${clamp(pct) * 100}%"></em></i></div>`;
-    const anchorRow = anchor?.active ? row('Anchor', anchor.text, 1 - anchor.load) : '';
-    this.el.innerHTML = row('Fuel', `${S.fuel.toFixed(1)} gal`, S.fuel / this.maxFuel) + row('Hull', `${Math.round(S.hull)}%`, S.hull / 100) + row('Engine', `${Math.round(S.engine)}%`, S.engine / 100) + (S.cageFouling > 0.012 ? row('Cage', `${Math.round(S.cageFouling * 100)}% wrap`, 1 - S.cageFouling) : '') + (S.breach > 0.025 ? row('Breach', `${Math.round(S.breach * 100)}%`, 1 - S.breach) : '') + (S.bilge > 0.035 ? row('Bilge', `${Math.round(S.bilge * 100)}%`, 1 - S.bilge) : '') + anchorRow;
+    const anchorRow = anchor?.active ? row('닻', anchor.text, 1 - anchor.load) : '';
+    this.el.innerHTML = row('연료', `${S.fuel.toFixed(1)} 갤런`, S.fuel / this.maxFuel) + row('선체', `${Math.round(S.hull)}%`, S.hull / 100) + row('엔진', `${Math.round(S.engine)}%`, S.engine / 100) + (S.cageFouling > 0.012 ? row('케이지', `${Math.round(S.cageFouling * 100)}% 감김`, 1 - S.cageFouling) : '') + (S.breach > 0.025 ? row('파공', `${Math.round(S.breach * 100)}%`, 1 - S.breach) : '') + (S.bilge > 0.035 ? row('빌지', `${Math.round(S.bilge * 100)}%`, 1 - S.bilge) : '') + anchorRow;
     this.el.classList.toggle('warn', S.fuel < 3.6 || S.hull < 50 || S.engine < 40 || S.cageFouling > 0.08 || S.breach > 0.08 || S.bilge > 0.55 || anchor?.warning);
     if (!this.enabled || this.game.paused) { this.promptEl.classList.remove('on'); return; }
     if (this.towPending) {
       const A = (this.traffic || this.game.life?.traffic)?.towStatus?.(), dist = A?.active ? `${Math.max(0, Math.round(A.distance * 3.28084 / 10) * 10)} ft` : '';
-      this.promptEl.innerHTML = `<b>TOW</b> ${this.towStage === 'line' ? 'FWC 27 alongside · line coming aboard' : `FWC 27 inbound${dist ? ` · ${dist}` : ''}`}`; this.promptEl.classList.add('on');
+      this.promptEl.innerHTML = `<b>견인</b> ${this.towStage === 'line' ? 'FWC 27호 접근 · 라인 탑승 중' : `FWC 27호 진입 중${dist ? ` · ${dist}` : ''}`}`; this.promptEl.classList.add('on');
     } else if (this.serviceHere) {
       const cost = this.estimate(this.serviceHere), note = this.serviceHere.note ? ` · ${this.serviceHere.note}` : '';
-      this.promptEl.innerHTML = `<b>F</b> ${cost > 1 || S.bilge > 0.01 ? `service at ${this.serviceHere.name} · $${cost}${note}` : `boat ready · ${this.serviceHere.name}${note}`}`; this.promptEl.classList.add('on');
-    } else if (this.needsTow()) { this.promptEl.innerHTML = '<b>T</b> call a tow to the tower · up to $120'; this.promptEl.classList.add('on'); }
+      this.promptEl.innerHTML = `<b>F</b> ${cost > 1 || S.bilge > 0.01 ? `${this.serviceHere.name}에서 정비 · $${cost}${note}` : `보트 준비 완료 · ${this.serviceHere.name}${note}`}`; this.promptEl.classList.add('on');
+    } else if (this.needsTow()) { this.promptEl.innerHTML = '<b>T</b> 타워까지 견인 요청 · 최대 $120'; this.promptEl.classList.add('on'); }
     else if (this.needsCageClear()) {
       const ready = this.foulingResult.ready;
       const key = '<span class="input-keyboard"><b>X</b></span><span class="input-gamepad"><b>B</b></span>';
-      this.promptEl.innerHTML = ready ? `${key} hold to cut cage debris · ${Math.round(this.clearProgress * 100)}%` : `${key} cut cage debris · bring throttle to idle first`;
+      this.promptEl.innerHTML = ready ? `${key} 케이지 잔해 청소 누르고 있기 · ${Math.round(this.clearProgress * 100)}%` : `${key} 케이지 잔해 청소 · 먼저 스로틀을 아이들로`;
       this.promptEl.classList.add('on');
     }
-    else if (anchor?.active) { this.promptEl.innerHTML = '<b>G</b> weigh anchor'; this.promptEl.classList.add('on'); }
+    else if (anchor?.active) { this.promptEl.innerHTML = '<b>G</b> 닻을 들어올리라'; this.promptEl.classList.add('on'); }
     else this.promptEl.classList.remove('on');
   }
 }

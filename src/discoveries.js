@@ -15,38 +15,38 @@ export const FIELD_DISCOVERIES = Object.freeze([
   Object.freeze({
     id: 'roseate-roost', kind: 'roost', name: '붉은따오기 집단', short: '붉은따오기', region: 'rookery', place: '루커리 레이크',
     color: '#ed91ab', reward: 225, hold: 7, minDistance: 20, maxDistance: 54, maxMph: 4.8,
-    hint: 'Rookery Lakes · calm water around first or last light',
-    intro: 'Nine roseates are settled on the inside bank. Keep the wake off them.',
-    success: 'Seven adults and two juveniles logged without flushing the roost.',
-    rumor: 'Roseates dropped into the west rookery at first light. If you find the pink birds, bring the prop down before your wake gets there.',
-    followup: 'Bird Crew copied nine roseates from the tower boat log. That roost had two juveniles in it, so the inside bank is closed to sampling today.',
+    hint: '루커리 레이크 · 새벽 또는 황혼의 잔잔한 수면',
+    intro: '안쪽 둑에 아홉 마리의 붉은따오기가 앉아 있습니다. 웨이크가 닿지 않게 하세요.',
+    success: '성체 일곱 마리와 어린 새 두 마리를 둥지를 흩뜨리지 않고 기록했습니다.',
+    rumor: '새벽빛에 서쪽 루커리로 붉은따오기들이 내려앉았습니다. 분홍빛 새를 본다면 웨이크가 닿기 전에 프로펠러를 멈추세요.',
+    followup: '조류 팀이 타워 보트 로그에서 아홉 마리를 확인했습니다. 그 둥지에는 어린 새 두 마리가 있었으므로 오늘은 안쪽 둑에서 표본 채집이 금지됩니다.',
   }),
   Object.freeze({
     id: 'tagged-sawfish', kind: 'sawfish', name: '표지 부착 톱니 상어', short: '표지 상어', region: 'mangrove', place: '맹그로브 리치',
     color: '#71c9be', reward: 340, hold: 9, minDistance: 14, maxDistance: 42, maxMph: 6,
-    hint: 'Mangrove Reach · a rising tide near dawn or dusk',
-    intro: 'The receiver is catching an acoustic tag. Track the ping and leave room around the animal.',
-    success: 'Tag, length and moving position logged without crowding the animal.',
-    rumor: 'The sawfish receiver woke up in Mangrove Reach on the flood. It is a live tag, not a loose transmitter. Follow the ping at idle.',
-    followup: 'The sawfish fix matched a female tagged off the Gulf three years ago. The biologists have her back on the nursery-water map.',
+    hint: '맹그로브 리치 · 새벽 또는 황혼 무렵의 밀물',
+    intro: '수신기가 음향 표지 신호를 잡고 있습니다. 핑을 따라가되 동물에게 충분한 공간을 남기세요.',
+    success: '표지, 길이, 이동 위치를 동물에게 다가가지 않고 기록했습니다.',
+    rumor: '톱니 상어 수신기가 밀물 때 맹그로브 리치에서 깨어났습니다. 헐거워진 송신기가 아니라 살아있는 표지입니다. 정지 상태로 핑을 따라가세요.',
+    followup: '톱니 상어 위치가 3년 전 멕시코 만에서 표지한 암컷과 일치합니다. 생물학자들이 그녀를 다시 육묘수 도감에 올렸습니다.',
   }),
   Object.freeze({
     id: 'python-crossing', kind: 'python', name: '수영하는 버마 왕뱀', short: '왕뱀 횡단', region: 'cypress', place: '사이프러스 리치',
     color: '#c8a56c', reward: 275, hold: 7.5, minDistance: 13, maxDistance: 38, maxMph: 4.5,
-    hint: 'Cypress Reach · warm, still water around dusk or dawn',
-    intro: 'Long tan body on the surface. Idle wide and hold it in frame while the field camera resolves.',
-    success: 'Photo, heading and position sent to FWC. No capture attempt made.',
-    rumor: 'A tan-backed python crossed the Cypress Reach cut twice this week. If it swims out again, hold off the wake, get a clean photo and call the position. Keep your hands in the boat.',
-    followup: 'Photo is clean. The invasives crew has the heading and a fresh search box. Keep your hands in the boat.',
+    hint: '사이프러스 리치 · 황혼 또는 새벽의 따뜻하고 잔잔한 물',
+    intro: '수면에 길고 황갈색의 몸체가 보입니다. 정지 상태로 멀리서, 야외 카메라가 잡을 때까지 프레임 안에 담으세요.',
+    success: '사진, 방향, 위치를 FWC에 보냈습니다. 포획 시도는 하지 않았습니다.',
+    rumor: '이번 주 사이프러스 리치 수로를 황갈색 왕뱀이 두 번 건넜습니다. 다시 헤엄쳐 나온다면 웨이크를 피해 깨끗한 사진을 찍고 위치를 알려주세요. 손은 보트 안에 두세요.',
+    followup: '사진이 깨끗합니다. 외래종 대응팀이 방향과 새로운 수색 구역을 확보했습니다. 손은 보트 안에 두세요.',
   }),
   Object.freeze({
     id: 'logging-skiff', kind: 'wreck', name: '해몬드 벌목 보트', short: '벌목 스키프', region: 'cypress', place: 'Cypress Reach',
     color: '#d6b16d', reward: 180,
-    hint: 'Cypress Reach · falling water below the old cypress knees',
-    intro: 'Low water has uncovered a timber skiff and a stamped builder plate.',
-    success: 'Hammond Cypress Company hull 14 added to the chart.',
-    rumor: 'Old aluminium is showing below the cypress knees. If the falling water uncovers a builder plate, copy it before the flood takes it back.',
-    followup: 'That builder number belonged to Hammond hull fourteen, missing since 1962. The county archive finally has a position for it.',
+    hint: '사이프러스 리치 · 오래된 사이프러스 무릎 아래의 썰물',
+    intro: '수위가 낮아져 나무 스키프와 각인된 제조사 명판이 드러났습니다.',
+    success: '해몬드 사이프러스 사 14호 선체가 도감에 추가되었습니다.',
+    rumor: '사이프러스 무릎 아래로 오래된 알루미늄이 보이고 있습니다. 썰물이 제조사 명판을 드러냈다면 밀물이 다시 가져가기 전에 기록하세요.',
+    followup: '그 제조사 번호는 1962년 이후 사라졌던 해몬드 14호 선체에 해당합니다. 카운티 기록 보관소가 드디어 위치를 확보했습니다.',
   }),
 ]);
 
@@ -155,7 +155,7 @@ function makeSpoonbillGeometry() {
 }
 
 function makeRoostRig() {
-  const root = new THREE.Group(); root.name = 'pooled roseate spoonbill roost'; root.visible = false;
+  const root = new THREE.Group(); root.name = '풀링 붉은따오기 군락지'; root.visible = false;
   const birds = [], offsets = [
     [-3.8, -1.1], [-2.3, 1.4], [-0.9, -0.6], [0.8, 1.6], [2.2, -1.3], [3.8, 0.8], [-1.8, -2.5], [1.1, -2.7], [3.1, 2.5],
   ];
@@ -163,7 +163,7 @@ function makeRoostRig() {
     const [x, z] = offsets[i]; birds.push({ x, z, heading: 0.35 + i * 1.71, scale: 0.92 + (i % 4) * 0.045, flyX: Math.cos(i * 1.37), flyZ: Math.sin(i * 1.37) });
   }
   const mesh = new THREE.InstancedMesh(makeSpoonbillGeometry(), new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.88 }), birds.length);
-  mesh.name = 'nine instanced roseate spoonbills'; mesh.castShadow = true; mesh.frustumCulled = false; mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); root.add(mesh);
+  mesh.name = '9개 인스턴스 붉은따오기'; mesh.castShadow = true; mesh.frustumCulled = false; mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); root.add(mesh);
   return { root, birds, mesh, dummy: new THREE.Object3D() };
 }
 
@@ -172,7 +172,7 @@ function triangleGeometry(points) {
 }
 
 function makeSawfishRig() {
-  const root = new THREE.Group(); root.name = 'pooled tagged smalltooth sawfish'; root.visible = false;
+  const root = new THREE.Group(); root.name = '풀링 태그 부착 톱니 상어'; root.visible = false;
   const hide = new THREE.MeshStandardMaterial({ color: 0x697a78, roughness: 0.75, metalness: 0.06 });
   const fin = new THREE.MeshStandardMaterial({ color: 0x5d6d6b, roughness: 0.82, side: THREE.DoubleSide });
   const tagMaterial = new THREE.MeshStandardMaterial({ color: 0xe27a32, roughness: 0.42, emissive: 0x351305, emissiveIntensity: 0.25 });
@@ -209,7 +209,7 @@ function makePythonSegmentGeometry() {
 }
 
 function makePythonRig() {
-  const root = new THREE.Group(); root.name = 'pooled swimming Burmese python'; root.visible = false;
+  const root = new THREE.Group(); root.name = '풀링 수영 버마 왕뱀'; root.visible = false;
   const mesh = new THREE.InstancedMesh(makePythonSegmentGeometry(), new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.78, metalness: 0.02 }), PYTHON_SEGMENT_COUNT);
   mesh.name = 'one 18-segment instanced Burmese python'; mesh.castShadow = true; mesh.frustumCulled = false; mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); root.add(mesh);
   return { root, mesh, dummy: new THREE.Object3D() };
@@ -460,7 +460,7 @@ export class FieldDiscoveryDirector {
     const distance = Math.hypot(active.x - this.phys.pos.x, active.z - this.phys.pos.y), speedMph = this.phys.speed * MPH, wake = this.playerWakeAt(active.x, active.z, t);
     active.distance = distance; active.wake = wake; if (distance < 96) this.reveal(active);
     if (!active.known) return;
-    if ((wake > 0.026 && distance < 78) || (distance < 11 && speedMph > 7)) { this.fail(active, 'The wake reached the bank first. The roost lifted and scattered across the lake.'); return; }
+    if ((wake > 0.026 && distance < 78) || (distance < 11 && speedMph > 7)) { this.fail(active, '웨이크가 먼저 둑에 닿았습니다. 둥지의 새들이 호수 위로 흩어졌습니다.'); return; }
     const step = observationStep(active.definition, { distance, speedMph, wake, dt, progress: active.hold }); active.hold = step.progress;
     if (step.complete) this.complete(active);
   }
@@ -474,7 +474,7 @@ export class FieldDiscoveryDirector {
       active.pingT = 0.65 + (1 - closeness) * 2.8;
     }
     if (distance < 138) this.reveal(active); if (!active.known) return;
-    if (distance < 3.4 && speedMph > 6) { this.fail(active, 'The hull crossed the animal. FWC logged a protected-species strike.', true); return; }
+    if (distance < 3.4 && speedMph > 6) { this.fail(active, '선체가 동물을 가로질렀습니다. FWC가 보호종 충돌을 기록했습니다.', true); return; }
     if (distance < 13 && speedMph > 7.5) { active.spookT = Math.max(active.spookT, 5.5); active.hold = 0; }
     const step = observationStep(active.definition, { distance, speedMph, dt, progress: active.hold }); active.hold = step.progress;
     if (step.complete) this.complete(active);
@@ -489,7 +489,7 @@ export class FieldDiscoveryDirector {
       active.sightT = distance < 112 ? 0.18 : 0.42;
     }
     if (distance < 112 && active.visible) this.reveal(active); if (!active.known) return;
-    if ((wake > 0.034 && distance < 58) || (distance < 8 && speedMph > 5.5)) { this.fail(active, 'Prop wash broke the surface track. The python dropped under the tannin and vanished.'); return; }
+    if ((wake > 0.034 && distance < 58) || (distance < 8 && speedMph > 5.5)) { this.fail(active, '프로펠러 워시가 수면 자국을 깨뜨렸습니다. 왕뱀이 탄닌 아래로 잠수해 사라졌습니다.'); return; }
     const step = observationStep(active.definition, { distance, speedMph, wake, visible: active.visible, dt, progress: active.hold }); active.hold = step.progress;
     if (active.debugInspect) { active.hold = Math.min(active.hold, active.definition.hold * 0.62); return; }
     if (step.complete) this.complete(active);
@@ -498,10 +498,10 @@ export class FieldDiscoveryDirector {
   updateWreck(active) {
     const distance = Math.hypot(active.x - this.phys.pos.x, active.z - this.phys.pos.y), speedMph = this.phys.speed * MPH; active.distance = distance;
     if (distance < 78) this.reveal(active); if (!active.known) return;
-    if (this.environment.waterLevel > -0.025) { this.game.toast('홍수가 명판을 덮었습니다', 'The wreck will show again on another falling tide.', 3.4); this.close(120); return; }
+    if (this.environment.waterLevel > -0.025) { this.game.toast('홍수가 명판을 덮었습니다', '이 잔해는 다음 썰물에 다시 모습을 보일 것입니다.', 3.4); this.close(120); return; }
     if (distance < 14) {
       if (speedMph <= 4.5) { this.setPrompt("스키프의 제조사 명판을 기록"); if (this.interact) this.complete(active); }
-      else this.setPrompt('idle below 4.5 mph to read the plate');
+      else this.setPrompt('4.5 mph 이하로 정지해 명판을 읽으세요');
     } else this.clearPrompt(this.game.dockCamp || this.game.dockJob || this.game.atBoard);
   }
 
@@ -515,7 +515,7 @@ export class FieldDiscoveryDirector {
     }
     active.life -= dt;
     if (active.life <= 0 || Math.hypot(active.x - this.phys.pos.x, active.z - this.phys.pos.y) > 760) {
-      if (active.known) this.game.toast('Field sign lost', 'The water moved on before the observation was complete.', 3.2);
+      if (active.known) this.game.toast('야외 신호 상실', '관찰이 끝나기 전에 물이 흘러갔습니다.', 3.2);
       this.close(100); return;
     }
     if (active.definition.kind === 'roost') this.updateRoost(active, dt, t);
@@ -532,13 +532,13 @@ export class FieldDiscoveryDirector {
 
   hud() {
     const active = this.active; if (!active?.known || this.busy()) return null;
-    if (active.state === 'logged') return { title: 'Field note logged', obj: active.definition.name, sub: active.definition.success };
-    if (active.state === 'failed') return { title: 'Field observation lost', obj: active.definition.name, sub: 'The same conditions may return another day.' };
-    if (active.definition.kind === 'wreck') return { title: 'Low-water field note', obj: active.distance < 14 ? 'Idle alongside and read the builder plate' : '홍수가 덮기 전에 가까이서 작업', sub: 'The plate stays on the wreck. Copy the hull number into the chart.' };
+    if (active.state === 'logged') return { title: '야외 기록 완료', obj: active.definition.name, sub: active.definition.success };
+    if (active.state === 'failed') return { title: '야외 관찰 실패', obj: active.definition.name, sub: '같은 조건이 다른 날 다시 올 수도 있습니다.' };
+    if (active.definition.kind === 'wreck') return { title: '저수위 야외 기록', obj: active.distance < 14 ? '정지해 옆에 붙어 제조사 명판을 읽으세요' : '홍수가 덮기 전에 가까이서 작업', sub: '명판은 잔해에 그대로 남아 있습니다. 선체 번호를 도감에 기록하세요.' };
     const percent = Math.round(active.hold / active.definition.hold * 100), inRange = active.distance >= active.definition.minDistance && active.distance <= active.definition.maxDistance;
-    if (active.definition.kind === 'roost') return { title: 'Roseate roost', obj: `관찰 진행 · ${percent}%`, sub: inRange ? 'Hold below 4.8 mph and keep the wake off the bank' : '새들로부터 20~54 m 거리 유지' };
-    if (active.definition.kind === 'python') return { title: 'Python crossing', obj: `사진 촬영 · ${percent}%`, sub: !active.visible ? 'A bank is blocking the camera. Work into the same cut.' : inRange ? 'Hold below 4.5 mph and keep the wake behind the hull' : 'Stay 13–38 m off. Do not attempt capture.' };
-    return { title: 'Tagged sawfish', obj: `수신기 측정 · ${percent}%`, sub: active.spookT > 0 ? 'Animal spooked. Open the distance and bring the prop down.' : inRange ? '수신기가 태그를 잡을 때까지 6 mph 이하' : '14~42 m에서 핑 추적' };
+    if (active.definition.kind === 'roost') return { title: '붉은따오기 둥지', obj: `관찰 진행 · ${percent}%`, sub: inRange ? '4.8 mph 이하로 유지하고 웨이크가 둑에 닿지 않게 하세요' : '새들로부터 20~54 m 거리 유지' };
+    if (active.definition.kind === 'python') return { title: '왕뱀 횡단', obj: `사진 촬영 · ${percent}%`, sub: !active.visible ? '둑이 카메라를 가립니다. 같은 수로로 다가가세요.' : inRange ? '4.5 mph 이하로 유지하고 웨이크를 선체 뒤에 두세요' : '13~38 m 거리 유지. 포획을 시도하지 마세요.' };
+    return { title: '표지 부착 톱니 상어', obj: `수신기 측정 · ${percent}%`, sub: active.spookT > 0 ? '동물이 놀랐습니다. 거리를 벌리고 프로펠러를 낮추세요.' : inRange ? '수신기가 태그를 잡을 때까지 6 mph 이하' : '14~42 m에서 핑을 추적하세요' };
   }
 
   stamps(out) {

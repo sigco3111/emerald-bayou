@@ -48,7 +48,7 @@ export class WorldIncidents {
     this.kayakObs = { x: 0, z: 0, r: 0.75, tag: 'kayak', onHit: (into, nx, nz) => {
       const e = this.active; if (!e || e.type !== 'search') return;
       e.kickX += -nx * into * 0.36; e.kickZ += -nz * into * 0.36;
-      if (this.hitCd <= 0 && into > 2.2) { this.hitCd = 4; this.game.toast('Easy!', 'The injured paddler is still in that kayak.', 2.3); }
+      if (this.hitCd <= 0 && into > 2.2) { this.hitCd = 4; this.game.toast('살살!', '부상당한 패들러가 아직 카약 안에 있다.', 2.3); }
     } };
     this._f = new THREE.Vector2(); this._flow = new THREE.Vector2();
     this.obLevel = 0; this.obPitch = 1.12; this.obX = 0; this.obZ = 0;
@@ -184,7 +184,7 @@ export class WorldIncidents {
       originX: at.x, originZ: at.z,
       choice: '', choiceT: 0, misdirectT: 0, falseX: 0, falseZ: 0, catchT: 0, interceptCd: 0, intercepts: 0, seen: false, resolved: '', resolveT: 0,
     };
-    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `Twenty-seven is chasing a dark johnboat through ${region.name}. Small craft hold the bends.`, priority: 2, key: `incident:pursuit:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+    this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: `27호가 ${region.name}에서 검은 존보트를 추격 중. 소형 선박은 곡류구간을 피해다.`, priority: 2, key: `incident:pursuit:${Math.floor(this.radio.clock)}`, cooldown: 0 });
   }
 
   startSearch(at) {
@@ -200,7 +200,7 @@ export class WorldIncidents {
       t: 0, life: 105 + Math.random() * 35, ph: Math.random() * 6.28, seen: false, reported: false, reportT: 0,
       resolved: '', resolveT: 0, kickX: 0, kickZ: 0,
     };
-    this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: `Injured paddler overdue in ${region.name}. FWC has the last position. Orange kayak, one person aboard.`, priority: 3, key: `incident:search:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+    this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: `${region.name}에서 부상 패들러 연락 두절. FWC가 마지막 위치를 확보함. 주황 카약, 1인 탑승.`, priority: 3, key: `incident:search:${Math.floor(this.radio.clock)}`, cooldown: 0 });
   }
 
   startShakedown(at) {
@@ -219,7 +219,7 @@ export class WorldIncidents {
       choice: '', choiceT: 0, seen: false, cargoTaken: false, pressure: 0, bumpCd: 1.5, contactCd: 0,
       hostileT: 0, reportT: 0, escapeT: 0, captureT: 0, interceptCd: 0, intercepts: 0, victimHit: false, resolved: '', resolveT: 0,
     };
-    this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: `Mayday. Black johnboat has us pinned in ${region.name}. They are taking the fuel cans. Any boat close, answer now.`, priority: 4, key: `incident:shakedown:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+    this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: `메이데이. ${region.name}에서 검은 존보트가 우리를 가둬놨어. 연료통 뺏는 중. 근처에 보트 있으면 지금 응답 바람.`, priority: 4, key: `incident:shakedown:${Math.floor(this.radio.clock)}`, cooldown: 0 });
   }
 
   updateAgent(A, dt, t, tx, tz, maxSpeed, holdRadius = 0, avoid = null, avoidPlayer = true) {
@@ -299,19 +299,19 @@ export class WorldIncidents {
     const e = this.active; if (!e || e.type !== 'pursuit' || e.choice) return;
     e.choice = side; e.choiceT = e.t; this.clearPrompt();
     if (side === 'fwc') {
-      e.life = Math.min(e.life, 34); this.reputation.change('fwc', 0.75, 'runner-heading', 'You relayed a fleeing boat’s heading to FWC.', true);
-      this.reputation.change('runners', -0.75, 'runner-heading', 'The backchannel heard who called the runner’s turn.', false);
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: 'Tower Boat, copy the heading. Stay out of the wake and let us come through.', priority: 3, key: `incident:heading:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-      this.game.toast('Heading relayed', 'Twenty-seven is cutting the next bend.', 2.8);
+      e.life = Math.min(e.life, 34); this.reputation.change('fwc', 0.75, 'runner-heading', '도주하는 보트의 항로를 FWC에 전달했다.', true);
+      this.reputation.change('runners', -0.75, 'runner-heading', '백채널에서 누가 도주자의 회전을 알렸는지 들었다.', false);
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '타워 보트, 항로 확인. 파도 밖에서 기다려, 우리가 진입한다.', priority: 3, key: `incident:heading:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.game.toast('항로 전달됨', '27호가 다음 곡류를 끊는다.', 2.8);
     } else {
       e.life = Math.min(e.life, 30); e.misdirectT = 14;
       const h = this.rigs.patrol.agent.heading + Math.PI * (Math.random() < 0.5 ? 0.6 : -0.6);
       e.falseX = this.rigs.patrol.agent.x - Math.sin(h) * 260; e.falseZ = this.rigs.patrol.agent.z - Math.cos(h) * 260;
-      this.reputation.change('runners', 0.9, 'false-cut', 'You sent an FWC boat into the wrong cut.', true);
-      this.reputation.change('fwc', -0.9, 'false-cut', 'FWC logged the false traffic from your radio.', false);
-      this.law.add(0.7, 'false position relayed to patrol', false);
-      this.radio.transmit({ channel: 'CH 72', speaker: 'CAL ROOK · LOST KEY', text: 'Wrong cut received. Keep moving and do not answer that channel again.', priority: 3, key: `incident:false-cut:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-      this.game.toast('False cut sent', 'Twenty-seven turned off the runner’s wake.', 2.8);
+      this.reputation.change('runners', 0.9, 'false-cut', 'FWC 보트를 잘못된 수로로 보냈다.', true);
+      this.reputation.change('fwc', -0.9, 'false-cut', 'FWC가 무선에서 보낸 허위 위치를 기록에 남겼다.', false);
+      this.law.add(0.7, '허위 위치를 순찰대에 전달', false);
+      this.radio.transmit({ channel: 'CH 72', speaker: 'CAL ROOK · LOST KEY', text: '잘못된 수로 확인. 계속 이동하고 그 채널에 응답하지 마.', priority: 3, key: `incident:false-cut:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.game.toast('허위 수로 전달', '27호가 도주자의 파도 밖으로 빠졌다.', 2.8);
     }
   }
 
@@ -324,11 +324,11 @@ export class WorldIncidents {
     this.game.persist();
     if (outcome === 'caught') {
       this.rigs.runner.agent.speed *= 0.15;
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: e.choice === 'fwc' ? 'Twenty-seven has the johnboat stopped. Tower Boat’s heading was good.' : 'Twenty-seven has one stopped in the backcountry. Resume normal traffic.', priority: 2, key: `incident:caught:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-      if (e.choice) this.game.bountyToast(`FWC pursuit resolved <b>${e.choice === 'fwc' ? 'heading confirmed' : 'runner stopped'}</b>`);
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'FWC DISPATCH', text: e.choice === 'fwc' ? '27호가 존보트를 멈췄다. 타워 보트의 항로가 좋았다.' : '27호가 백컨트리에서 한 척을 멈췄다. 일반 통신 재개.', priority: 2, key: `incident:caught:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      if (e.choice) this.game.bountyToast(`FWC 추격 해결 <b>${e.choice === 'fwc' ? '항로 확인됨' : '도주자 정지'}</b>`);
     } else {
-      this.radio.transmit({ channel: e.choice === 'runners' ? 'CH 72' : 'FWC TAC', speaker: e.choice === 'runners' ? 'CAL ROOK · LOST KEY' : 'FWC DISPATCH', text: e.choice === 'runners' ? 'That wrong turn bought enough water. The runner is clear.' : 'Twenty-seven lost visual in the cuts. Units return to patrol.', priority: 2, key: `incident:escaped:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-      if (e.choice) this.game.bountyToast(`Backcountry pursuit <b>${e.choice === 'runners' ? 'runner clear' : 'visual lost'}</b>`);
+      this.radio.transmit({ channel: e.choice === 'runners' ? 'CH 72' : 'FWC TAC', speaker: e.choice === 'runners' ? 'CAL ROOK · LOST KEY' : 'FWC DISPATCH', text: e.choice === 'runners' ? '그 실수가 시간을 벌어줬다. 도주자는 클리어.' : '27호가 수로에서 시야를 놓침. 부대 순찰 복귀.', priority: 2, key: `incident:escaped:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      if (e.choice) this.game.bountyToast(`백컨트리 추격 <b>${e.choice === 'runners' ? '도주자 이탈' : '시야 놓침'}</b>`);
     }
   }
 
@@ -351,7 +351,7 @@ export class WorldIncidents {
     const chaseGap = Math.hypot(runner.x - patrol.x, runner.z - patrol.z), d = Math.min(Math.hypot(runner.x - this.phys.pos.x, runner.z - this.phys.pos.y), Math.hypot(patrol.x - this.phys.pos.x, patrol.z - this.phys.pos.y));
     if (d < 210 && !e.seen) e.seen = true;
     if (!e.choice && d < 135 && this.canInteract()) {
-      this.setPrompt('<b>E</b> report the runner’s heading <i>· F send FWC into the wrong cut</i>');
+      this.setPrompt('<b>E</b> 도주자의 항로 보고 <i>· F FWC를 잘못된 수로로 유도</i>');
       if (this.interact) this.choosePursuit('fwc'); else if (this.alternate) this.choosePursuit('runners');
     } else this.clearPrompt();
     if (this.attemptIncidentIntercept(e, patrol, runner, chaseGap)) e.catchT += 0.65;
@@ -376,13 +376,13 @@ export class WorldIncidents {
     if (side === 'fwc') {
       e.state = 'reported'; e.reportT = 0; e.hostileT = 5.5;
       this.setAgent(this.rigs.patrol.agent, e.patrolX, e.patrolZ, e.heading, 5.8);
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: 'Position copied. Keep the work skiff clear. Twenty-seven is coming in from behind the black hull.', priority: 4, key: `incident:shakedown-report:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-      this.game.toast('Position sent', 'The black johnboat heard the call and is turning on you.', 3);
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '위치 확인. 작업 스키프 비워둬. 27호가 검은 선체 뒤에서 진입한다.', priority: 4, key: `incident:shakedown-report:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.game.toast('위치 전달됨', '검은 존보트가 무선 호출을 듣고 우리에게 방향을 틀었다.', 3);
     } else {
       this.transferShakedownCargo(e); e.state = 'escaping'; e.escapeT = 0;
-      this.law.add(1.45, 'aided theft from a work skiff', true);
-      this.radio.transmit({ channel: 'CH 72', speaker: 'BLACK JOHNBOAT', text: 'Tower hull is with us. Put both cans across and back away from the motor.', priority: 4, key: `incident:shakedown-aid:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-      this.game.toast('Backed the johnboat', 'The work skiff is putting your hull description on sixteen.', 3);
+      this.law.add(1.45, '작업 스키프의 연료 절도 공범', true);
+      this.radio.transmit({ channel: 'CH 72', speaker: 'BLACK JOHNBOAT', text: '타워 선체가 우리 편이야. 두 통 모두 옮기고 모터에서 빠져.', priority: 4, key: `incident:shakedown-aid:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.game.toast('존보트 편을 들었음', '작업 스키프가 우리 선체 특징을 16번 채널에 신고한다.', 3);
     }
     return true;
   }
@@ -392,8 +392,8 @@ export class WorldIncidents {
     e.choice = 'locals'; e.choiceT = e.t; e.state = 'fleeing'; e.escapeT = 0; this.clearPrompt();
     this.rigs.runner.agent.speed *= clamp(1 - into * 0.025, 0.62, 0.86);
     this.audio.horn(0.24);
-    this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: 'Black hull is breaking off. Tower Boat, keep them moving and leave us room to restart.', priority: 3, key: `incident:shakedown-driven:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-    this.game.toast('Johnboat driven off', 'They lost the fuel cans and are running for open water.', 2.8);
+    this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: '검은 선체가 빠진다. 타워 보트, 계속 몰아붙이고 우리 재시동할 공간 남겨줘.', priority: 3, key: `incident:shakedown-driven:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+    this.game.toast('존보트 퇴치됨', '연료통을 잃고 개방 수로로 도주한다.', 2.8);
     return true;
   }
 
@@ -403,28 +403,28 @@ export class WorldIncidents {
     if (outcome !== 'missed') this.stats.resolved = (this.stats.resolved || 0) + 1;
     if (outcome === 'captured') {
       this.stats.fwc = (this.stats.fwc || 0) + 1;
-      this.reputation.change('fwc', 0.95, 'fuel-theft-report', 'Your moving position put FWC onto a fuel theft in progress.', true);
-      this.reputation.change('locals', 0.7, 'work-skiff-help', 'You kept a work skiff’s fuel aboard and brought the patrol in.', false);
-      this.reputation.change('runners', -0.75, 'fuel-theft-report', 'The backchannel heard who held the black johnboat for twenty-seven.', false);
-      this.game.addCash(150); this.game.bountyToast('FWC theft assist <b>+$150</b>');
-      this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: 'Twenty-seven alongside the black johnboat. Fuel cans are still on the work skiff. Tower Boat can clear.', priority: 3, key: `incident:shakedown-captured:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.reputation.change('fwc', 0.95, 'fuel-theft-report', '움직이던 위치 정보로 FWC가 현재 진행 중인 연료 절도를 잡았다.', true);
+      this.reputation.change('locals', 0.7, 'work-skiff-help', '작업 스키프의 연료를 배에 그대로 두고 순찰을 불러들였다.', false);
+      this.reputation.change('runners', -0.75, 'fuel-theft-report', '백채널에서 누가 검은 존보트를 27호에게 붙잡혔는지 들었다.', false);
+      this.game.addCash(150); this.game.bountyToast('FWC 절도 협조 <b>+$150</b>');
+      this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '27호가 검은 존보트 옆에 붙었음. 연료통은 작업 스키프에 그대로. 타워 보트 이탈 가능.', priority: 3, key: `incident:shakedown-captured:${Math.floor(this.radio.clock)}`, cooldown: 0 });
     } else if (outcome === 'driven-off') {
       this.stats.locals = (this.stats.locals || 0) + 1;
-      this.reputation.change('locals', 0.85, 'work-skiff-defended', 'You put your hull between a work skiff and the crew taking its fuel.', true);
-      this.reputation.change('fwc', 0.2, 'fuel-theft-broken-up', 'A work skiff reported that the tower boat broke up a fuel theft.', false);
-      this.reputation.change('runners', -0.65, 'johnboat-driven-off', 'The black johnboat crew remembers who hit their hull.', false);
-      this.game.bountyToast('Work skiff clear');
-      this.radio.transmit({ channel: 'CH 68', speaker: 'WORK SKIFF', text: 'Motor caught. Both cans are aboard. Tower Boat, we are clear of the cut.', priority: 2, key: `incident:shakedown-clear:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.reputation.change('locals', 0.85, 'work-skiff-defended', '작업 스키프와 연료를 뺏던 승조원 사이에 선체를 들이받았다.', true);
+      this.reputation.change('fwc', 0.2, 'fuel-theft-broken-up', '작업 스키프가 타워 보트가 연료 절도를 깨부수었다고 신고했다.', false);
+      this.reputation.change('runners', -0.65, 'johnboat-driven-off', '검은 존보트 승조원이 자기 선체를 친 hull을 기억한다.', false);
+      this.game.bountyToast('작업 스키프 안전');
+      this.radio.transmit({ channel: 'CH 68', speaker: 'WORK SKIFF', text: '모터 시동 걸림. 두 통 모두 선상. 타워 보트, 수로에서 빠짐.', priority: 2, key: `incident:shakedown-clear:${Math.floor(this.radio.clock)}`, cooldown: 0 });
     } else if (outcome === 'aided') {
       this.stats.runners = (this.stats.runners || 0) + 1;
-      this.reputation.change('runners', 1.05, 'fuel-theft-aided', 'The black johnboat paid the hull that made the work skiff stand down.', true);
-      this.reputation.change('locals', -1.1, 'fuel-theft-aided', 'A work crew named your hull after its fuel was taken.', false);
-      this.reputation.change('fwc', -0.65, 'fuel-theft-aided', 'The victim put the tower airboat on the theft report.', false);
-      this.game.addCash(175); this.game.bountyToast('Backchannel cut <b>+$175</b>');
-      this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: 'FWC, copy tower airboat aiding the black johnboat. They took both cans and are outbound.', priority: 4, key: `incident:shakedown-witness:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.reputation.change('runners', 1.05, 'fuel-theft-aided', '검은 존보트가 작업 스키프를 항복시킨 hull에 보상을 줬다.', true);
+      this.reputation.change('locals', -1.1, 'fuel-theft-aided', '연료가 뺏긴 뒤 작업 승조원이 hull 이름을 지목했다.', false);
+      this.reputation.change('fwc', -0.65, 'fuel-theft-aided', '피해자가 타워 에어보트를 절도 사건에 신고했다.', false);
+      this.game.addCash(175); this.game.bountyToast('백채널 수로 <b>+$175</b>');
+      this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: 'FWC, 타워 에어보트가 검은 존보트를 도왔음. 두 통 가져가고 외해로 나감.', priority: 4, key: `incident:shakedown-witness:${Math.floor(this.radio.clock)}`, cooldown: 0 });
     } else {
       this.stats.missed = (this.stats.missed || 0) + 1; this.transferShakedownCargo(e);
-      this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: 'Black johnboat is gone with both cans. We are disabled and drifting. Any tow near the call, answer sixteen.', priority: 3, key: `incident:shakedown-missed:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: '검은 존보트가 두 통 들고 떠남. 우리 기관 불능 표류 중. 근처에 견인 가능하면 16번 응답 바람.', priority: 3, key: `incident:shakedown-missed:${Math.floor(this.radio.clock)}`, cooldown: 0 });
     }
     const memory = outcome === 'captured' ? 'fuel-theft-stopped' : outcome === 'driven-off' ? 'fuel-theft-driven-off' : outcome === 'aided' ? 'fuel-theft-aided' : 'fuel-theft-missed';
     this.encounters.remember(memory, e.region?.name || '', 'incident'); this.game.persist(); return true;
@@ -440,7 +440,7 @@ export class WorldIncidents {
     this.impactAgent(A, Math.max(2.2, relativeClosing), nx, nz, 0.34, 1.8);
     p.hit = Math.max(p.hit, 4.6); p.hitNormal.set(nx, nz); p.hitTag = 'boat'; p.angVel += side * 1.25; p.rollVel += side * 1.35;
     this.game.shake = Math.max(this.game.shake, 0.3); if (this.condition) this.condition.damage(0.34, 0.05); this.audio.thud(0.78);
-    this.game.toast('Johnboat ram', 'They are trying to knock the tower hull off the radio call.', 2.5); return true;
+    this.game.toast('존보트 돌진', '타워 hull을 무선 호출에서 떨어뜨리려 하고 있다.', 2.5); return true;
   }
 
   updateShakedown(e, dt, t) {
@@ -465,15 +465,15 @@ export class WorldIncidents {
         const dx = victim.x - runner.x, dz = victim.z - runner.z, d = Math.hypot(dx, dz) || 1;
         const impact = Math.max(2.4, runner.speed - victim.speed + e.pressure * 0.25);
         e.bumpCd = 5.4; e.pressure++; this.impactAgents(runner, victim, impact, dx / d, dz / d, 0.24, 0.38, 1.7, -1.4); runner.speed *= 0.78; victim.speed *= 0.45;
-        if (playerD < 115) { this.audio.thud(0.3); this.game.toast('Black hull on the work skiff', 'They are pushing it toward the bank.', 2.1); }
+        if (playerD < 115) { this.audio.thud(0.3); this.game.toast('작업 스키프에 검은 선체', '둑 쪽으로 밀어붙이는 중이다.', 2.1); }
       }
       if (playerD < 34 && this.phys.speed * MPH < 30 && this.canInteract()) {
-        this.setPrompt('<b>E</b> report the black johnboat <i>· F back its crew · ram it to drive them off</i>');
+        this.setPrompt('<b>E</b> 검은 존보트 신고 <i>· F 그쪽 편들기 · F 돌진으로 퇴치</i>');
         if (this.interact) this.chooseShakedown('fwc'); else if (this.alternate) this.chooseShakedown('runners');
       } else this.clearPrompt();
       if (e.life <= 0 && !e.choice) {
         this.transferShakedownCargo(e); e.state = 'escaping'; e.escapeT = 0;
-        this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: 'They have both cans. Black johnboat is breaking north; we are dead in the water.', priority: 4, key: `incident:shakedown-taken:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+        this.radio.transmit({ channel: 'CH 16', speaker: 'WORK SKIFF', text: '두 통 모두 들고 떠남. 검은 존보트가 북쪽으로 빠짐; 우리 기관 불능 표류.', priority: 4, key: `incident:shakedown-taken:${Math.floor(this.radio.clock)}`, cooldown: 0 });
       }
     } else if (e.state === 'reported') {
       e.reportT += dt; e.hostileT = Math.max(0, e.hostileT - dt);
@@ -494,8 +494,8 @@ export class WorldIncidents {
   reportPaddler() {
     const e = this.active; if (!e || e.type !== 'search' || e.reported) return;
     e.reported = true; e.reportT = 0; this.clearPrompt();
-    this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: `Tower Boat, copy the orange kayak. Hold off the bow; we have your position.`, priority: 3, key: `incident:kayak-report:${Math.floor(this.radio.clock)}`, cooldown: 0 });
-    this.game.toast('Position relayed', 'Twenty-seven is coming onto the kayak.', 2.8);
+    this.radio.transmit({ channel: 'FWC TAC', speaker: 'WARDEN SOTO · FWC 27', text: '타워 보트, 주황 카약 확인. 선수에서 떨어져 있어; 위치 확보했다.', priority: 3, key: `incident:kayak-report:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+    this.game.toast('위치 전달됨', '27호가 카약으로 향한다.', 2.8);
   }
 
   resolveSearch(found) {
@@ -505,14 +505,14 @@ export class WorldIncidents {
       this.stats.resolved = (this.stats.resolved || 0) + 1; this.rigs.paddler.visible = false;
       if (e.reported) {
         this.stats.searches = (this.stats.searches || 0) + 1;
-        this.reputation.change('locals', 0.75, 'paddler-found', 'You put FWC onto an injured paddler before the current carried him off.', true);
-        this.reputation.change('fwc', 0.7, 'paddler-found', 'Your kayak position closed an FWC search.', false);
-        this.game.addCash(125); this.game.bountyToast('FWC search assist <b>+$125</b>');
+        this.reputation.change('locals', 0.75, 'paddler-found', '조류가 그를 데려가기 전에 부상 패들러 위치를 FWC에 알렸습니다.', true);
+        this.reputation.change('fwc', 0.7, 'paddler-found', '카약 위치가 FWC 수색을 마무리 지었습니다.', false);
+        this.game.addCash(125); this.game.bountyToast('FWC 수색 지원 <b>+$125</b>');
       }
-      this.radio.transmit({ channel: 'CH 16', speaker: 'WARDEN SOTO · FWC 27', text: e.reported ? 'Paddler aboard. Good position, Tower Boat. We are taking him to the river dock.' : 'Paddler located and aboard twenty-seven. Search traffic can stand down.', priority: 2, key: `incident:paddler-found:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.radio.transmit({ channel: 'CH 16', speaker: 'WARDEN SOTO · FWC 27', text: e.reported ? '패들러 승선 완료. 좋은 위치였다, 타워 보트. 강변 dock으로 이동 중.' : '패들러 위치 확보 후 27호에 승선. 수색 통신 해제 가능.', priority: 2, key: `incident:paddler-found:${Math.floor(this.radio.clock)}`, cooldown: 0 });
     } else {
       this.stats.missed = (this.stats.missed || 0) + 1;
-      this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: 'Search is moving downcurrent. Orange kayak not located before dark water took the last position.', priority: 2, key: `incident:paddler-missed:${Math.floor(this.radio.clock)}`, cooldown: 0 });
+      this.radio.transmit({ channel: 'CH 16', speaker: 'MARA KEENE · TOWER', text: '수색이 흐름 따라 하류로 이동 중. 어두운 물이 마지막 위치를 덮기 전에 주황 카약을 찾지 못함.', priority: 2, key: `incident:paddler-missed:${Math.floor(this.radio.clock)}`, cooldown: 0 });
     }
     this.game.persist();
   }
@@ -537,7 +537,7 @@ export class WorldIncidents {
     const pd = Math.hypot(e.x - patrol.x, e.z - patrol.z), d = Math.hypot(e.x - this.phys.pos.x, e.z - this.phys.pos.y);
     if (d < 125 && !e.seen) e.seen = true;
     if (!e.reported && d < 24 && this.phys.speed * MPH < 8 && this.canInteract()) {
-      this.setPrompt('<b>E</b> radio the kayak’s position to FWC'); if (this.interact) this.reportPaddler();
+      this.setPrompt('<b>E</b> 카약 위치를 FWC에 무선 보고'); if (this.interact) this.reportPaddler();
     } else this.clearPrompt();
     if (pd < 14 && e.t > 10) this.resolveSearch(true);
     else if (e.reported && e.reportT > 24) this.resolveSearch(true);
@@ -548,15 +548,15 @@ export class WorldIncidents {
     return { ax: 0, az: 0, bx: 0, bz: 0, r: 1.05, tag, onHit: (into, nx, nz) => {
       if (this.impactAgent(A, into, nx, nz, 0.48)) A.speed *= 0.55;
       if (this.hitCd > 0 || into < 2.7) return; this.hitCd = 4;
-      if (tag === 'FWC patrol') { this.game.toast('FWC vessel struck', 'Twenty-seven is logging the collision.', 2.4); this.law.violation(0.8, 'FWC vessel struck', true); }
+      if (tag === 'FWC patrol') { this.game.toast('FWC 선박과 충돌', '27호가 충돌을 기록 중이다.', 2.4); this.law.violation(0.8, 'FWC 선박 충돌', true); }
       else if (tag === 'work skiff') {
         const e = this.active;
-        this.game.toast('Work skiff struck', 'The crew is reporting the tower hull on sixteen.', 2.4);
-        this.law.violation(0.45 + Math.min(0.45, into * 0.05), 'work skiff collision witnessed', true);
-        if (e?.type === 'shakedown' && !e.victimHit) { e.victimHit = true; this.reputation.change('locals', -0.45, 'work-skiff-struck', 'The stranded crew reported that you hit their skiff during the theft.', false); }
+        this.game.toast('작업 스키프와 충돌', '승조원이 16번 채널에 타워 선체를 신고한다.', 2.4);
+        this.law.violation(0.45 + Math.min(0.45, into * 0.05), '목격된 작업 스키프 충돌', true);
+        if (e?.type === 'shakedown' && !e.victimHit) { e.victimHit = true; this.reputation.change('locals', -0.45, 'work-skiff-struck', '표류한 승조원이 절도 사건 중 스키프를 들이받았다고 신고했다.', false); }
       } else if (this.active?.type === 'shakedown') {
-        if (!this.driveOffShakedown(this.active, into)) this.game.toast('Black johnboat hit', 'The crew is still trying to clear the cut.', 2.2);
-      } else this.game.toast('Runner hit', 'The johnboat is still trying to clear the cut.', 2.2);
+        if (!this.driveOffShakedown(this.active, into)) this.game.toast('검은 존보트 피격', '승조원이 여전히 수로 비우기를 시도 중.', 2.2);
+      } else this.game.toast('도주자 피격', '존보트가 여전히 수로 비우기를 시도 중.', 2.2);
     } };
   }
 
@@ -593,7 +593,7 @@ export class WorldIncidents {
 
   marker() {
     const e = this.active; if (!e || e.resolved) return null;
-    const label = e.type === 'pursuit' ? 'live FWC pursuit' : e.type === 'search' ? 'active paddler search' : 'work skiff mayday';
+    const label = e.type === 'pursuit' ? '가동 중인 FWC 추격' : e.type === 'search' ? '가동 중인 패들러 수색' : '작업 스키프 메이데이';
     return { x: e.x, z: e.z, color: e.type === 'pursuit' ? '#e0554a' : '#f07a2e', label };
   }
 

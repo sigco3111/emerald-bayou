@@ -148,7 +148,7 @@ function boatRamp(rr, s, T) {
     geo.computeVertexNormals(); const m = new THREE.Mesh(geo, mat); m.receiveShadow = true; return m;
   };
   g.add(strip(4.6, -11, 9, concrete, false)); g.add(strip(10, 9, 18, gravel, true));
-  const sign = signPost(['BOAT RAMP', 'IDLE SPEED · NO WAKE']); sign.position.set(3.2, hAt(3.2, 7.5) + 0.05, 7.5); sign.rotation.y = Math.PI; g.add(sign);
+  const sign = signPost(['보트 램프', '유속 · 무파']); sign.position.set(3.2, hAt(3.2, 7.5) + 0.05, 7.5); sign.rotation.y = Math.PI; g.add(sign);
   for (const sx of [-2.9, 2.9]) g.add(cyl(0.12, 0.14, 1.4, sx, P(-4) + 0.5, -4, greyWood, 6));
   // the launch: a pickup with a boat on the trailer, a spotter at the water's edge waving it back
   const tr = truck(rr); tr.rotation.y = Math.PI; g.add(tr);

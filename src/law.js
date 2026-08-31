@@ -4,7 +4,7 @@ const clamp = (v, lo = 0, hi = 5) => Math.max(lo, Math.min(hi, v));
 
 export function pursuitStatusLabel(pursuit, visual = true) {
   if (!pursuit) return 'Wanted';
-  return visual ? 'Wanted · FWC pursuit' : 'Wanted · FWC searching';
+  return visual ? '수배 · FWC 추격' : '수배 · FWC 수색';
 }
 
 export class Law {
@@ -22,7 +22,7 @@ export class Law {
   add(amount, reason = 'reported activity', announce = true) {
     const before = this.attention; this.attention = clamp(this.attention + amount); this.sinceEvent = 0; this.lastReason = reason;
     if (amount > 0) this.stats.violations = (this.stats.violations || 0) + 1;
-    if (announce && amount > 0 && Math.ceil(this.attention) > Math.ceil(before)) { this.audio.warn(); this.game.toast('FWC attention', reason, 2.4); }
+    if (announce && amount > 0 && Math.ceil(this.attention) > Math.ceil(before)) { this.audio.warn(); this.game.toast('FWC 관심', reason, 2.4); }
     this.rememberAttention(); this.game.persist(); if (this.onAttention) this.onAttention(this.attention);
   }
 
@@ -36,8 +36,8 @@ export class Law {
   cool(amount) { this.attention = clamp(this.attention - amount); this.sinceEvent = Math.max(this.sinceEvent, 25); this.rememberAttention(); }
 
   addContraband() {
-    this.hotCargoT = Math.max(this.hotCargoT, 190); this.add(1.65, 'unmarked cargo reported in the channel');
-    if (this.game.reputation) this.game.reputation.change('fwc', -0.8, 'contraband', 'The unmarked package put the hull on an FWC call sheet.', false);
+    this.hotCargoT = Math.max(this.hotCargoT, 190); this.add(1.65, '수로에서 무표지 화물 신고');
+    if (this.game.reputation) this.game.reputation.change('fwc', -0.8, 'contraband', '무표지 소포로 선체가 FWC 콜 시트에 올랐습니다.', false);
   }
 
   hasContraband() { return this.hotCargoT > 0; }
@@ -45,26 +45,26 @@ export class Law {
   confiscate() {
     if (!this.hasContraband()) return false;
     this.hotCargoT = 0; this.stats.seizures = (this.stats.seizures || 0) + 1; this.stats.citations = (this.stats.citations || 0) + 1;
-    this.attention = clamp(this.attention - 0.8); this.sinceEvent = 0; this.lastReason = 'cargo seized · patrols remember the hull';
-    if (this.game.reputation) this.game.reputation.change('runners', -0.5, 'cargo-seized', 'The backchannel heard the package went over the side to FWC.', false);
+    this.attention = clamp(this.attention - 0.8); this.sinceEvent = 0; this.lastReason = '화물 압수 · 순찰대가 이 선체를 기억합니다';
+    if (this.game.reputation) this.game.reputation.change('runners', -0.5, 'cargo-seized', '백채널이 소포가 FWC에 넘어갔다는 소식을 들었습니다.', false);
     this.game.persist(); return true;
   }
 
   cleanCheck() {
     this.stats.cleanChecks = (this.stats.cleanChecks || 0) + 1; this.cool(0.9); this.game.persist();
-    if (this.game.reputation) this.game.reputation.change('fwc', 0.3, 'clean-check', 'A clean inspection went into the patrol log.', false);
+    if (this.game.reputation) this.game.reputation.change('fwc', 0.3, 'clean-check', '깔끔한 검사가 순찰 일지에 기록되었습니다.', false);
   }
 
   cited() {
     this.stats.citations = (this.stats.citations || 0) + 1; this.game.persist();
-    if (this.game.reputation) this.game.reputation.change('fwc', -0.45, 'citation', 'Another citation went against the hull.', false);
+    if (this.game.reputation) this.game.reputation.change('fwc', -0.45, 'citation', '이 선체에 또 다른 단속 기록이 붙었습니다.', false);
   }
 
   escaped() {
-    this.stats.escapes = (this.stats.escapes || 0) + 1; this.sinceEvent = 0; this.lastReason = 'patrol searching the back channels'; this.rememberAttention(); this.game.persist();
+    this.stats.escapes = (this.stats.escapes || 0) + 1; this.sinceEvent = 0; this.lastReason = '순찰대가 뒷골 수로를 수색 중'; this.rememberAttention(); this.game.persist();
     if (this.game.reputation) {
-      this.game.reputation.change('fwc', -1, 'patrol-escape', 'FWC marked the hull after the pursuit.', false);
-      this.game.reputation.change('runners', 0.6, 'patrol-escape', 'The backchannel heard you lost a patrol in the cuts.', true);
+      this.game.reputation.change('fwc', -1, 'patrol-escape', 'FWC가 추격 후 선체를 표시했습니다.', false);
+      this.game.reputation.change('runners', 0.6, 'patrol-escape', '백채널이 수로에서 순찰선을 따돌렸다는 소식을 들었습니다.', true);
     }
   }
 
@@ -81,7 +81,7 @@ export class Law {
     this.violationCd = Math.max(0, this.violationCd - dt); this.sinceEvent += dt;
     if (this.hotCargoT > 0) {
       this.hotCargoT -= dt;
-      if (this.hotCargoT <= 0) { this.hotCargoT = 0; this.cool(0.45); this.game.toast('Radio traffic moved on', 'The unmarked package is no longer drawing calls.', 2.6); }
+      if (this.hotCargoT <= 0) { this.hotCargoT = 0; this.cool(0.45); this.game.toast('무전 트래픽이 지나갔습니다', '무표지 소포가 더 이상 신고를 받지 않습니다.', 2.6); }
     }
     if (!this.pursuit && this.sinceEvent > 42 && this.attention > 0) {
       const hour = this.environment.hour, night = hour < 5.5 || hour > 20.5;

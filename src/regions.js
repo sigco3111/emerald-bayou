@@ -4,47 +4,47 @@ const warp = new Simplex2(1907);
 
 export const REGIONS = [
   {
-    id: 'blackwater', name: 'Blackwater Maze', strap: 'Cypress domes · blind turns · no straight line out', x: -6900, z: -6600,
+    id: 'blackwater', name: '블랙워터 미궁', strap: '사이프러스 돔 · 사각 커브 · 직진 탈출로 없음', x: -6900, z: -6600,
     ecology: { human: 0.45, traffic: 0.5, fish: 1.15, bird: 0.85, gator: 1.35, surface: 0.9 },
     encounters: { law: 0.65, runners: 1.25, danger: 1.3 },
   },
   {
-    id: 'sawgrass', name: 'Sawgrass Expanse', strap: 'Shallow water and open sky', x: 0, z: -7200,
+    id: 'sawgrass', name: '톱블레이드 평원', strap: '얕은 물과 열린 하늘', x: 0, z: -7200,
     ecology: { human: 0.55, traffic: 0.6, fish: 0.9, bird: 1.35, gator: 0.8, surface: 1.05 },
     encounters: { law: 0.75, runners: 0.8, danger: 0.9 },
   },
   {
-    id: 'mangrove', name: 'Mangrove Reach', strap: 'Tide cuts and backchannel traffic', x: 6900, z: -6500,
+    id: 'mangrove', name: '맹그로브 리치', strap: '조류 수로와 뒷골 통행', x: 6900, z: -6500,
     ecology: { human: 0.9, traffic: 1.05, fish: 1.25, bird: 1.05, gator: 1, surface: 1 },
     encounters: { law: 0.85, runners: 1.5, danger: 1.15 },
   },
   {
-    id: 'cypress', name: 'Cypress Reach', strap: 'Old timber and narrow water', x: -7300, z: 0,
+    id: 'cypress', name: '사이프러스 리치', strap: '묵은 나무와 좁은 수역', x: -7300, z: 0,
     ecology: { human: 0.75, traffic: 0.7, fish: 1.1, bird: 1, gator: 1.25, surface: 0.9 },
     encounters: { law: 0.8, runners: 1, danger: 1.15 },
   },
   {
-    id: 'emerald', name: 'Emerald Bayou', strap: 'Tower country · worked water and old camps', x: 20, z: -120,
+    id: 'emerald', name: '에메랄드 베이유', strap: '타워 지역 · 작업 수역과 오래된 캠프', x: 20, z: -120,
     ecology: { human: 1, traffic: 1, fish: 1, bird: 1, gator: 1, surface: 1 },
     encounters: { law: 1, runners: 1, danger: 1 },
   },
   {
-    id: 'broad', name: 'Broad River', strap: 'Deep water and working boats', x: 7300, z: 0,
+    id: 'broad', name: '브로드 리버', strap: '깊은 물과 작업 보트', x: 7300, z: 0,
     ecology: { human: 1.2, traffic: 1.4, fish: 0.9, bird: 0.9, gator: 0.75, surface: 1.05 },
     encounters: { law: 1.5, runners: 0.7, danger: 0.85 },
   },
   {
-    id: 'rookery', name: 'Rookery Lakes', strap: 'Bird country · idle through the rookeries', x: -6900, z: 6700,
+    id: 'rookery', name: '루커리 레이크', strap: '새들의 영역 · 군락지 사이 유속', x: -6900, z: 6700,
     ecology: { human: 0.55, traffic: 0.55, fish: 1.05, bird: 1.65, gator: 0.9, surface: 1.1 },
     encounters: { law: 1.1, runners: 0.65, danger: 0.8 },
   },
   {
-    id: 'prairie', name: 'Ten Mile Prairie', strap: 'Flooded grass with nowhere to hide', x: 0, z: 7300,
+    id: 'prairie', name: '텐 마일 프레리', strap: '범람한 풀숲, 숨을 곳 없음', x: 0, z: 7300,
     ecology: { human: 0.5, traffic: 0.45, fish: 0.8, bird: 1.25, gator: 1.1, surface: 0.9 },
     encounters: { law: 0.65, runners: 0.9, danger: 1 },
   },
   {
-    id: 'dead-river', name: 'Dead River', strap: 'No dock lights after dark', x: 6900, z: 6700,
+    id: 'dead-river', name: '데드 리버', strap: '해 진 뒤엔 독 조명이 없다', x: 6900, z: 6700,
     ecology: { human: 0.3, traffic: 0.35, fish: 0.95, bird: 0.75, gator: 1.5, surface: 0.82 },
     encounters: { law: 0.45, runners: 1.35, danger: 1.45 },
   },

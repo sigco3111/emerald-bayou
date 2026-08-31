@@ -151,7 +151,7 @@ export class FalsePassage {
         this.rigs.aid.visible = this.state.branch === 'rescue'; this.rigs.cache.visible = this.state.branch === 'runner';
         if (this.state.branch === 'runner') {
           const remaining = Math.max(0, (this.state.cargoUntil - Date.now()) / 1000);
-          if (remaining > 0) { this.P.law.hotCargoT = Math.max(this.P.law.hotCargoT, remaining); this.P.law.attention = Math.max(this.P.law.attention, 1.35); this.P.law.lastReason = 'stolen medical cargo reported'; }
+          if (remaining > 0) { this.P.law.hotCargoT = Math.max(this.P.law.hotCargoT, remaining); this.P.law.attention = Math.max(this.P.law.attention, 1.35); this.P.law.lastReason = '도난 의료용 화물 신고 접수'; }
         }
         if (this.state.chaseStarted && !this.state.chaseCleared) this.chaseDelay = 2.5;
       }
@@ -180,34 +180,34 @@ export class FalsePassage {
       this.P.call('CH 68', 'LEON DOSS · OLD MILL', '제가 West Cut 케이지를 다시 설치한 후 누군가 잘랐습니다. 클리닉 배달원이 등대 아래 어딘가에 부딪혔고, Nolan Pike는 그 후로 응답이 없습니다.', 4, 'passage-offer-local');
     }
     this.P.call('CH 16', 'MARA KEENE · TOWER', '마지막 캐리어는 표지 서쪽. 흰 스키프, 파란 의료용 콜러, 1명 탑승.', 3, 'passage-fix');
-    this.P.game.toast('False Passage', 'West Cut에서 클리닉 배달원 실종.', 3.4); return true;
+    this.P.game.toast('잘못된 항로', 'West Cut에서 클리닉 배달원 실종.', 3.4); return true;
   }
 
   destination() { return this.state.branch === 'runner' ? this.state.coords.cache : this.state.coords.aid; }
 
   marker() {
     const s = this.state.stage, C = this.state.coords;
-    if (s === 'search' || s === 'choice') return { ...(this.state.approached ? { x: this.state.coolerX, z: this.state.coolerZ } : { x: C.wreck.x + 55, z: C.wreck.z - 35 }), color: '#e6d07a', label: this.state.approached ? 'Nolan’s medical cooler' : '배달원의 마지막 캐리어', story: true };
-    if (s === 'delivery') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? 'Cal’s cutout' : 'Split Pine aid boat', story: true }; }
+    if (s === 'search' || s === 'choice') return { ...(this.state.approached ? { x: this.state.coolerX, z: this.state.coolerZ } : { x: C.wreck.x + 55, z: C.wreck.z - 35 }), color: '#e6d07a', label: this.state.approached ? 'Nolan의 의료용 콜러' : '배달원의 마지막 캐리어', story: true };
+    if (s === 'delivery') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? 'Cal의 차단점' : 'Split Pine 구조 보트', story: true }; }
     return null;
   }
 
   hud() {
     if (!this.busy()) return null;
     const s = this.state.stage, m = this.marker();
-    if (s === 'search') return { title: 'False Passage', obj: 'Find the clinic courier', sub: `${regionAt(m.x, m.z).name} · last carrier off West Cut` };
-    if (s === 'choice') return { title: 'False Passage', obj: 'Nolan is hurt. The cooler is sealed.', sub: 'E · take both aboard  ·  F · take the cooler for Cal' };
-    const d = this.destination(); return { title: 'False Passage', obj: this.state.branch === 'runner' ? 'Get the cooler to Cal’s cutout' : 'Get Nolan to the Split Pine aid boat', sub: `${regionAt(d.x, d.z).name} · arrive under 6 mph` };
+    if (s === 'search') return { title: '잘못된 항로', obj: '클리닉 배달원을 찾아라', sub: `${regionAt(m.x, m.z).name} · West Cut에서 마지막 캐리어` };
+    if (s === 'choice') return { title: '잘못된 항로', obj: 'Nolan은 부상당했습니다. 콜러는 밀봉되어 있습니다.', sub: 'E · 둘 다 태워라  ·  F · Cal을 위해 콜러만 가져가라' };
+    const d = this.destination(); return { title: '잘못된 항로', obj: this.state.branch === 'runner' ? '콜러를 Cal의 차단점에 전달하라' : 'Nolan을 Split Pine 구조 보트로 보내라', sub: `${regionAt(d.x, d.z).name} · 6 mph 이하로 도착` };
   }
 
   menuLine() {
     const s = this.state;
-    if (s.stage === 'dormant') return this.eligible() ? 'False Passage · waiting on the radio' : 'False Passage · locked';
-    if (s.stage === 'search') return 'False Passage · find the clinic courier';
-    if (s.stage === 'choice') return 'False Passage · Nolan found';
-    if (s.stage === 'delivery') return `False Passage · bound for ${s.branch === 'runner' ? 'Cal’s cutout' : 'Split Pine'}`;
-    if (s.stage === 'failed') return 'False Passage · regrouping';
-    return `False Passage · ${s.ending === 'runner' ? 'cooler sold' : 'Nolan rescued'}`;
+    if (s.stage === 'dormant') return this.eligible() ? '잘못된 항로 · 무전 대기 중' : '잘못된 항로 · 잠김';
+    if (s.stage === 'search') return '잘못된 항로 · 클리닉 배달원 찾기';
+    if (s.stage === 'choice') return '잘못된 항로 · Nolan 발견';
+    if (s.stage === 'delivery') return `잘못된 항로 · ${s.branch === 'runner' ? 'Cal의 차단점' : 'Split Pine'}행`;
+    if (s.stage === 'failed') return '잘못된 항로 · 재정비 중';
+    return `잘못된 항로 · ${s.ending === 'runner' ? '콜러 매각' : 'Nolan 구조'}`;
   }
 
   updateCooler(dt, t) {
@@ -230,9 +230,9 @@ export class FalsePassage {
     const d = Math.min(Math.hypot(this.state.coolerX - this.P.phys.pos.x, this.state.coolerZ - this.P.phys.pos.y), Math.hypot(this.state.coords.wreck.x - this.P.phys.pos.x, this.state.coords.wreck.z - this.P.phys.pos.y));
     if (!this.state.approached && d < 135) {
       this.state.approached = true; this.state.stage = 'choice'; this.choiceT = 0; this.persist();
-      this.P.call('CH 16', 'NOLAN PIKE · CLINIC COURIER', 'Tower Boat, I am still here. Shoulder is bad. Cooler went over when the skiff opened up.', 4, 'passage-nolan');
-      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Blue cooler stays sealed and comes to me. Leave the courier on sixteen. Nine hundred, plus two if the patrol never sees it.', 3, 'passage-cal-offer');
-      this.P.game.toast('Nolan Pike found', 'He is hurt. The medical cooler is in the water.', 3.2);
+      this.P.call('CH 16', 'NOLAN PIKE · 클리닉 배달원', '타워 보트, 아직 여기 있습니다. 어깨가 심합니다. 스키프가 갈라졌을 때 콜러가 빠졌습니다.', 4, 'passage-nolan');
+      this.P.call('CH 72', 'CAL ROOK · LOST KEY', '파란 콜러는 밀봉된 채로 내게로 와야 합니다. 배달원은 16번에 그대로 두세요. 9백, 순찰선에 안 걸리면 2백 추가.', 3, 'passage-cal-offer');
+      this.P.game.toast('Nolan Pike 발견', '부상을 입었습니다. 의료용 콜러가 물 위에 있습니다.', 3.2);
     }
     const m = this.marker(); this.P.game.wpTarget = m ? { ...m } : null;
   }
@@ -241,7 +241,7 @@ export class FalsePassage {
     this.choiceT += dt; this.updateCooler(dt, t); this.placeWreck(t);
     const d = Math.hypot(this.state.coolerX - this.P.phys.pos.x, this.state.coolerZ - this.P.phys.pos.y), m = this.marker(); this.P.game.wpTarget = m ? { ...m } : null;
     if (this.choiceT > 1.15 && d < 12 && this.P.phys.speed * MPH < 6 && this.P.canInteract()) {
-      this.P.setPrompt('<b>E</b> take Nolan and the cooler aboard <i>· F take the cooler for Cal</i>');
+      this.P.setPrompt('<b>E</b> Nolan과 콜러를 모두 태워라 <i>· F Cal을 위해 콜러만 가져가라</i>');
       if (this.P.interact) this.choose('rescue'); else if (this.P.alternate) this.choose('runner');
     } else this.P.clearPrompt();
   }
@@ -253,13 +253,13 @@ export class FalsePassage {
     if (branch === 'rescue') {
       this.P.boat.add(this.rigs.survivor); this.rigs.survivor.position.set(-0.48, 0.58, -0.28); this.rigs.survivor.rotation.set(0, -0.35, 0); this.state.cargoUntil = 0; this.P.phys.loaded = Math.max(this.P.phys.loaded, 0.34);
       this.rigs.aid.visible = true; this.rigs.cache.visible = false;
-      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'Bring Nolan to the blue aid skiff. I have a medic and a dry berth waiting. Do not stop for Cal.', 4, 'passage-rescue-start');
-      this.P.game.toast('Nolan aboard', 'Split Pine has a medic waiting.', 3);
+      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'Nolan을 파란 구조 스키프로 데려오세요. 의료진과 마른 정박지가 대기 중입니다. Cal 때문에 멈추지 마세요.', 4, 'passage-rescue-start');
+      this.P.game.toast('Nolan 탑승', 'Split Pine에 의료진이 대기 중입니다.', 3);
     } else {
       this.rigs.wreck.add(this.rigs.survivor); this.rigs.survivor.position.set(-0.12, 0.55, -0.45); this.rigs.survivor.rotation.set(0, Math.PI, 0); this.state.cargoUntil = Date.now() + 220000; this.P.phys.loaded = Math.max(this.P.phys.loaded, 0.22);
       this.rigs.aid.visible = false; this.rigs.cache.visible = true; this.P.law.addContraband();
-      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Cutout has one blue light and no dock. Keep the cooler shut. Soto is already asking about the courier.', 4, 'passage-runner-start');
-      this.P.game.toast('Cooler aboard', 'Nolan is still on the wreck. FWC heard the call.', 3);
+      this.P.call('CH 72', 'CAL ROOK · LOST KEY', '차단점은 파란 불 하나, 독은 없습니다. 콜러를 닫은 채로 유지하세요. Soto가 이미 배달원에 대해 물어보고 있습니다.', 4, 'passage-runner-start');
+      this.P.game.toast('콜러 탑승', 'Nolan은 여전히 잔해 위에 있습니다. FWC가 호출을 들었습니다.', 3);
     }
     const d = this.destination(); this.routeStart = Math.max(1, Math.hypot(d.x - this.P.phys.pos.x, d.z - this.P.phys.pos.y)); this.P.clearPrompt(); this.persist();
   }
@@ -282,8 +282,8 @@ export class FalsePassage {
     this.P.incidents.setAgent(this.agent, at.x, at.z, at.heading, 3.2); this.chaseActive = true; this.chasePressure = 0; this.lostT = 0;
     this.state.chaseStarted = true; this.state.chaseCleared = false; this.persist();
     if (patrol) {
-      this.P.law.setPursuit(true); this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Tower Boat, clinic cargo is reported stolen. Reduce speed and hold your line. This is a directed stop.', 4, 'passage-patrol-chase');
-    } else this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Last chance. My skiff is in your wake. Put the blue cooler in the water and turn off.', 4, 'passage-runner-chase');
+      this.P.law.setPursuit(true); this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', '타워 보트, 클리닉 화물 도난 신고가 접수됐습니다. 속도를 줄이고 진로를 유지하세요. 정지 명령입니다.', 4, 'passage-patrol-chase');
+    } else this.P.call('CH 72', 'CAL ROOK · LOST KEY', '마지막 기회. 내 스키프가 당신 선미에 있습니다. 파란 콜러를 물에 넣고 시동을 꺼라.', 4, 'passage-runner-chase');
     return true;
   }
 
@@ -291,8 +291,8 @@ export class FalsePassage {
     if (!this.chaseActive) return;
     this.agent.shx += -nx * into * 0.46; this.agent.shz += -nz * into * 0.46; this.agent.speed *= 0.58;
     if (this.hitCd > 0 || into < 2.8) return; this.hitCd = 4;
-    if (this.state.branch === 'runner') { this.P.game.toast('FWC hull struck', 'Soto is adding the collision to the stop.', 2.4); this.P.law.violation(0.7, 'FWC vessel struck', true); }
-    else this.P.game.toast('Runner alongside', 'They are trying to take the cooler off the deck.', 2.4);
+    if (this.state.branch === 'runner') { this.P.game.toast('FWC 선체 피격', 'Soto가 정지에 충돌을 추가하고 있습니다.', 2.4); this.P.law.violation(0.7, 'FWC 선박 피격', true); }
+    else this.P.game.toast('추격선 접근', '콜러를 갑판에서 가져가려 합니다.', 2.4);
   }
 
   stopChaser(markCleared = true, save = true) {
@@ -308,9 +308,9 @@ export class FalsePassage {
     const d = Math.hypot(A.x - p.pos.x, A.z - p.pos.y);
     if (d < 14 && p.speed * MPH < 12) this.chasePressure += dt; else this.chasePressure = Math.max(0, this.chasePressure - dt * 0.28);
     if (d > 340) this.lostT += dt; else this.lostT = Math.max(0, this.lostT - dt * 0.5);
-    if (this.chasePressure > 3.8) { this.fail(patrol ? 'Soto got a line aboard and seized the cooler.' : 'Cal’s crew pulled the cooler off the deck.'); return; }
+    if (this.chasePressure > 3.8) { this.fail(patrol ? 'Soto가 라인에 올라타 콜러를 압수했습니다.' : 'Cal의 선원이 갑판에서 콜러를 들어올렸습니다.'); return; }
     if (this.lostT > 8) {
-      this.stopChaser(true); this.P.call(patrol ? 'FWC TAC' : 'CH 72', patrol ? 'WARDEN SOTO · FWC 27' : 'CAL ROOK · LOST KEY', patrol ? 'Tower Boat is out of sight in the back cuts. Units keep the call open.' : 'You bought some water. It does not make the debt disappear.', 2, 'passage-chase-lost');
+      this.stopChaser(true); this.P.call(patrol ? 'FWC TAC' : 'CH 72', patrol ? 'WARDEN SOTO · FWC 27' : 'CAL ROOK · LOST KEY', patrol ? '타워 보트가 뒷골목에서 사라졌습니다. 호출 채널을 유지하세요.' : '물 좀 벌었군요. 그래도 빚은 사라지지 않습니다.', 2, 'passage-chase-lost');
       return;
     }
     emitMapMarker(this.P.game, A.x, A.z, 'hazard', patrol ? '#5b8fff' : '#e0523e', 0, d > 155);
@@ -318,7 +318,7 @@ export class FalsePassage {
 
   updateDelivery(dt, t) {
     const dpt = this.destination(), recipient = this.state.branch === 'runner' ? this.rigs.cache : this.rigs.aid;
-    this.P.placeBoat(recipient, dpt, t); this.P.game.wpTarget = { x: dpt.x, z: dpt.z, label: this.state.branch === 'runner' ? 'Cal’s cutout' : 'Split Pine aid boat', color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', story: true };
+    this.P.placeBoat(recipient, dpt, t); this.P.game.wpTarget = { x: dpt.x, z: dpt.z, label: this.state.branch === 'runner' ? 'Cal의 차단점' : 'Split Pine 구조 보트', color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', story: true };
     if (this.state.branch === 'runner' && this.state.cargoUntil) {
       const remaining = Math.max(0, (this.state.cargoUntil - Date.now()) / 1000); this.P.law.hotCargoT = remaining > 0 ? remaining : Math.min(this.P.law.hotCargoT, dt);
     }
@@ -327,12 +327,12 @@ export class FalsePassage {
       this.state.routeBand = this.routeBand = 1; this.persist(); this.spawnChaser();
     } else if (this.routeBand === 1 && ratio < 0.34) {
       this.state.routeBand = this.routeBand = 2; this.persist();
-      this.P.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'JUNE BELL · SPLIT PINE', this.state.branch === 'runner' ? 'Blue lamp under the mangroves. Come straight in and do not circle.' : 'I see Nolan’s orange vest. Bring him port side and keep the fan down.', 3, 'passage-route-two');
+      this.P.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'JUNE BELL · SPLIT PINE', this.state.branch === 'runner' ? '맹그로브 아래 파란 등불. 빙빙 돌지 말고 곧장 들어오세요.' : 'Nolan의 주황 조끼가 보입니다. 좌현으로 데려오고 팬은 낮추세요.', 3, 'passage-route-two');
     }
     if (!this.chaseActive && this.state.chaseStarted && !this.state.chaseCleared) { this.chaseDelay -= dt; if (this.chaseDelay <= 0) this.spawnChaser(); }
     this.updateChaser(dt, t); if (this.state.stage !== 'delivery') return;
     if (d < 12 && this.P.phys.speed * MPH < 6 && this.P.canInteract()) {
-      this.P.setPrompt(`<b>E</b> ${this.state.branch === 'runner' ? 'hand the cooler to Cal Rook' : 'put Nolan alongside the aid boat'}`); if (this.P.interact) this.finish();
+      this.P.setPrompt(`<b>E</b> ${this.state.branch === 'runner' ? 'Cal Rook에게 콜러 전달' : '구조 보트 옆에 Nolan을 붙여라'}`); if (this.P.interact) this.finish();
     } else this.P.clearPrompt();
   }
 
@@ -347,17 +347,17 @@ export class FalsePassage {
     this.rigs.wreck.visible = false; this.P.phys.loaded = 0; this.P.clearPrompt(); this.P.game.wpTarget = null; this.P.law.hotCargoT = 0; this.P.law.cool(0.3);
     this.P.startDeparture(recipient, berth, cargo, branch === 'runner' ? 0.82 : 0.9, branch !== 'runner');
     if (branch === 'runner') {
-      this.P.game.addCash(1100); this.P.reputation.change('runners', 1.8, 'false-passage-sale', 'You sold Cal Rook a clinic cooler taken from a wreck.', true);
-      this.P.reputation.change('locals', -1.15, 'false-passage-sale', 'The camps heard Nolan was left on the wreck while the cooler went south.', false);
-      this.P.reputation.change('fwc', -0.4, 'false-passage-sale', 'FWC tied the missing clinic cooler to the tower hull.', false);
-      this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Seal is clean. Eleven hundred. Nolan was breathing when you left him; let sixteen solve the rest.', 4, 'passage-runner-finish');
-      this.P.game.bountyToast('Clinic cooler sold <b>+$1,100</b>');
+      this.P.game.addCash(1100); this.P.reputation.change('runners', 1.8, 'false-passage-sale', '잔해에서 가져온 클리닉 콜러를 Cal Rook에게 매각했습니다.', true);
+      this.P.reputation.change('locals', -1.15, 'false-passage-sale', '캠프 주민들은 Nolan이 잔해 위에 남겨진 채 콜러만 남쪽으로 사라졌다는 소식을 들었습니다.', false);
+      this.P.reputation.change('fwc', -0.4, 'false-passage-sale', 'FWC가 사라진 클리닉 콜러를 타워 보트 선체와 연결했습니다.', false);
+      this.P.call('CH 72', 'CAL ROOK · LOST KEY', '밀봉 상태 양호. 1,100. Nolan은 당신이 떠날 때 숨을 쉬고 있었으니, 16번이 나머지를 처리하게 두세요.', 4, 'passage-runner-finish');
+      this.P.game.bountyToast('클리닉 콜러 매각 완료 <b>+$1,100</b>');
     } else {
-      this.P.game.addCash(650); this.P.reputation.change('locals', 1.6, 'false-passage-rescue', 'You brought Nolan and the clinic cooler to Split Pine.', true);
-      this.P.reputation.change('fwc', 0.75, 'false-passage-rescue', 'The missing courier and medical cargo reached the aid boat.', false);
-      this.P.reputation.change('runners', -0.8, 'false-passage-rescue', 'Cal’s crew lost the clinic cooler after showing their hand.', false);
-      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'We have Nolan. Cooler is cold and sealed. Leon can argue about the light after the medic gets his shoulder set.', 4, 'passage-rescue-finish');
-      this.P.game.bountyToast('Courier rescued <b>+$650</b>');
+      this.P.game.addCash(650); this.P.reputation.change('locals', 1.6, 'false-passage-rescue', 'Nolan과 클리닉 콜러를 Split Pine까지 데려왔습니다.', true);
+      this.P.reputation.change('fwc', 0.75, 'false-passage-rescue', '사라졌던 배달원과 의료용 화물이 구조 보트까지 도달했습니다.', false);
+      this.P.reputation.change('runners', -0.8, 'false-passage-rescue', 'Cal의 선원들이 수를 드러낸 뒤 클리닉 콜러를 잃었습니다.', false);
+      this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'Nolan을 확보했습니다. 콜러는 차갑게 밀봉된 상태입니다. 의료진이 어깨를 치료한 다음에야 Leon이 신호등 문제를 따질 수 있습니다.', 4, 'passage-rescue-finish');
+      this.P.game.bountyToast('배달원 구조 완료 <b>+$650</b>');
     }
     this.P.audio.complete(); this.persist();
   }
@@ -369,14 +369,14 @@ export class FalsePassage {
     if (patrol) { const seized = this.P.law.confiscate(); if (!seized) this.P.law.cited(); } else this.P.law.hotCargoT = 0;
     Object.assign(this.state, { stage: 'failed', retryAt: Date.now() + 30000, offerAt: Date.now() + 30000, cargoUntil: 0 });
     this.P.call(patrol ? 'FWC TAC' : 'CH 72', patrol ? 'WARDEN SOTO · FWC 27' : 'CAL ROOK · LOST KEY', reason, 4, 'passage-failed');
-    this.P.game.toast('False Passage failed', reason, 3.6); this.P.audio.fail(); this.persist();
+    this.P.game.toast('잘못된 항로 실패', reason, 3.6); this.P.audio.fail(); this.persist();
   }
 
   triggerConsequence() {
     if (this.state.stage !== 'complete' || this.state.consequence || Date.now() < this.state.consequenceAt) return false;
     this.state.consequence = true; this.persist();
-    if (this.state.ending === 'runner') this.P.call('CH 16', 'MARA KEENE · TOWER', 'FWC found Nolan alive on the wreck. The clinic cooler is still missing. Nobody at Split Pine is asking which hull took it.', 3, 'passage-runner-aftermath');
-    else this.P.call('CH 16', 'NOLAN PIKE · SPLIT PINE', 'Tower Boat, Nolan. Shoulder is set. I owe you a cooler, a skiff, and one ride where nobody is chasing us.', 2, 'passage-rescue-aftermath');
+    if (this.state.ending === 'runner') this.P.call('CH 16', 'MARA KEENE · TOWER', 'FWC가 잔해 위에서 Nolan이 살아 있는 것을 발견했습니다. 클리닉 콜러는 여전히 사라진 상태입니다. Split Pine에서는 어떤 선체가 가져갔는지 묻지 않고 있습니다.', 3, 'passage-runner-aftermath');
+    else this.P.call('CH 16', 'NOLAN PIKE · SPLIT PINE', '타워 보트, Nolan입니다. 어깨가 치료됐습니다. 콜러 한 개, 스키프 한 척, 아무도 우리를 쫓지 않는 라이드 한 번이 빚입니다.', 2, 'passage-rescue-aftermath');
     return true;
   }
 

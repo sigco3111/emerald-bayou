@@ -60,7 +60,7 @@ import { GAMEPAD_BUTTON, STANDARD_GAMEPAD_BUTTONS, StandardGamepadInput, gamepad
 
 const app = document.getElementById('app');
 const loadingProgress = (message, value) => window.__loadingScreen?.progress?.(message, value);
-loadingProgress('Launching the marsh', 0.06);
+loadingProgress('습지를 시작합니다', 0.06);
 const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
 const gpuRenderer = webglRendererName(renderer.getContext());
 const hardwareQualityLevel = initialQualityLevel({
@@ -134,7 +134,7 @@ async function init() {
   const startZ = 70, startX = terrain.riverCenterX(startZ);
   const terrainPrime = terrain.prime(startX, startZ);
   startupTiming.terrainPrimedMs = performance.now() - startupStartedAt;
-  loadingProgress('Growing the near shore', 0.24);
+  loadingProgress('곁의 강가를 자라게 합니다', 0.24);
 
   // The capture scene shares the real sky geometry, material and uniforms. It adds no duplicate GPU resources and
   // can therefore follow broad day/night/weather changes without retaining a bank of environment maps.
@@ -162,7 +162,7 @@ async function init() {
   dock.rotation.y = Math.atan2(dir.x, dir.y) + Math.PI; // dock extends along its local -Z
   dock.position.y = 0.0;
   scene.add(dock);
-  markStartup('landmarksReadyMs');
+  markStartup('랜드마크준비ms');
 
   const exclusions = [{ x: tower.position.x, z: tower.position.z, r: 7 }, { x: startX, z: startZ, r: 14 }, { x: dock.position.x, z: dock.position.z, r: 4 }, { x: (island.x + dock.position.x) / 2, z: (island.y + dock.position.z) / 2, r: 4 }];
   for (const b of terrain.bars) exclusions.push({ x: b.x, z: b.z, r: b.r });
@@ -179,9 +179,9 @@ async function init() {
     if (resources.length) veg.addSolids(resources);
   };
   if (startup.solidGrass === 'blocking') await installSolidGrass(true);
-  else if (startup.solidGrass === 'deferred') installSolidGrass().catch(error => console.warn('grass models failed to load', error));
+  else if (startup.solidGrass === 'deferred') installSolidGrass().catch(error => console.warn('풀 모델 로드 실패', error));
   loadModel('tree_c').then(root => { const f = modelBox('tree_c'); if (root && f) root.traverse(o => { if (o.isMesh) veg.windMat(o.material, f.box.min.y, f.box.max.y, f.scale, 0.28); }); });
-  markStartup('vegetationReadyMs');
+  markStartup('식생준비ms');
 
   await new Promise(r => setTimeout(r, 10));
 
@@ -206,7 +206,7 @@ async function init() {
 
   // ---- water ----
   const water = new Water(renderer, SUN_DIR, renderProfile);
-  loadingProgress('Filling the channels', 0.42);
+  loadingProgress('수로를 채웁니다', 0.42);
 
   // ---- wildlife ----
   const birds = new Birds(terrain, new THREE.Vector3(startX, 0, startZ - 120));
@@ -235,7 +235,7 @@ async function init() {
   plume.mat.uniforms.tDepth.value = pipeline.sceneRT.depthTexture;
   plume.mat.uniforms.resolution.value.copy(pipeline.size);
   plume.mat.uniforms.near.value = camera.near; plume.mat.uniforms.far.value = camera.far;
-  markStartup('renderTargetsReadyMs');
+  markStartup('렌더타겟준비ms');
   const sunView = new THREE.Vector3(); const camVel = new THREE.Vector3(); const camPrev = new THREE.Vector3();
   // wind: slowly veering direction, gusty strength
   const wind = new THREE.Vector3(0.8, 1.0, 0.6);
@@ -257,7 +257,7 @@ async function init() {
   const worldMap = new WorldMap(terrain, minimap, game, world); game.map = worldMap;
   // the small life: fish, deadheads, other boats, anglers; birds and gators get their voices and their hooks into the game
   const life = new Life({ terrain, scene, water, camera, phys, plume, spray, audio, waveFn: (x, z, t) => water.waveHeight(x, z, t), game }); game.life = life;
-  markStartup('livingWorldReadyMs');
+  markStartup('살아있는세계준비ms');
   life.traffic.setWildlife({ manatees, gators, waders });
   const physicalWakeFields = [life.traffic];
   const playerWater = (x, z, t) => water.waveHeight(x, z, t) + sampleWakeFields(physicalWakeFields, x, z, t);
@@ -281,7 +281,7 @@ async function init() {
   law.onAttention = attention => { encounters.requestPatrol(attention); };
   const condition = new BoatCondition({ game, phys, water, environment, audio, boat: boat.group, hullDamage: boat.hullDamage, wrapVisual: boat.propWrap, plume, spray, startX, startZ }); condition.traffic = life.traffic; encounters.condition = condition; game.condition = condition;
   const anchor = new BoatAnchor({ scene, terrain, water, phys, game, audio, environment, currents }); condition.anchor = anchor; game.anchor = anchor;
-  loadingProgress('Waking the backcountry', 0.68);
+  loadingProgress('백컨트리를 깨웁니다', 0.68);
   const hazards = new StormHazards({ scene, terrain, world, water, phys, game, audio, environment, currents, condition, plume, spray });
   life.traffic.hazards = hazards; encounters.hazards = hazards;
   const ecology = new Ecology({ environment, birds, waders, manatees, gators, life, world, regions, water, plume, spray, game, audio, currents, phys, terrain });
@@ -317,16 +317,16 @@ async function init() {
     encounters, incidents, story, aftermath, discoveries, navigationAids, fishing,
   });
   game.marshFire = marshFire;
-  markStartup('directorsReadyMs');
+  markStartup('감독준비ms');
   environment.onLightning = strike => { hazards.lightning(strike); marshFire.lightning(strike); };
   // Apply the saved clock and weather before the first capture. Previously a saved night or hurricane still received
   // the default daytime PMREM for the whole session, even though the visible sky and direct lighting were correct.
   environment.update(0, 0, camera.position, true);
   const initialReflectionState = { hour: environment.hour, sunAltitude: environment.sunDir.y, storm: environment.values.storm, cover: environment.values.cloud };
   const environmentMapStartedAt = performance.now();
-  if (!environmentReflections.capture(initialReflectionState, 'initial', environmentMapStartedAt)) console.warn('environment reflection capture failed', environmentReflections.lastError);
+  if (!environmentReflections.capture(initialReflectionState, 'initial', environmentMapStartedAt)) console.warn('환경 반사 캡처 실패', environmentReflections.lastError);
   startupTiming.environmentMapMs = performance.now() - environmentMapStartedAt;
-  markStartup('environmentMapReadyMs');
+  markStartup('환경지도준비ms');
   let pageHibernated = false;
   const pageLifecycle = { hibernated: false, hiddenAt: 0, resumedAt: 0, releasedAttachmentBytes: 0, releasedCanvasBytes: 0, activations: 0 };
   const debugSceneGraphStats = import.meta.env.DEV ? () => {
@@ -435,7 +435,7 @@ async function init() {
   };
   const captureEnvironmentReflections = reason => {
     const captured = environmentReflections.capture(syncReflectionState(), reason);
-    if (!captured) console.warn('environment reflection capture failed', environmentReflections.lastError);
+    if (!captured) console.warn('환경 반사 캡처 실패', environmentReflections.lastError);
     return captured;
   };
   const scheduleEnvironmentReflections = (reason = 'atmosphere') => {
@@ -595,23 +595,23 @@ async function init() {
   const cashLabel = value => '$' + Math.round(value).toLocaleString('en-US');
   const renderTitle = () => {
     const progress = game.hasProgress(), region = regionAt(phys.pos.x, phys.pos.y), resetArmed = game.newGameArmed();
-    titlePrimary.querySelector('.action-name').textContent = progress ? 'Continue' : 'Ride out';
+    titlePrimary.querySelector('.action-name').textContent = progress ? '이어하기' : '출항하기';
     document.getElementById('titleContinueDetail').textContent = game.state
-      ? `${game.state.m.title} paused · ${region.name}`
-      : `${region.name} · day ${environment.day}, ${environment.clockLabel()} · ${cashLabel(game.save.cash)}`;
-    document.getElementById('titleJobsDetail').textContent = `${game.save.done.length} / ${game.missions.length} jobs finished · ${game.story?.menuLine() || 'Running Dark not started'}`;
+      ? `${game.state.m.title} 일시정지 · ${region.name}`
+      : `${region.name} · ${environment.day}일차, ${environment.clockLabel()} · ${cashLabel(game.save.cash)}`;
+    document.getElementById('titleJobsDetail').textContent = `${game.save.done.length} / ${game.missions.length} 임무 완료 · ${game.story?.menuLine() || '다크 작전 미시작'}`;
     document.getElementById('titleGraphicsDetail').textContent = qualityPreferenceLabel(qualityPreference, renderProfile.id);
-    document.getElementById('titleWorldDetail').textContent = `Day ${environment.day} · ${environment.weatherLabel()} · ${environment.tideLabel()}`;
+    document.getElementById('titleWorldDetail').textContent = `${environment.day}일차 · ${environment.weatherLabel()} · ${environment.tideLabel()}`;
     titleNew.hidden = !progress;
     titleNew.classList.toggle('danger', resetArmed);
-    titleNew.querySelector('.action-name').textContent = resetArmed ? 'Confirm new game' : 'New game';
-    titleNew.querySelector('.action-detail').textContent = resetArmed ? 'Select again now to clear jobs, cash, records and world history' : 'Clear this hull and return to the tower dock';
+    titleNew.querySelector('.action-name').textContent = resetArmed ? '새 게임 확인' : '새 게임';
+    titleNew.querySelector('.action-detail').textContent = resetArmed ? '임무, 자금, 기록, 세계 역사를 모두 초기화하려면 다시 선택하세요' : '이 선체를 비우고 타워 부두로 돌아갑니다';
   };
   const cycleRenderQuality = () => {
     qualityPreference = writeQualityPreference(nextQualityPreference(qualityPreference));
     const profile = qualityController.configure(qualityControllerConfig(qualityPreference, hardwareQualityLevel));
     applyRenderQuality(profile); renderTitle();
-    if (started && !game.menuOpen) game.toast('Graphics changed', qualityPreferenceLabel(qualityPreference, profile.id), 1.8);
+    if (started && !game.menuOpen) game.toast('그래픽 변경', qualityPreferenceLabel(qualityPreference, profile.id), 1.8);
     return profile;
   };
   const beginGame = (jobs = false) => {
@@ -658,7 +658,7 @@ async function init() {
     cameraView = next; if (playerDriver) playerDriver.visible = next !== BOAT_CAMERA_HELM;
     if (!changed) return false;
     cameraViewCut = true; camYaw = 0; camPitch = 0; idle = 0;
-    if (announce && started) game.toast('Camera', next === BOAT_CAMERA_HELM ? 'Helm view' : 'Chase view', 1.35);
+    if (announce && started) game.toast('카메라', next === BOAT_CAMERA_HELM ? '헬름 시점' : '추격 시점', 1.35);
     return true;
   };
   const cameraHeightAt = (x, z) => terrain.heightAt(x, z);
@@ -777,7 +777,7 @@ async function init() {
     const qualityChange = qualityController.observe(frameDelta, started && !game.paused && !document.hidden);
     if (qualityChange) {
       applyRenderQuality(qualityChange.profile);
-      game.toast('Rendering adjusted', `${qualityChange.profile.label} water, lighting and post effects`, 2.8);
+      game.toast('렌더링 조정됨', `${qualityChange.profile.label} 수질, 조명, 포스트 효과`, 2.8);
     }
     if (slowT > 0) slowT -= dtRaw;
     const dt = dtRaw * (slowT > 0 ? slowK : 1);
@@ -1096,7 +1096,7 @@ async function init() {
   game.beacon.set(startX, water.level, startZ, 0xf07a2e, true);
   game.beacon2.set(startX + 2, water.level, startZ, 0xf3ede0, true);
   let warm = null;
-  loadingProgress(startup.warmShaders ? 'Warming the storm light' : 'Checking the channel', 0.82);
+  loadingProgress(startup.warmShaders ? '폭풍빛을 워밍업합니다' : '수로를 확인합니다', 0.82);
   if (startup.warmShaders) {
     warm = new THREE.Group();
     { const nc = world.campAt(1, 1) || world.campsNear(0, 0, 5000)[0]; if (nc) { const g = world.buildCamp(nc); g.position.set(startX - nc.x, 0, startZ - 20 - nc.z); warm.add(g); } }
@@ -1146,7 +1146,7 @@ async function init() {
   // Compile the small set of retained custom effects while the loading card is still covering the canvas. This
   // includes zero-count collision spray/plume buffers and hidden mission, fire and pursuit visuals, without walking
   // or retaining shader variants for the complete streamed map.
-  loadingProgress('Checking the emergency gear', 0.93);
+  loadingProgress('비상 장비를 확인합니다', 0.93);
   deferredShaderWarmup = await warmDeferredShaders(renderer, camera, [scene, water.scene, fxScene]);
   const propWrapWarmup = await warmRetainedObject(renderer, camera, scene, boat.propWrap);
   deferredShaderWarmup.retainedObjects = propWrapWarmup.attempted;
@@ -1155,7 +1155,7 @@ async function init() {
   deferredShaderWarmup.durationMs += propWrapWarmup.durationMs;
   startupTiming.deferredShaderWarmupMs = deferredShaderWarmup.durationMs;
   spray.clear(); plume.clear(); game.beacon.hide(); game.beacon2.hide();
-  loadingProgress('Pulling the boat off the trailer', 0.96);
+  loadingProgress('보트를 트레일러에서 내립니다', 0.96);
   if (startup.compileDelayMs) await new Promise(r => setTimeout(r, startup.compileDelayMs));
   if (warm) {
     scene.remove(warm); encounters.spills[0].uniforms.uAlpha.value = 0; window.__dbg.warmDisposedGeometries = disposeDetachedGeometries(warm, scene, water.scene, fxScene); skiff.mesh.visible = false;
@@ -1168,4 +1168,4 @@ async function init() {
   window.__loadingScreen?.complete?.();
 }
 
-init().catch(e => { console.error(e); window.__loadingScreen?.fail?.('The launch motor quit. Reload and try again.'); });
+init().catch(e => { console.error(e); window.__loadingScreen?.fail?.('출발 모터가 멈췄습니다. 새로 고침 후 다시 시도해 주세요.'); });

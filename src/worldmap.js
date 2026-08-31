@@ -135,7 +135,7 @@ export class WorldMap {
     const label = (x, y, text, col = '#f3ede0', px = 13, dy = 0) => { c.font = font(px, 600); c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = 'rgba(8,20,15,0.8)'; c.fillText(text, x + 9 * dpr + 1, y + dy + 1); c.fillStyle = col; c.fillText(text, x + 9 * dpr, y + dy); };
     if (pursuitSearch) { const [x, y] = toS(pursuitSearch.x, pursuitSearch.z); if (x > -80 && y > -40 && x < W + 40 && y < H + 40) label(x, y, 'FWC LAST-FIX AREA', '#69afff', 10, -14 * dpr); }
     // home
-    { const [x, y] = toS(HOME_X + 65, HOME_Z - 115); c.fillStyle = '#e5c063'; c.beginPath(); c.moveTo(x, y - 7 * dpr); c.lineTo(x + 5 * dpr, y + 5 * dpr); c.lineTo(x - 5 * dpr, y + 5 * dpr); c.closePath(); c.fill(); label(x, y, 'Tower · home', '#e5c063'); }
+    { const [x, y] = toS(HOME_X + 65, HOME_Z - 115); c.fillStyle = '#e5c063'; c.beginPath(); c.moveTo(x, y - 7 * dpr); c.lineTo(x + 5 * dpr, y + 5 * dpr); c.lineTo(x - 5 * dpr, y + 5 * dpr); c.closePath(); c.fill(); label(x, y, '타워 · 본거지', '#e5c063'); }
     // camps: known ones named, seen ones as marks
     const seen = this.G.save.seen || [], known = this.G.save.camps || [];
     for (const key of seen) {
@@ -215,7 +215,7 @@ export class WorldMap {
     // legend
     const nc = this.W.nearestCamp(p.pos.x, p.pos.y);
     const region = regionAt(p.pos.x, p.pos.y);
-    const storyLegend = storyMarks.map(m => `<div>${m.contract ? (m.story ? 'Resident work' : 'Resident note') : m.story ? 'Story' : 'Chart note'} · ${m.label}</div>`).join('');
+    const storyLegend = storyMarks.map(m => `<div>${m.contract ? (m.story ? 'Resident work' : '주민 메모') : m.story ? 'Story' : '해도 메모'} · ${m.label}</div>`).join('');
     const recoveryLegend = recoveryMarks.map(m => `<div>Storm recovery · ${m.label}</div>`).join('');
     const navigationLegend = navigationMarks.map(m => `<div>Aid report · ${m.label}</div>`).join('');
     const fieldFound = fieldMarks.filter(mark => mark.found).length, liveField = fieldMarks.find(mark => mark.live);
