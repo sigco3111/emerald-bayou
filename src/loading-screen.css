@@ -149,7 +149,9 @@
 }
 
 .loading-brand {
-  display: block;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
   width: max-content;
   max-width: 100%;
   transform: rotate(-.7deg);
@@ -158,15 +160,15 @@
 }
 
 .loading-wordmark {
-  display: block;
+  display: inline-block;
   padding-right: .12em;
   color: var(--loading-ink);
   font-family: "Emerald Display", "Arial Narrow", sans-serif;
-  font-size: clamp(7.1rem, 12.6vw, 12rem);
+  font-size: clamp(4.6rem, 8.4vw, 8rem);
   font-style: normal;
   font-weight: 400;
   font-feature-settings: "ss08" 1;
-  line-height: .56;
+  line-height: .82;
   letter-spacing: .018em;
   text-transform: uppercase;
   -webkit-text-stroke: clamp(1px, .15vw, 3px) #07120d;
@@ -178,19 +180,18 @@
 }
 
 .loading-script {
-  display: block;
-  width: max-content;
-  margin: -.08em .12em 0 auto;
+  display: inline-block;
   padding: 0 .08em .14em;
   color: var(--scene-accent);
   font-family: "Emerald Script", cursive;
-  font-size: clamp(2.5rem, 4.6vw, 4.8rem);
+  font-size: clamp(2.1rem, 3.8vw, 4rem);
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 1;
   letter-spacing: -.025em;
   text-shadow: 0 .08em .18em rgb(2 8 5 / .78);
   transform: rotate(-6deg);
   transform-origin: center;
+  white-space: nowrap;
 }
 
 .loading-story {
