@@ -385,7 +385,7 @@ export class Game {
     } else if (this.menuTab === 'records') {
       kicker = '보트 일지'; title = '기록'; copy = '최고 기록, 점프, 야외 활동과 어획을 선측에서 측정한 결과.';
       content = `<div class="records-grid"><section class="menu-card"><div class="h">선체 & 스타일</div>${records.slice(0, 6).map(([k,v]) => `<div class="r"><span>${k}</span><b>${v}</b></div>`).join('')}</section><section class="menu-card"><div class="h">뒷골 활동</div>${records.slice(6).map(([k,v]) => `<div class="r"><span>${k}</span><b>${v}</b></div>`).join('')}<div class="r"><span>완료 의뢰</span><b>${this.save.done.length} / ${this.missions.length}</b></div><div class="r"><span>캠프 운행</span><b>${Number(this.save.runs) || 0}</b></div><div class="r"><span>획득 현금</span><b>${fmtCash(this.save.cash)}</b></div></section><section class="menu-card fishing-log"><div class="h">낚시 기록 · ${fishLogged} / ${fishingEntries.length || 6} species</div><div class="fish-log-grid">${fishingRows}</div></section></div>`;
-      keyHelp = inputHelp('<span><b>Tab / ← →</b> change section</span><span><b>Esc</b> back to the water</span>', '<span><b>D-pad ← →</b> change section</span><span><b>Menu / B</b> back to the water</span>');
+      keyHelp = inputHelp('<span><b>Tab / ← →</b> 섹션 변경</span><span><b>Esc</b> 수상 복귀</span>', '<span><b>D-패드 ← →</b> 섹션 변경</span><span><b>Menu / B</b> 수상 복귀</span>');
     } else {
       kicker = '일시정지'; title = '타워 무전'; copy = '수로로 복귀하거나 렌더링 예산을 조정하거나 타이틀로 돌아갑니다.';
       const systemActions = [
@@ -397,7 +397,7 @@ export class Game {
       this.systemSel = Math.max(0, Math.min(this.systemSel, systemActions.length - 1));
       const actions = systemActions.map(([action, name, detail, value, danger], i) => `<button type="button" class="system-action ${i === this.systemSel ? 'sel' : ''} ${danger ? 'danger' : ''}" data-action="${action}"><strong>${name}</strong><small>${detail}</small><em>${value}</em></button>`).join('');
       content = `<div class="menu-grid"><div class="system-list">${actions}</div><aside><section class="menu-card"><div class="h">On the water</div><div class="keys"><span class="input-keyboard">W / S throttle · A / D rudder<br>Drag to look · wheel to change chase distance · V camera<br>E interact · C cast / reel · X cut line or cage debris · G anchor<br>L spotlight · H horn · Tab chart · M jobs<br>In dense fog: H sounds one prolonged blast<br>In the air: S nose up · Shift nose down · A / D spin<br>R reset the hull</span><span class="input-gamepad">RT / LT throttle · left stick rudder · click for camera<br>Right stick look · click to centre<br>A / Cross interact · B / Circle alternate or cut debris<br>X / Square cast or reel · Y / Triangle anchor<br>LB spotlight · RB horn · D-pad up jobs<br>View chart · Menu / Options pause<br>In the air: left stick pitches and spins</span></div></section></aside></div>`;
-      keyHelp = inputHelp('<span><b>↑ ↓ / Enter</b> choose &nbsp; <b>Tab / ← →</b> change section</span><span><b>Esc</b> resume</span>', '<span><b>D-pad / A</b> choose &nbsp; <b>← →</b> change section</span><span><b>Menu / B</b> resume</span>');
+      keyHelp = inputHelp('<span><b>↑ ↓ / Enter</b> 선택 &nbsp; <b>Tab / ← →</b> 섹션 변경</span><span><b>Esc</b> 재개</span>', '<span><b>D-패드 / A</b> 선택 &nbsp; <b>← →</b> 섹션 변경</span><span><b>Menu / B</b> 재개</span>');
     }
     const tabs = { jobs: ['▤', '의뢰'], world: ['⌖', '세계'], records: ['△', '기록'], system: ['⚙', '시스템'] };
     const rail = MENU_TABS.map(tab => `<button type="button" class="rail-tab ${tab === this.menuTab ? 'active' : ''}" data-tab="${tab}" ${tab === this.menuTab ? 'aria-current="page"' : ''}><span>${tabs[tab][0]}</span>${tabs[tab][1]}</button>`).join('');
@@ -813,19 +813,19 @@ const BOUNTY_POOL = [
   { id: 'lagoon', text: '라군으로 출항', kind: 'visit', target: 'lagoon', pay: 100 },
   { id: 'huge', text: 'Land a huge air', kind: 'air', target: 1.7, pay: 300 },
   { id: 'twojobs', text: 'Finish two jobs', kind: 'mission', target: 1, count: 2, pay: 350 },
-  { id: 'newcamp', text: 'Find a new fish camp', kind: 'discover', target: 1, pay: 250 },
-  { id: 'runjob', text: 'Complete a camp run', kind: 'runjob', target: 1, pay: 300 },
-  { id: 'traps3', text: 'Recover three lost traps', kind: 'trap', target: 1, count: 3, pay: 220 },
-  { id: 'spook3', text: 'Spook three sunning gators', kind: 'spook', target: 1, count: 3, pay: 150 },
-  { id: 'flush8', text: 'Flush eight egrets', kind: 'flush', target: 1, count: 8, pay: 120 },
-  { id: 'deadhead', text: 'Hit a deadhead at 25 mph and stay on the water', kind: 'deadhead', target: 25, pay: 180 },
-  { id: 'idlepass', text: 'Idle past an angler', kind: 'idlepass', target: 1, pay: 120 },
-  { id: 'charged', text: 'Get charged by the bull and live', kind: 'charged', target: 1, pay: 200 },
-  { id: 'baitwatch', text: 'Hold off a feeding school for six seconds', kind: 'baitwatch', target: 1, pay: 140 },
-  { id: 'dolphinpass', text: 'Keep a steady course when dolphins join the bow', kind: 'dolphinpass', target: 1, pay: 200 },
-  { id: 'catch3', text: 'Land and release three fish', kind: 'catch', target: 1, count: 3, pay: 180 },
-  { id: 'snook', text: 'Land a common snook', kind: 'fishspecies', target: 'common-snook', pay: 220 },
-  { id: 'fireline', text: 'Knock down a marsh fire from the water', kind: 'marshfire', target: 1, pay: 260 },
+  { id: 'newcamp', text: '새 어선 캠프 발견', kind: 'discover', target: 1, pay: 250 },
+  { id: 'runjob', text: '캠프 운행 완료', kind: 'runjob', target: 1, pay: 300 },
+  { id: 'traps3', text: '유실 게통 3개 회수', kind: 'trap', target: 1, count: 3, pay: 220 },
+  { id: 'spook3', text: '일광욕 악어 3마리 놀라게 하기', kind: 'spook', target: 1, count: 3, pay: 150 },
+  { id: 'flush8', text: '백로 8마리 날아오르게 하기', kind: 'flush', target: 1, count: 8, pay: 120 },
+  { id: 'deadhead', text: '25 mph로 침목에 부딪혀도 떠 있기', kind: 'deadhead', target: 25, pay: 180 },
+  { id: 'idlepass', text: '낚시꾼 옆을 유속으로 통과', kind: 'idlepass', target: 1, pay: 120 },
+  { id: 'charged', text: '수컷의 돌진을 받고 살아남기', kind: 'charged', target: 1, pay: 200 },
+  { id: 'baitwatch', text: '먹이 학교를 6초 동안 떨어져 있게', kind: 'baitwatch', target: 1, pay: 140 },
+  { id: 'dolphinpass', text: '돌고래가 선수에 합류할 때 방향 유지', kind: 'dolphinpass', target: 1, pay: 200 },
+  { id: 'catch3', text: '물고기 3마리 잡아서 방류', kind: 'catch', target: 1, count: 3, pay: 180 },
+  { id: 'snook', text: '커먼 스누크 잡기', kind: 'fishspecies', target: 'common-snook', pay: 220 },
+  { id: 'fireline', text: '수상에서 습지 화재 진화', kind: 'marshfire', target: 1, pay: 260 },
 ];
 class Bounties {
   constructor(G) {

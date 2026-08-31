@@ -106,5 +106,5 @@ test('the live loop polls one retained controller and ships prompts for both inp
   assert.match(frame, /controller\.poll\(\)/); assert.match(frame, /gamepadBoatInput\(controllerState, controllerBoatInput\)/);
   assert.doesNotMatch(frame, /new StandardGamepadInput|new Array\(/);
   assert.match(frame, /controller\.rumble\(/);
-  assert.match(index, /data-input="gamepad"/); assert.match(index, /A \/ ×/); assert.match(game, /D-pad ↑ ↓/);
+  assert.match(index, /data-input="gamepad"/); assert.match(index, /A \/ ×/); assert.match(game, /D-패드 ↑ ↓/);
 });
