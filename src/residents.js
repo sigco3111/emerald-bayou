@@ -78,27 +78,27 @@ export class StoryResidents {
   line(entry) {
     const P = this.P, base = P.state, passage = P.passage.state, high = P.stormLine?.state;
     if (entry.id === 'leon') {
-      if (high?.ending === 'rescue') return 'Old Mill’s storm generator is holding. The gold berth light stays on whenever the water comes up.';
-      if (high?.ending === 'runner') return 'Split Pine ran on lanterns while a generator hummed in Cal’s mangroves. People remember that.';
-      if (base.stage !== 'complete') return 'Tower Boat, Old Mill. Work skiff is in the east pocket. Leave room for the line.';
-      if (base.ending === 'runner') return 'I know where my controller went. Keep that hull clear of the Old Mill boat.';
-      if (passage.ending === 'rescue') return 'Nolan says you held the fan down all the way to Split Pine. Good work.';
-      return 'West Cut light is holding. I still check it every tide.';
+      if (high?.ending === 'rescue') return 'Old Mill의 폭풍 발전기가 정상입니다. 황금 정박지 표시등은 물이 차오를 때마다 켜져 있습니다.';
+      if (high?.ending === 'runner') return 'Split Pine은 랜턴으로 버텼고 Cal의 맹그로브에서는 발전기가 윙윙거렸습니다. 사람들은 그걸 기억합니다.';
+      if (base.stage !== 'complete') return '타워 보트, Old Mill입니다. 작업 스키프가 동쪽 포켓에 있습니다. 줄 공간을 남겨두세요.';
+      if (base.ending === 'runner') return '제 컨트롤러가 어디로 갔는지 압니다. 그 선체를 Old Mill 보트에서 멀리하세요.';
+      if (passage.ending === 'rescue') return 'Nolan이 당신이 Split Pine까지 계속 팬을 잡고 있었다고 합니다. 잘 했어요.';
+      return 'West Cut 등불이 정상입니다. 매 조류마다 확인하고 있습니다.';
     }
     if (entry.id === 'cal') {
-      if (high?.ending === 'runner') return 'Storm cache is dry and the cold box is steady. Seventy-two has work for a hull that can hold a lead.';
-      if (high?.ending === 'rescue') return 'Old Mill kept the generator. Do not mistake the storm for a clean slate.';
-      if (passage.ending === 'runner') return 'Cooler stayed sealed. Seventy-two is open when I have another quiet run.';
-      if (passage.ending === 'rescue') return 'You cost me a clean cooler and showed Soto the route. Do not crowd this boat.';
-      if (base.ending === 'local') return 'Leon got his light. I remember which hull carried it home.';
-      return 'Lost Key sees the tower boat. Hold outside until I call you in.';
+      if (high?.ending === 'runner') return '폭풍 비축장이 건조하고 콜드 박스 안정. 72번 채널에 인솔을 잡아줄 선체 작업이 있습니다.';
+      if (high?.ending === 'rescue') return 'Old Mill이 발전기를 보유. 폭풍을 깨끗한 상태로 착각하지 마세요.';
+      if (passage.ending === 'runner') return '콜러 밀봉完好. 조용한 운항이 또 있을 때 72번 채널 열겠습니다.';
+      if (passage.ending === 'rescue') return '당신이 깨끗한 콜러를 망치고 Soto에게 경로를 보여줬습니다. 이 보트에 몰리지 마세요.';
+      if (base.ending === 'local') return 'Leon이 등불을 찾았습니다. 어떤 선체가 가져다줬는지 기억합니다.';
+      return 'Lost Key에서 타워 보트를 봤습니다. 호출할 때까지 바깥에서 대기.';
     }
-    if (high?.ending === 'rescue') return 'Nolan and the cold box made Old Mill before the core band. The refuge light is yours as much as ours.';
-    if (high?.ending === 'runner') return 'Split Pine counted every hour that generator spent in the mangroves.';
-    if (passage.ending === 'rescue') return 'Nolan is awake and complaining about the coffee. That means he is getting better.';
-    if (passage.ending === 'runner') return 'Nolan lived. That is the only part of your wake I am grateful for.';
-    if (base.ending === 'local') return 'Leon put the green back on West Cut. Split Pine heard who brought the controller.';
-    return 'Split Pine aid boat is standing by. Keep the berth clear if sixteen breaks traffic.';
+    if (high?.ending === 'rescue') return 'Nolan과 콜드 박스가 핵심 밴드 전에 Old Mill에 도착했습니다. 피난처 등불은 당신 것도 저희만큼입니다.';
+    if (high?.ending === 'runner') return 'Split Pine은 발전기가 맹그로브에 머문 매 시간을 세고 있었습니다.';
+    if (passage.ending === 'rescue') return 'Nolan이 깨어 커피에 불평하고 있습니다. 나아지고 있다는 뜻입니다.';
+    if (passage.ending === 'runner') return 'Nolan이 살아났습니다. 당신 파도에서 감사할 만한 유일한 부분입니다.';
+    if (base.ending === 'local') return 'Leon이 West Cut에 초록을 다시 켰습니다. Split Pine은 컨트롤러를 가져온 사람이 누구인지 들었습니다.';
+    return 'Split Pine 구조 보트가 대기 중입니다. 16번 채널이 트래픽을 끊으면 정박지를 비워두세요.';
   }
 
   greet(entry) {

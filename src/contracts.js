@@ -677,7 +677,7 @@ export class ResidentContracts {
     }
     const patrol = this.rigs.patrolAgent, pd = patrol.active ? fmtDist(Math.hypot(patrol.x - this.phys.pos.x, patrol.z - this.phys.pos.y)) : '';
     if (a.patrolStage === 'inspection') return { title: 'Cal Rook · 무신고', obj: 'FWC가 선체 정지를 원함', sub: `${pd} · E heave to and surrender · F run` };
-    if (a.patrolStage === 'pursuit') return { title: 'Cal Rook · 무신고', obj: 'Lose FWC or reach the blue-light handoff', sub: `${pd} to patrol · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))} to ${a.dest.recipient}` };
+    if (a.patrolStage === 'pursuit') return { title: 'Cal Rook · 무신고', obj: 'FWC를 따돌리거나 파란등 핸드오프에 도달', sub: `${pd} to patrol · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))} to ${a.dest.recipient}` };
     if (a.patrolStage === 'approach') return { title: 'Cal Rook · 무신고', obj: `Get the parcel to ${a.dest.recipient}`, sub: `Directed FWC stop closing · ${pd}` };
     return { title: 'Cal Rook · 무신고', obj: `Take the sealed parcel to ${a.dest.recipient}`, sub: `${regionAt(a.dest.x, a.dest.z).name} · ${fmtDist(Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y))}` };
   }

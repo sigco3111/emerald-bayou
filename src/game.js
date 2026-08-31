@@ -197,7 +197,7 @@ export class Game {
     const contactAlong = (this.phys.pos.x - this.skiff.pos.x) * fx + (this.phys.pos.y - this.skiff.pos.y) * fz;
     this.skiff.applyImpact?.(into, nx, nz, contactAlong);
     this.shake = Math.max(this.shake, Math.min(0.3, into * 0.032)); this.audio.warn();
-    this.toast('Rub rails hit', s.rivalRams > 1 ? '더 이상 깨끗한 경주가 아닙니다.' : '존보트 승무원이 카운트를 세고 있습니다.', 2.4);
+    this.toast('러브레일 피격', s.rivalRams > 1 ? '더 이상 깨끗한 경주가 아닙니다.' : '존보트 승무원이 카운트를 세고 있습니다.', 2.4);
   }
   toast(text, sub = '', dur = 2.6) { this.el.toast.innerHTML = `${text}${sub ? `<small>${sub}</small>` : ''}`; this.el.toast.classList.add('on'); this.toastT = dur; }
   bountyToast(text) { this.el.bounty.innerHTML = text; this.el.bounty.classList.add('on'); this.bountyT = 4; }
@@ -247,7 +247,7 @@ export class Game {
   }
   medalFor(m, s) {
     if (m.gold) { const t = s.t; return t <= m.gold ? '금메달' : t <= m.silver ? '은메달' : t <= m.bronze ? '동메달' : ''; }
-    if (m.scoreMedal) { const v = s.score; return v >= m.scoreMedal[0] ? 'GOLD' : v >= m.scoreMedal[1] ? 'SILVER' : v >= m.scoreMedal[2] ? 'BRONZE' : ''; }
+    if (m.scoreMedal) { const v = s.score; return v >= m.scoreMedal[0] ? '금메달' : v >= m.scoreMedal[1] ? '은메달' : v >= m.scoreMedal[2] ? '동메달' : ''; }
     return '';
   }
   end(success, silent = false) {
@@ -260,27 +260,27 @@ export class Game {
     if (success) {
       const time = s.t; const best = this.save.best[m.id] || {};
       const medal = this.medalFor(m, s);
-      lines.push(`Time <b>${fmtT(time)}</b>${medal ? ` &nbsp;·&nbsp; <b>${medal}</b>` : ''}`);
-      if (m.scoreMedal || m.id === 'stunt') lines.push(`${m.scoreLabel || 'Style score'} <b>${s.score.toLocaleString()}</b>`);
+      lines.push(`<b>${fmtT(time)}</b>${medal ? ` &nbsp;·&nbsp; <b>${medal}</b>` : ''}`);
+      if (m.scoreMedal || m.id === 'stunt') lines.push(`${m.scoreLabel || '스타일 점수'} <b>${s.score.toLocaleString()}점</b>`);
       const first = !this.save.done.includes(m.id);
       const rewardK = s.rewardK === undefined ? 1 : s.rewardK;
       const reward = Math.round((first ? m.reward : m.reward * 0.35) * rewardK);
-      lines.push(`${first ? 'Reward' : 'Repeat bonus'} <b>${fmtCash(reward)}</b>${rewardK < 1 ? ` <i>(${Math.round(rewardK * 100)}% of the load)</i>` : ''}`);
-      if (m.scoreMedal || m.id === 'stunt') { if (!best.score || s.score > best.score) { best.score = s.score; if (this.save.best[m.id]) lines.push('New best score'); } }
-      else if (!best.time || time < best.time) { best.time = time; if (this.save.best[m.id]) lines.push('New best time'); }
+      lines.push(`${first ? '보상' : '반복 보수'} <b>${fmtCash(reward)}</b>${rewardK < 1 ? ` <i>(화물의 ${Math.round(rewardK * 100)}%)</i>` : ''}`);
+      if (m.scoreMedal || m.id === 'stunt') { if (!best.score || s.score > best.score) { best.score = s.score; if (this.save.best[m.id]) lines.push('신 최고 점수'); } }
+      else if (!best.time || time < best.time) { best.time = time; if (this.save.best[m.id]) lines.push('신 최고 기록'); }
       if (medal && (!best.medal || MEDALS.indexOf(medal) > MEDALS.indexOf(best.medal))) best.medal = medal;
       this.save.best[m.id] = best; if (first) this.save.done.push(m.id); this.addCash(reward); this.persist();
       if (medal) this.bounties.event('medal', medal);
       this.bounties.event('mission', m.id);
       const nxt = this.missions.indexOf(m) + 1;
-      if (first && nxt > 0 && nxt < this.missions.length) lines.push(`Unlocked <b>${this.missions[nxt].title}</b>`);
-      if (m.isRun) { this.save.runs++; this.record('run', m.runMi); this.bounties.event('runjob', 1); if (!this.save.camps.includes(m.to.key)) this.save.camps.push(m.to.key); this.persist(); lines.push(`${m.runMi.toFixed(1)} mile run &nbsp;·&nbsp; runs done <b>${this.save.runs}</b>`); }
+      if (first && nxt > 0 && nxt < this.missions.length) lines.push(`<b>${this.missions[nxt].title}</b> 잠금 해제`);
+      if (m.isRun) { this.save.runs++; this.record('run', m.runMi); this.bounties.event('runjob', 1); if (!this.save.camps.includes(m.to.key)) this.save.camps.push(m.to.key); this.persist(); lines.push(`${m.runMi.toFixed(1)} mi 운항 &nbsp;·&nbsp; 완료 운항 <b>${this.save.runs}</b>`); }
       if (this.reputation) this.reputation.mission(m, first);
       this.audio.complete();
       this.showResult(`${m.title}`, lines, false);
     } else {
       this.audio.fail();
-      this.showResult('Mission failed', [s.failReason || ''], true);
+      this.showResult('임무 실패', [s.failReason || ''], true);
     }
     this.renderHud();
   }
@@ -360,7 +360,7 @@ export class Game {
     const fieldNoteCount = fieldNotes.filter(entry => entry.found).length;
     const fieldNoteRows = fieldNotes.length ? fieldNotes.map(entry => `<div class="deed ${entry.found ? 'found' : ''}"><b>${entry.found ? esc(entry.short) : 'Unlogged'}</b>${esc(entry.found ? `${entry.place} · day ${entry.record?.day || '—'}` : entry.hint)}</div>`).join('') : '<div class="deed">기록된 야외 관찰이 없습니다.</div>';
     const fishingEntries = this.fishing?.menuEntries?.() || [], fishLogged = fishingEntries.filter(entry => entry.caught > 0).length;
-    const fishingRows = fishingEntries.length ? fishingEntries.map(entry => `<div class="deed ${entry.caught ? 'found' : ''}"><b>${esc(entry.name)}</b>${entry.caught ? `${entry.caught} landed · best ${entry.bestIn.toFixed(1)} in` : 'Not logged'}</div>`).join('') : '<div class="deed">기록된 어획이 없습니다.</div>';
+    const fishingRows = fishingEntries.length ? fishingEntries.map(entry => `<div class="deed ${entry.caught ? 'found' : ''}"><b>${esc(entry.name)}</b>${entry.caught ? `${entry.caught} landed · best ${entry.bestIn.toFixed(1)} in` : '미기록'}</div>`).join('') : '<div class="deed">기록된 어획이 없습니다.</div>';
     records.push(['야외 기록', `${fieldNoteCount} / ${fieldNotes.length || 3}`]);
     records.push(['항로 표지 신고', `${Math.max(0, Number(this.save.navigationAids?.stats?.reports) || 0)}`]);
     records.push(['어획', `${Math.max(0, Number(this.save.fishing?.total) || 0)}`]);
@@ -401,7 +401,7 @@ export class Game {
     }
     const tabs = { jobs: ['▤', '의뢰'], world: ['⌖', '세계'], records: ['△', '기록'], system: ['⚙', '시스템'] };
     const rail = MENU_TABS.map(tab => `<button type="button" class="rail-tab ${tab === this.menuTab ? 'active' : ''}" data-tab="${tab}" ${tab === this.menuTab ? 'aria-current="page"' : ''}><span>${tabs[tab][0]}</span>${tabs[tab][1]}</button>`).join('');
-    this.el.menu.innerHTML = `<nav class="menu-rail" aria-label="Pause menu"><div class="rail-mark">EB</div>${rail}<div class="rail-status">${fmtCash(this.save.cash)}<br>${esc(this.getWorldShortLabel?.() || 'Open water')}</div></nav><main class="menu-stage"><section class="menu-view"><header class="menu-head"><div><p>${kicker}</p><h1>${title}</h1></div><p class="menu-copy">${copy}</p></header>${content}</section></main><footer class="menu-keybar">${keyHelp}</footer>`;
+    this.el.menu.innerHTML = `<nav class="menu-rail" aria-label="Pause menu"><div class="rail-mark">EB</div>${rail}<div class="rail-status">${fmtCash(this.save.cash)}<br>${esc(this.getWorldShortLabel?.() || '외해')}</div></nav><main class="menu-stage"><section class="menu-view"><header class="menu-head"><div><p>${kicker}</p><h1>${title}</h1></div><p class="menu-copy">${copy}</p></header>${content}</section></main><footer class="menu-keybar">${keyHelp}</footer>`;
     this.el.menu.querySelectorAll('[data-tab]').forEach(element => element.addEventListener('click', () => { this.menuTab = element.dataset.tab; this.renderMenu(); this.el.menu.focus({ preventScroll: true }); }));
     this.el.menu.querySelectorAll('[data-mission]').forEach(element => {
       element.addEventListener('click', () => { const i = +element.dataset.mission; if (this.unlocked(i)) { this.sel = i; this.start(i); } });
@@ -606,7 +606,7 @@ export class Game {
     this.hitCd = Math.max(0, (this.hitCd || 0) - dt);
     if (p.hit > 2.5 && p.hitTag && this.hitCd <= 0 && !this.paused) {
       const tag = p.hitTag, mph = this.mph();
-      if (tag === 'log') { this.hitCd = 4; this.audio.knock(Math.min(1, p.hit / 6)); this.tricks.bust('DEADHEAD'); this.toast('Deadhead', mph > 18 ? '수면 바로 아래 가라앉은 통나무. 잔잔한 물에 떠다닙니다.' : 'Sunken log', 2.2); if (p.hit > 4 && !p.airborne && p.wipeT <= 0) this.bounties.event('deadhead', mph); }
+      if (tag === 'log') { this.hitCd = 4; this.audio.knock(Math.min(1, p.hit / 6)); this.tricks.bust('DEADHEAD'); this.toast('Deadhead', mph > 18 ? '수면 바로 아래 가라앉은 통나무. 잔잔한 물에 떠다닙니다.' : '침목', 2.2); if (p.hit > 4 && !p.airborne && p.wipeT <= 0) this.bounties.event('deadhead', mph); }
       else if (tag === 'snag') { this.hitCd = 4; this.audio.knock(Math.min(1, p.hit / 6)); this.tricks.bust('SNAG'); this.toast('장애물', '시내에 죽은 사이프러스', 2); }
       else if (tag === 'dock' || tag === 'house' || tag === 'truck' || tag === 'blind') {
         this.hitCd = 4; this.tricks.bust('DOCK');
@@ -799,10 +799,10 @@ export class Game {
 const BOUNTY_POOL = [
   { id: 'air15', text: '공중에서 1.5초 체공', kind: 'air', target: 1.5, pay: 150 },
   { id: 'peak4', text: '수면에서 4 m 상승', kind: 'peak', target: 4, pay: 200 },
-  { id: 'spin360', text: 'Land a 360', kind: 'spin', target: 360, pay: 300 },
+  { id: 'spin360', text: '360° 회전 착지', kind: 'spin', target: 360, pay: 300 },
   { id: 'chain5', text: '트릭 5개 연결', kind: 'chainlen', target: 5, pay: 250 },
   { id: 'drift3', text: '3초 드리프트 유지', kind: 'driftnow', target: 3, pay: 150 },
-  { id: 'speed31', text: 'Hit 31 mph', kind: 'speed', target: 31, pay: 100 },
+  { id: 'speed31', text: '31 mph 도달', kind: 'speed', target: 31, pay: 100 },
   { id: 'mud4', text: '평지에서 4초 직진', kind: 'mud', target: 4, pay: 150 },
   { id: 'near5', text: '아슬아슬 5회', kind: 'nearmiss', target: 1, count: 5, pay: 250 },
   { id: 'bank3k', text: '3,000점 체인 적립', kind: 'bank', target: 3000, pay: 300 },
@@ -811,8 +811,8 @@ const BOUNTY_POOL = [
   { id: 'gold', text: '금메달 획득', kind: 'medal', target: 'GOLD', pay: 400 },
   { id: 'gator', text: '수컷 악어 관찰', kind: 'seegator', target: 1, pay: 150 },
   { id: 'lagoon', text: '라군으로 출항', kind: 'visit', target: 'lagoon', pay: 100 },
-  { id: 'huge', text: 'Land a huge air', kind: 'air', target: 1.7, pay: 300 },
-  { id: 'twojobs', text: 'Finish two jobs', kind: 'mission', target: 1, count: 2, pay: 350 },
+  { id: 'huge', text: '대형 점프 착지', kind: 'air', target: 1.7, pay: 300 },
+  { id: 'twojobs', text: '의뢰 2개 완료', kind: 'mission', target: 1, count: 2, pay: 350 },
   { id: 'newcamp', text: '새 어선 캠프 발견', kind: 'discover', target: 1, pay: 250 },
   { id: 'runjob', text: '캠프 운행 완료', kind: 'runjob', target: 1, pay: 300 },
   { id: 'traps3', text: '유실 게통 3개 회수', kind: 'trap', target: 1, count: 3, pay: 220 },
@@ -845,7 +845,7 @@ class Bounties {
     for (const b of this.list) {
       if (sv.done.includes(b.id)) continue;
       let k = kind;
-      if (b.kind === 'tail') { if (text !== 'TAIL SLAP') continue; k = 'tail'; value = 1; }
+      if (b.kind === 'tail') { if (text !== '테일 슬랩') continue; k = 'tail'; value = 1; }
       if (b.kind === 'chainlen') { if (kind !== 'chainlen') continue; }
       if (b.kind !== k) continue;
       const ok = typeof b.target === 'string' ? value === b.target : value >= b.target;
@@ -891,7 +891,7 @@ export function buildMissions(G) {
     const path = [rivalStart, ...gates], distances = raceCourseDistances(line, gates);
     return {
       setup(s, G) {
-        base.setup(s, G); s.rivalRace = true; s.rivalHitCd = 0; s.rivalRams = 0; s.racePosition = 'Side by side with Mud Hen';
+        base.setup(s, G); s.rivalRace = true; s.rivalHitCd = 0; s.rivalRams = 0; s.racePosition = 'Mud Hen과 나란히';
         // Eight metres keeps the johnboat inside the nine-metre race gates instead of taking the chase AI's wider cut.
         G.skiff.start(path, speed, 8); G.beginMissionRival?.();
       },
