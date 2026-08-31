@@ -1301,7 +1301,7 @@ export class EncounterDirector {
     if (e.state !== 'challenge') return;
     e.state = 'countdown'; e.countdown = 3.35; e.countMark = 4; e.playerStartX = this.phys.pos.x; e.playerStartZ = this.phys.pos.y;
     e.stake = e.stake && Number(this.game.save.cash) >= 100 ? 100 : 0;
-    if (e.stake) { this.pay(-e.stake, 'Race stake'); e.paidStake = true; }
+    if (e.stake) { this.pay(-e.stake, '경주 배당금'); e.paidStake = true; }
     const g = e.gates[0]; this.rigs.smuggler.agent.heading = Math.atan2(-(g.x - e.x), -(g.z - e.z));
     this.showRaceGate(e); this.clearPrompt(); this.audio.horn(0.24);
     this.game.toast(e.stake ? '100달러 현금 스프린트' : '110달러 오픈 상금', '6개 게이트. 라인을 유지하고 경적을 울리세요.', 3.2);
@@ -1321,7 +1321,7 @@ export class EncounterDirector {
     const y = this.environment.waterLevel, last = e.playerGate === e.gates.length - 1;
     this.game.beacon.set(gate.x, y, gate.z, last ? 0x7be08a : 0xf07a2e, true);
     const next = e.gates[e.playerGate + 1]; if (next) this.game.beacon2.set(next.x, y, next.z, 0xf3ede0, true); else this.game.beacon2.hide();
-    this.point(gate.x, gate.z, `sprint gate ${e.playerGate + 1} / ${e.gates.length}`, last ? '#7be08a' : '#f07a2e');
+    this.point(gate.x, gate.z, `스프린트 게이트 ${e.playerGate + 1} / ${e.gates.length}`, last ? '#7be08a' : '#f07a2e');
   }
 
   abortRace(e) {
@@ -1781,7 +1781,7 @@ export class EncounterDirector {
   finish(success = false, silent = false) {
     const e = this.active; if (!e) return;
     if (e.type === 'race') {
-      if (e.paidStake && !e.stakeSettled) { this.game.addCash(e.stake); if (!silent) this.game.bountyToast(`Race stake returned <b>+$${e.stake}</b>`); }
+      if (e.paidStake && !e.stakeSettled) { this.game.addCash(e.stake); if (!silent) this.game.bountyToast(`경주 배당금 반환 <b>+$${e.stake}</b>`); }
       if (!this.game.state) { this.game.beacon.hide(); this.game.beacon2.hide(); }
     }
     this.clearPrompt(); this.obs.length = 0;
@@ -2422,7 +2422,7 @@ export class EncounterDirector {
       if (e.known) e.takeT -= dt;
       if (d < 30 && mph > 11) { this.spookSpotlight(e); this.updateSpotlightRig(e, dt, t); return; }
       if (d < 55 && mph < 7 && this.canInteract()) {
-        this.setPrompt(`report the blacked-out harvest crew <i>· F warn them on seventy-two${e.takeT < 8 ? ' · gunner lining up' : ''}</i>`);
+        this.setPrompt(`블랙아웃 수확팀 신고 <i>· F 72채널로 경고${e.takeT < 8 ? ' · 건너 정렬 중' : ''}</i>`);
         if (this.interact) { this.reportSpotlight(e); this.updateSpotlightRig(e, dt, t); return; }
         if (this.alternate) { this.warnSpotlight(e); this.updateSpotlightRig(e, dt, t); return; }
       }
@@ -2443,8 +2443,8 @@ export class EncounterDirector {
       this.addBoatObstacle(P, 'FWC 27호', 1);
       const blink = Math.floor(t * 5.2) % 2; this.rigs.patrol.blue.light.intensity = blink ? 86 : 4; this.rigs.patrol.red.light.intensity = blink ? 4 : 86;
       const pd = Math.hypot(P.x - A.x, P.z - A.z);
-      if (visual) this.setPrompt(`keep the blackout skiff in sight for FWC <i>· ${fmtDist(pd)} to intercept</i>`, 'VISUAL');
-      else if (e.lostT > 4) this.setPrompt(`reacquire the blackout skiff <i>· last fix ${fmtDist(Math.hypot(e.fixX - p.pos.x, e.fixZ - p.pos.y))}</i>`, 'LOST');
+      if (visual) this.setPrompt(`FWC가 블랙아웃 스키프를 볼 수 있도록 유지 <i>· 차단까지 ${fmtDist(pd)}</i>`, 'VISUAL');
+      else if (e.lostT > 4) this.setPrompt(`블랙아웃 스키프 재획득 <i>· 마지막 좌표 ${fmtDist(Math.hypot(e.fixX - p.pos.x, e.fixZ - p.pos.y))}</i>`, 'LOST');
       this.updateSpotlightRig(e, dt, t);
       if (pd < 14.5 && e.visualT > 4) { this.seizeSpotlight(e); return; }
       if (e.chaseT > 64 || (e.lostT > 16 && d > 270)) { this.escapeSpotlight(e); return; }
@@ -2467,8 +2467,8 @@ export class EncounterDirector {
 
     e.resolveT -= dt; this.updateSpotlightRig(e, dt, t);
     if (e.resolveT > 0) return;
-    if (e.state === 'warned') this.complete('경고 전달', `The blackout crew is gone. ${e.paid ? `$${e.paid} is on your backchannel ledger.` : '백채널이 기억합니다.'}`, 0, 0, '', 'spotlight-warned');
-    else if (e.state === 'spooked') this.complete('Crew scattered', '악어가 피난처 수로에 머물렀습니다. 경고 사격이 FWC 통화 기록에 있습니다.', 0, 0, '', 'spotlight-spooked');
+    if (e.state === 'warned') this.complete('경고 전달', `블랙아웃 팀이 떠났습니다. ${e.paid ? `${e.paid}달러가 백채널 원장에 기록되었습니다.` : '백채널이 기억합니다.'}`, 0, 0, '', 'spotlight-warned');
+    else if (e.state === 'spooked') this.complete('팀 흩어짐', '악어가 피난처 수로에 머물렀습니다. 경고 사격이 FWC 통화 기록에 있습니다.', 0, 0, '', 'spotlight-spooked');
     else if (e.state === 'taken') this.complete('무태그 포획물 상실', 'FWC가 사격 신고와 선체 번호 없음을 보유. 닫힌 수로가 다시 조용합니다.', 0, 0, '', 'spotlight-taken');
   }
 
@@ -2868,8 +2868,8 @@ export class EncounterDirector {
     this.updatePatrolSearchlight(e, this.rigs.patrol, t, Boolean(e.visual), e.visual ? p.pos.x : A.search?.targetX ?? tx, e.visual ? p.pos.y : A.search?.targetZ ?? tz);
     d = Math.hypot(A.x - p.pos.x, A.z - p.pos.y); this.addPatrolObstacle(A);
     const blink = Math.floor(t * 5) % 2; this.rigs.patrol.blue.light.intensity = blink ? 80 : 5; this.rigs.patrol.red.light.intensity = blink ? 5 : 80;
-    if (d < 150) this.known(e, e.wanted ? 'FWC intercept' : 'FWC patrol', e.wanted ? '그들이 선체와 나란히. 유속으로 두고 나란히 오도록 하세요.' : '파란등. 프로펠러를 유속으로 두고 싶어합니다.');
-    if (e.known) this.point(A.x, A.z, 'FWC patrol', '#5aa7ff');
+    if (d < 150) this.known(e, e.wanted ? 'FWC 차단' : 'FWC 순찰', e.wanted ? '그들이 선체와 나란히. 유속으로 두고 나란히 오도록 하세요.' : '파란등. 프로펠러를 유속으로 두고 싶어합니다.');
+    if (e.known) this.point(A.x, A.z, 'FWC 순찰', '#5aa7ff');
     if (e.state === 'approach' && d < 38) { e.state = 'check'; this.audio.horn(0.28); }
     if (e.state === 'check') {
       if (p.speed * MPH < 6) e.comply += dt; else e.comply = Math.max(0, e.comply - dt * 0.7);
@@ -2882,7 +2882,7 @@ export class EncounterDirector {
         this.audio.checkpoint();
         if (this.law && this.law.confiscate()) {
           this.pay(-Math.round(200 * (this.reputation ? this.reputation.fineFactor() : 1)), 'Cargo seizure');
-          this.complete('Cargo seized', 'FWC가 소포를 가져가고 선체를 기록했습니다.', 0, 0, '', 'patrol-seizure');
+          this.complete('선적물 압수', 'FWC가 소포를 가져가고 선체를 기록했습니다.', 0, 0, '', 'patrol-seizure');
         } else {
           if (this.law) this.law.cleanCheck();
           this.complete('순찰대 통과', e.recognized ? '그들은 선체를 알고 있습니다. 깨끗하게 하세요.' : '깔끔한 선체. 계속하세요.', 0, 0, '', 'patrol-cleared');
