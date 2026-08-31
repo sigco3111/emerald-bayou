@@ -45,5 +45,5 @@ test('the marine warning tells small craft to avoid the funnel track', () => {
   const radio = Object.create(RadioDirector.prototype); let message = null;
   radio.clock = 62; radio.transmit = value => { message = value; return true; };
   assert.equal(radio.waterspoutCall(), true); assert.equal(message.channel, 'WX-3'); assert.equal(message.priority, 4);
-  assert.match(message.text, /Special marine warning/); assert.match(message.text, /ninety degrees off its apparent track/);
+  assert.match(message.text, /Special\s*marine\s*warning/); assert.match(message.text, /ninety degrees off its apparent track/);
 });

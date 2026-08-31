@@ -905,7 +905,7 @@ export function buildMissions(G) {
         const rivalProgress = raceCourseProgress(line, gates, distances, rivalNextGate, G.skiff.pos.x, G.skiff.pos.y);
         s.racePosition = racePositionLabel(playerProgress, rivalProgress);
         if (result === 'done') return result;
-        if (G.skiff.done) return { fail: 'Mud Hen crossed first.' };
+        if (G.skiff.done) return { fail: 'Mud Hen이 먼저 통과했습니다.' };
         return result;
       },
       hud(s) { const h = base.hud(s); return { ...h, sub: `${h.sub ? `${h.sub} · ` : ''}${s.racePosition}${s.rivalRams ? ' · rough line' : ''}` }; },
@@ -968,9 +968,7 @@ export function buildMissions(G) {
   const sprintZ = [30, -40, -110, -170, -240, -300, -360, -430, -500, -570, -640];
   const sprintGates = sprintZ.map((z, i) => gateAt(G.river(z, i % 3 === 1 ? 0.6 : i % 3 === 2 ? -0.6 : 0)));
   const sprintStart = (G) => ({ x: G.startX, z: G.startZ + 20, heading: 0 });
-  const sprint = { id: 'sprint', title: '사이프러스 질주', desc: '본류 시내를 따라 11개 게이트 통과. 골드는 1:03 이내.', reward: 500, countdown: true, gold: 63, silver: 76, bronze: 95, start: sprintStart,
-    update(s, G) { return baseRace(s, G, sprintGates, this, 0xf07a2e); }, hud(s) { const r = baseRaceHud(s, sprintGates, this); return r; }, markers(s, G, out) { baseRaceMarkers(s, G, out, sprintGates); },
-  };
+  const sprint = { id: 'sprint', title: '사이프러스 질주', desc: '본류 시내를 따라 11개 게이트 통과. 골드는 1:03 이내.', reward: 500, countdown: true, gold: 63, silver: 76, bronze: 95, start: sprintStart, ...contestedSequence(sprintGates, sprintStart) };
 
   // 4. 게통 회수 ----------------------------------------------------------------------------
   const trapSpots = (() => {
@@ -1254,8 +1252,7 @@ export function buildMissions(G) {
   { const a = T.riverCenterX(-60), c = creekPt(-60); tourGates.push({ x: a + (c.x - a) * 0.5, z: -60, r: 10, label: '시내로 복귀' }); }
   tourGates.push({ ...gateAt(G.river(G.startZ)), label: '시작 지점 도착' });
   const tourStart = (G) => ({ x: G.startX, z: G.startZ + 20, heading: 0 });
-  const tour = { id: 'tour', title: '베이유 그랜드 투어', desc: `대환장: 강 따라 내려가서 뒷 웅덩이 횡단, 크릭을 타고 올라가 평지를 다시 건너기. 게이트 ${tourGates.length}개. 골드는 1:50 이내.`, reward: 800, countdown: true, gold: 110, silver: 130, bronze: 165,
-    start: tourStart, update(s, G) { return baseRace(s, G, tourGates, this, 0xf07a2e); }, hud(s) { return baseRaceHud(s, tourGates, this); }, markers(s, G, out) { baseRaceMarkers(s, G, out, tourGates); }, };
+  const tour = { id: 'tour', title: '베이유 그랜드 투어', desc: `대환장: 강 따라 내려가서 뒷 웅덩이 횡단, 크릭을 타고 올라가 평지를 다시 건너기. 게이트 ${tourGates.length}개. 골드는 1:50 이내.`, reward: 800, countdown: true, gold: 110, silver: 130, bronze: 165, start: tourStart, ...contestedSequence(tourGates, tourStart) };
 
   // 14. 레드라인 분할 -------------------------------------------------------------------------
   // Every gate starts a new deadline. A weak leg cannot be hidden inside one very fast straight, so the driver has

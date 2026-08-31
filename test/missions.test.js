@@ -55,7 +55,7 @@ test('campaign sprint and grand tour reuse one physical rival and fail when it c
     assert.ok(G.skiff.path.length > 2);
 
     G.skiff.done = true; G.skiff.i = G.skiff.path.length - 1;
-    assert.deepEqual(mission.update(state, G, 1 / 60, 0), { fail: 'Mud Hen crossed first.' });
+    assert.deepEqual(mission.update(state, G, 1 / 60, 0), { fail: 'Mud Hen이 먼저 통과했습니다.' });
     assert.match(mission.hud(state, G).sub, /Mud Hen/);
     const markers = []; mission.markers(state, G, markers);
     assert.equal(markers.at(-1).x, G.skiff.pos.x);

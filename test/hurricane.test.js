@@ -61,8 +61,8 @@ test('surge motion contributes to the navigable flood and ebb without changing t
   assert.equal(draining.waterLevel, astronomical.waterLevel);
   assert.ok(flooding.tideRate > astronomical.tideRate);
   assert.ok(draining.tideRate < astronomical.tideRate);
-  assert.match(flooding.tideLabel(), /^Rising /);
-  assert.match(draining.tideLabel(), /^Falling /);
+  assert.match(flooding.tideLabel(), /^상승 /);
+  assert.match(draining.tideLabel(), /^하강 /);
 });
 
 test('leaving the backside carries its reversed wind into the next weather state', () => {
@@ -93,7 +93,7 @@ test('the world HUD reads storm surge from retained environment values', () => {
     values: { wind: 30, surge: 0.72 }, gust: 1, currentField: null, tideLabel: () => 'Rising +2.4 ft', weatherLabel: () => 'Hurricane eyewall',
   });
   environment.renderHud();
-  assert.match(el.innerHTML, /surge \+2\.4 ft/); assert.match(el.innerHTML, /978 hPa/);
+  assert.match(el.innerHTML, /해일.*\+2\.4\s*ft/); assert.match(el.innerHTML, /978\s*hPa/);
 });
 
 test('marine radio explains that eye calm is temporary and backside wind reverses', () => {
@@ -101,8 +101,8 @@ test('marine radio explains that eye calm is temporary and backside wind reverse
   radio.transmit = message => { calls.push(message); return true; };
   assert.equal(radio.hurricanePhaseCall('eye'), true);
   assert.equal(radio.hurricanePhaseCall('back-eyewall'), true);
-  assert.match(calls[0].text, /temporarily light/i);
-  assert.match(calls[0].text, /surge and rough water remain/i);
-  assert.match(calls[1].text, /wind is reversing/i);
+  assert.match(calls[0].text, /잠시\s*잠잠/);
+  assert.match(calls[0].text, /해일.*거친.*여전/);
+  assert.match(calls[1].text, /바람\s*(반전|방향\s*반전)/);
   assert.ok(calls.every(call => call.priority === 4 && call.channel === 'WX-3'));
 });

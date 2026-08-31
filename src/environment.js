@@ -565,7 +565,7 @@ export class Environment {
   }
   tideLabel() {
     const tideFt = this.waterLevel * FT;
-    const motion = Math.abs(this.tideRate) < 0.015 ? 'Slack' : this.tideRate > 0 ? 'Rising' : 'Falling';
+    const motion = Math.abs(this.tideRate) < 0.015 ? '정체' : this.tideRate > 0 ? '상승' : '하강';
     return `${motion} ${tideFt >= 0 ? '+' : ''}${tideFt.toFixed(1)} ft`;
   }
   lunarSnapshot() { return { age: this.lunarAge, phase: this.lunarPhase, name: lunarPhaseName(this.lunarPhase), illumination: this.moonIllumination, tideRange: this.tideRange, altitude: this.moonDir?.y || 0, light: this.moonlight }; }
@@ -955,9 +955,9 @@ export class Environment {
     const from = ((this.localWindAngle + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2), dirs = ['E', 'NE', 'N', 'NW', 'W', 'SW', 'S', 'SE'];
     const dir = dirs[Math.round(from / (Math.PI * 2) * 8) % 8];
     const tide = this.tideLabel();
-    const lunarRange = this.tideRange > 0.94 ? ' · spring tide' : this.tideRange < 0.76 ? ' · neap tide' : '';
+    const lunarRange = this.tideRange > 0.94 ? ' · 대조기' : this.tideRange < 0.76 ? ' · 소조기' : '';
     const pressure = this.key === 'hurricane' ? ` · ${this.hurricane.pressureHpa} hPa` : '';
-    const surge = this.values.surge > 0.14 ? ` · surge +${(this.values.surge * FT).toFixed(1)} ft` : '';
+    const surge = this.values.surge > 0.14 ? ` · 해일 +${(this.values.surge * FT).toFixed(1)} ft` : '';
     const current = this.currentField ? ` · ${this.currentField.hud()}` : '';
     this.el.innerHTML = `<div class="world-clock">${hh}:${String(m).padStart(2, '0')} <small>${ap}</small></div><div class="world-weather">${this.weatherLabel()}</div><div class="world-detail">${tide}${lunarRange} · wind ${dir} ${Math.round(this.values.wind * this.gust * MPS_TO_MPH)} mph${pressure}${surge}${current}</div>`;
   }

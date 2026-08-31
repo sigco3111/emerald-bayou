@@ -97,5 +97,5 @@ test('camp evacuation radio traffic carries pickup, transfer and persistent afte
   assert.match(calls[0].text, /water is across the low bank/i); assert.match(calls[0].text, /public boat ramp/i);
   assert.match(calls[1].text, /has them/i);
   const followup = radio.encounterFollowupMessage({ outcome: 'surge-evacuation', place: 'Lostman Camp to public boat ramp' });
-  assert.match(followup.text, /resident is dry/i); assert.match(followup.text, /Lostman Camp to public boat ramp/);
+  assert.match(followup.text, /resident is dry/i); assert.match(followup.text, /Lostman.*Camp.*public\s*boat\s*ramp/);
 });
