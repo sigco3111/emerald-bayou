@@ -251,7 +251,7 @@ export class ResidentContracts {
     let dest = id === 'june' ? this.campDestination(entry.point, seed) : this.remoteWater(entry.point, seed, id === 'cal' ? 1800 : 1350, id === 'cal' ? 3900 : 3200);
     if (!dest) { this.state.cooldowns[id] = this.environment.minutes + 45; this.persist(); return null; }
     const rr = mulberry32(seed ^ 0x51ed), reward = id === 'leon' ? 365 + Math.floor(rr() * 8) * 5 : id === 'june' ? 545 + Math.floor(rr() * 10) * 5 : 715 + Math.floor(rr() * 12) * 5;
-    if (id === 'leon') { dest.aid = 3 + Math.floor(rr() * 16); dest.label = `Cut ${dest.aid} green`; }
+    if (id === 'leon') { dest.aid = 3 + Math.floor(rr() * 16); dest.label = `${dest.aid} 초록통로로`; }
     if (id === 'cal') {
       const names = ['ELLIS VANE', 'MICAH ROWE', 'SILAS REED', 'TESS VALE', 'NOAH BRIGGS'];
       dest.recipient = names[Math.floor(rr() * names.length)]; dest.label = `${dest.recipient} · ${regionAt(dest.x, dest.z).name}`;
@@ -280,16 +280,16 @@ export class ResidentContracts {
     const offer = RESIDENTS.map(id => this.state.offers[id]).find(o => o && !o.announced && this.entry(o.resident)?.present);
     if (!offer) { this.announceT = 7; return; }
     offer.announced = true; this.announceT = 15;
-    if (offer.resident === 'leon') this.call('CH 68', 'LEON DOSS · OLD MILL', `Tower Boat, ${offer.dest.label} is dying under load. I have a battery if you are still taking channel work.`, 2, `offer:${offer.id}`);
-    else if (offer.resident === 'june') this.call('CH 68', 'JUNE BELL · SPLIT PINE', `Tower Boat, I have a sealed cold box for ${offer.dest.campName}. It cannot sit in the sun and it cannot take a hard landing.`, 2, `offer:${offer.id}`);
-    else this.call('CH 72', 'CAL ROOK · LOST KEY', `Seventy-two. Lost Key has an unmanifested parcel for ${regionAt(offer.dest.x, offer.dest.z).name}. Cash if the seal stays mine.`, 3, `offer:${offer.id}`);
+    if (offer.resident === 'leon') this.call('CH 68', 'LEON DOSS · OLD MILL', `타워 보트, ${offer.dest.label}가 부하 때문에 죽어가고 있어요. 아직 채널 작업 받으시면 배터리가 있습니다.`, 2, `offer:${offer.id}`);
+    else if (offer.resident === 'june') this.call('CH 68', 'JUNE BELL · SPLIT PINE', `타워 보트, ${offer.dest.campName}로 가는 밀봉 콜드 박스가 있어요. 햇볕에 둘 수도, 강한 착지를 시킬 수도 없습니다.`, 2, `offer:${offer.id}`);
+    else this.call('CH 72', 'CAL ROOK · LOST KEY', `72번입니다. 로스트 키에 ${regionAt(offer.dest.x, offer.dest.z).name}로 가는 미신고 소포가 있어요. 밀봉이 살아있으면 현금입니다.`, 3, `offer:${offer.id}`);
     this.persist();
   }
 
   offerSummary(offer) {
-    if (offer.resident === 'leon') return `service ${offer.dest.label} · $${offer.reward}`;
-    if (offer.resident === 'june') return `cold-chain run to ${offer.dest.campName} · up to $${offer.reward}`;
-    return `unmanifested handoff · $${offer.reward}`;
+    if (offer.resident === 'leon') return `서비스 ${offer.dest.label} · $${offer.reward}`;
+    if (offer.resident === 'june') return `${offer.dest.campName}까지 콜드체인 운송 · 최대 $${offer.reward}`;
+    return `미신고 핸드오프 · $${offer.reward}`;
   }
 
   updateOfferInteraction() {
@@ -302,7 +302,7 @@ export class ResidentContracts {
     this.nearOffer = nearest;
     if (!nearest || this.phys.speed * MPH >= 6) { this.clearPrompt(); return; }
     const entry = this.entry(nearest.resident);
-    this.setPrompt(`<b>E</b> take ${entry.name.split(' ')[0]}’s work <i>· ${this.offerSummary(nearest)} · F pass</i>`);
+    this.setPrompt(`<b>E</b> ${entry.name.split(' ')[0]}의 의뢰 수락 <i>· ${this.offerSummary(nearest)} · F 거절</i>`);
     if (this.P.interact) this.accept(nearest); else if (this.P.alternate) this.decline(nearest);
   }
 
@@ -338,14 +338,14 @@ export class ResidentContracts {
     delete this.state.offers[offer.resident]; this.state.stats.accepted = (this.state.stats.accepted || 0) + 1;
     this.attachCargoToBoat(a); this.clearPrompt(); this.audio.pickup();
     if (a.resident === 'leon') {
-      this.call('CH 68', 'LEON DOSS · OLD MILL', `Battery is live. ${a.dest.label} is on your chart. Tie off on the lee side and give the new unit a full cycle.`, 2, `start:${a.id}`);
-      this.game.toast('Channel service aboard', `${a.dest.label} · keep the yellow case dry`, 3.1);
+      this.call('CH 68', 'LEON DOSS · OLD MILL', `배터리 가동 중. ${a.dest.label}이 해도에 표시됩니다. 그늘 쪽에 정박하고 새 장치에 완전 충전 사이클을 주세요.`, 2, `start:${a.id}`);
+      this.game.toast('Channel service aboard', `${a.dest.label} · 노란 케이스 건조 유지`, 3.1);
     } else if (a.resident === 'june') {
-      this.call('CH 68', 'JUNE BELL · SPLIT PINE', `${a.dest.campName} is waiting at the dock. If the lid seal opens, call me before you call them.`, 2, `start:${a.id}`);
-      this.game.toast('Cold box aboard', `${Math.ceil(a.deadlineMinutes - this.environment.minutes)} minutes on the cold window`, 3.1);
+      this.call('CH 68', 'JUNE BELL · SPLIT PINE', `${a.dest.campName}이 독에서 대기 중. 뚜껑 밀봉이 풀리면 그들에게 연락하기 전에 저한테 연락하세요.`, 2, `start:${a.id}`);
+      this.game.toast('Cold box aboard', `냉장 시간 ${Math.ceil(a.deadlineMinutes - this.environment.minutes)}분 남음`, 3.1);
     } else {
       this.law.addContraband();
-      this.call('CH 72', 'CAL ROOK · LOST KEY', `${a.dest.recipient} has one blue light in ${regionAt(a.dest.x, a.dest.z).name}. No names on sixteen.`, 3, `start:${a.id}`);
+      this.call('CH 72', 'CAL ROOK · LOST KEY', `${a.dest.recipient}가 ${regionAt(a.dest.x, a.dest.z).name}에 파란 등불 1개. 16번 채널엔 이름 없습니다.`, 3, `start:${a.id}`);
       this.game.toast('Unmanifested parcel aboard', 'FWC traffic can now identify the hull.', 3.1);
     }
     this.persist(); return true;
@@ -370,7 +370,7 @@ export class ResidentContracts {
     this.game.wpTarget = { x: a.dest.x, z: a.dest.z, label: a.dest.label, color: '#6fe08b', story: true, contract: true };
     if (a.stage === 'transit') {
       if (d < 10 && mph < 4.5 && this.canInteract(true)) {
-        this.setPrompt(`<b>E</b> tie off and service ${a.dest.label}`);
+        this.setPrompt(`<b>E</b> 정박 후 ${a.dest.label} 서비스`);
         if (this.P.interact) { a.stage = 'servicing'; a.serviceT = 0; this.clearPrompt(); this.audio.checkpoint(); this.game.toast('Service cycle started', 'Hold inside 30 ft and under 3 mph.', 2.7); this.persist(); }
       } else this.clearPrompt();
     } else if (a.stage === 'servicing') {
@@ -385,12 +385,12 @@ export class ResidentContracts {
   finishLeon(a) {
     const cargo = this.rigs.service; cargo.removeFromParent(); this.rigs.aid.group.add(cargo); cargo.position.set(0.46, 0.36, 0.15); cargo.rotation.set(0, 0.4, 0); cargo.visible = true;
     this.releaseLoad(a); this.game.addCash(a.reward);
-    this.reputation.change('locals', 0.65, 'resident-light-service', `You put ${a.dest.label} back into service for Leon Doss.`, true);
+    this.reputation.change('locals', 0.65, 'resident-light-service', `Leon Doss를 위해 ${a.dest.label}을(를) 다시 가동시켰습니다.`, true);
     this.reputation.change('fwc', 0.45, 'resident-light-service', 'A failed channel aid was serviced before it became a navigation report.', false);
-    this.state.notes.push({ x: a.dest.x, z: a.dest.z, heading: a.dest.heading, label: `${a.dest.label} serviced`, color: '#6fe08b', contract: true, expiresMinutes: this.environment.minutes + 4320 });
+    this.state.notes.push({ x: a.dest.x, z: a.dest.z, heading: a.dest.heading, label: `${a.dest.label} 서비스 완료`, color: '#6fe08b', contract: true, expiresMinutes: this.environment.minutes + 4320 });
     if (this.state.notes.length > 6) this.state.notes.shift();
     this.call('CH 68', 'LEON DOSS · OLD MILL', 'I have the return flash. Green is clean and the load is steady. Money is on your tower account.', 3, `finish:${a.id}`);
-    this.game.bountyToast(`Channel aid serviced <b>+$${a.reward}</b>`); this.audio.complete(); this.resolve(a, 'serviced', true);
+    this.game.bountyToast(`채널 표지 서비스 완료 <b>+$${a.reward}</b>`); this.audio.complete(); this.resolve(a, 'serviced', true);
   }
 
   coldDecay(a) {
@@ -399,7 +399,7 @@ export class ResidentContracts {
     const rain = clamp(finite(this.environment.values.rain)), storm = clamp(finite(this.environment.values.storm));
     const exposed = a.stage === 'overboard' ? 0.0026 : 0, late = now > a.deadlineMinutes ? 0.0028 : 0;
     a.cold = clamp(a.cold - dm * (0.00072 + solar * (0.00072 - rain * 0.00025) + exposed + (1 - a.seal) * 0.0016 + late));
-    if (a.cold < 0.5 && !a.warnedCold) { a.warnedCold = true; this.audio.warn(); this.game.toast('Cold reserve falling', `${Math.round(a.cold * 100)}% · keep the lid sealed and get to ${a.dest.campName}`, 2.8); }
+    if (a.cold < 0.5 && !a.warnedCold) { a.warnedCold = true; this.audio.warn(); this.game.toast('Cold reserve falling', `냉장 ${Math.round(a.cold * 100)}% · 뚜껑 밀봉 유지하고 ${a.dest.campName}으로`, 2.8); }
     if ((a.cold < 0.2 || now > a.deadlineMinutes + 30) && !a.warnedWarm) {
       a.warnedWarm = true; this.call('CH 68', 'JUNE BELL · SPLIT PINE', 'That box is outside the clean window. Get it onto the dock. They may still save part of the load.', 3, `warm:${a.id}`);
     }
@@ -423,7 +423,7 @@ export class ResidentContracts {
     this.hitCd = 2.4; const damage = clamp((force - 4.2) * 0.035, 0.04, 0.25);
     a.seal = clamp(a.seal - damage); a.cold = clamp(a.cold - damage * 0.18);
     if ((this.phys.wipeT > 0 && force > 6.7) || force > 10.2 || Math.abs(this.phys.roll) > 1.08) this.dropColdBox(a, 'The landing tore it off the deck. Turn back for the white lid.');
-    else { this.audio.knock(0.24); this.game.toast('Cooler seal took a hit', `${Math.round(a.seal * 100)}% seal integrity`, 2.2); this.persistT = Math.min(this.persistT, 1); }
+    else { this.audio.knock(0.24); this.game.toast('Cooler seal took a hit', `${Math.round(a.seal * 100)}% 밀봉`, 2.2); this.persistT = Math.min(this.persistT, 1); }
   }
 
   updateOverboard(a, dt, t) {
@@ -434,7 +434,7 @@ export class ResidentContracts {
     if (d < 70) { this.cargoObs.x = a.cargoX; this.cargoObs.z = a.cargoZ; this.obs.push(this.cargoObs); }
     if (d < 7.5 && this.phys.speed * MPH < 5 && this.canInteract(true)) {
       this.setPrompt('<b>E</b> lift June’s cold box back aboard');
-      if (this.P.interact) { a.stage = 'transit'; a.seal = clamp(a.seal - 0.06); a.cold = clamp(a.cold - 0.04); this.attachCargoToBoat(a); this.clearPrompt(); this.audio.pickup(); this.game.toast('Cold box recovered', `${Math.round(a.cold * 100)}% cold · ${Math.round(a.seal * 100)}% seal`, 2.8); this.persist(); }
+      if (this.P.interact) { a.stage = 'transit'; a.seal = clamp(a.seal - 0.06); a.cold = clamp(a.cold - 0.04); this.attachCargoToBoat(a); this.clearPrompt(); this.audio.pickup(); this.game.toast('Cold box recovered', `냉장 ${Math.round(a.cold * 100)}% · 밀봉 ${Math.round(a.seal * 100)}%`, 2.8); this.persist(); }
     } else this.clearPrompt();
   }
 
@@ -444,7 +444,7 @@ export class ResidentContracts {
     const d = Math.hypot(a.dest.x - this.phys.pos.x, a.dest.z - this.phys.pos.y);
     this.game.wpTarget = { x: a.dest.x, z: a.dest.z, label: a.dest.campName, color: '#79bed2', story: true, contract: true };
     if (d < 14 && this.phys.speed * MPH < 6 && this.canInteract(true)) {
-      this.setPrompt(`<b>E</b> put June’s cold box on ${a.dest.campName} dock`); if (this.P.interact) this.finishJune(a);
+      this.setPrompt(`<b>E</b> June의 콜드 박스를 ${a.dest.campName} 독에`); if (this.P.interact) this.finishJune(a);
     } else this.clearPrompt();
   }
 
@@ -453,11 +453,11 @@ export class ResidentContracts {
     const reward = good ? Math.max(190, Math.round(a.reward * (0.58 + quality * 0.42) / 5) * 5) : 0;
     const q = this.rigs.cold; q.removeFromParent(); this.scene.add(q); q.position.set(a.dest.displayX, a.dest.displayY, a.dest.displayZ); q.rotation.set(0, a.dest.heading + Math.PI / 2, 0); q.visible = true; this.releaseLoad(a);
     if (good) {
-      this.game.addCash(reward); this.reputation.change('locals', quality > 0.82 ? 0.9 : 0.55, 'resident-cold-chain', `June Bell’s cold box reached ${a.dest.campName} with the seal usable.`, true);
+      this.game.addCash(reward); this.reputation.change('locals', quality > 0.82 ? 0.9 : 0.55, 'resident-cold-chain', `June Bell의 콜드 박스가 ${a.dest.campName}에 밀봉 가능한 상태로 도착.`, true);
       this.reputation.change('fwc', 0.2, 'resident-cold-chain', 'A remote medical cold-chain load reached its logged camp.', false);
       if (quality > 0.88) this.state.stats.perfectCold = (this.state.stats.perfectCold || 0) + 1;
-      this.call('CH 68', `${a.dest.campName.toUpperCase()} · DOCK`, quality > 0.82 ? 'Box is cold and both latches are clean. Tell June we have it.' : 'Box is here. Seal took work, but the load is still in range.', 2, `finish:${a.id}`);
-      this.game.bountyToast(`Cold-chain delivery <b>+$${reward}</b>`); this.audio.complete(); this.resolve(a, 'delivered', true);
+      this.call('CH 68', `${a.dest.campName.toUpperCase()} · 독`, quality > 0.82 ? 'Box is cold and both latches are clean. Tell June we have it.' : 'Box is here. Seal took work, but the load is still in range.', 2, `finish:${a.id}`);
+      this.game.bountyToast(`콜드체인 배달 완료 <b>+$${reward}</b>`); this.audio.complete(); this.resolve(a, 'delivered', true);
     } else {
       this.reputation.change('locals', -0.55, 'resident-cold-chain-spoiled', `The cold-chain load reached ${a.dest.campName} too warm to use.`, true);
       this.reputation.change('fwc', -0.15, 'resident-cold-chain-spoiled', 'A logged cold-chain load was written off after transport.', false);

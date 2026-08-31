@@ -1,259 +1,263 @@
-<img src="docs/screenshots/00-title.jpg" alt="Emerald Bayou" width="100%">
+# 에메랄드 베이유 (Emerald Bayou)
 
-# Emerald Bayou
+> **한글화 / 포크 프로젝트** — 원본 [Vheissu/emerald-bayou](https://github.com/Vheissu/emerald-bayou)의 **모든 UI/메뉴/HUD/임무/무전/스토리 텍스트를 한국어로 완전 번역**한 버전.
+> 라이선스: 원본 **MIT** 그대로 보존.
 
-An airboat game set in the south Florida backcountry. Runs in a browser, built on three.js and Vite, with no game engine underneath it. You get a 16 mile square of streamed swamp, sixteen jobs, a radio that talks back, and weather that will ruin your afternoon.
+[🎮 **라이브 게임 플레이** (GitHub Pages)](https://sigco3111.github.io/emerald-bayou/) · [📦 원본 저장소](https://github.com/Vheissu/emerald-bayou)
 
-[Play Emerald Bayou](https://vheissu.github.io/emerald-bayou/)
+---
 
-Everything you see is generated at runtime except a handful of GLB props. The terrain, the rivers, the sawgrass prairie, the cypress, the fish camps and the people standing on their docks are all seeded from world coordinates, so the map is the same every time you load it and none of it is stored on disk.
+## 🌊 게임 소개
 
-<table>
-<tr>
-<td width="50%"><img src="docs/screenshots/01-hero.jpg" alt="Home bayou at mid afternoon"></td>
-<td width="50%"><img src="docs/screenshots/03-wake.jpg" alt="Running a creek at 32 mph"></td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/05-night.jpg" alt="Running the channel after dark with the spotlight on"></td>
-<td><img src="docs/screenshots/07-camp.jpg" alt="A fish camp under a live oak in a squall"></td>
-</tr>
-</table>
+남플로리다 에버글레이즈 백컨트리(backcountry)에서 에어보트로 화물 운송, 시내 경주, 야생 구조 작업을 수행하는 **1인칭 3D 시뮬레이션**입니다.
 
-## Running it
+- **25.6 km × 25.6 km** 면적의 절차적 생성 습지
+- **16개 본 의뢰** + 일일 현상금 + 거주 주민들의 일상 작업
+- **무전기 채널 68**을 통한 NOAA 기상 경고, 주민 호출, 스토리 아크
+- 살아있는 야생동물 (마네키, 악어, 올리브바다거북, 흰두루미, 해달이, 돌고래, 붉은따오기, 너구리 등)
+- 변덕스러운 날씨 — 자욱한 안개, 폭우, 허리케인, 토네이도, 만조
+- **FWC**(플로리다 어류·야생동물국) 추격 시스템 — 5단계 수배 등급
+
+| | |
+|---|---|
+| ![가정 강 미드 애프터눈](/docs/screenshots/01-hero.jpg) | ![시내 32 mph 주행 파도](/docs/screenshots/03-wake.jpg) |
+| ![스포트라이트 켠 야간 채널](/docs/screenshots/05-night.jpg) | ![뇌우 속 사이프러스 아래 어선 캠프](/docs/screenshots/07-camp.jpg) |
+
+> 모든 환경은 런타임 절차적으로 생성되며, 단 몇 개의 GLB 소품 모델만 미리 로드합니다. 지형·강·톱블레이드·사이프러스·어선 캠프·독 위 인물까지 모두 월드 좌표에서 시드되어, 지도는 매번 로드할 때마다 동일하게 결정됩니다. 디스크에는 어떤 데이터도 저장되지 않습니다.
+
+---
+
+## 🛠️ 한글화 노트 (Korean Localization)
+
+원본 저장소의 **모든 표시 텍스트**(UI, 메뉴, HUD, 임무 정의, 토스트 알림, 무전기 본문, 채널 68 스토리, 주민 메시지, 어종 이름, 평판 등급, 항로 표지 알림, 자연 메모 등)를 **한국어로 자연스럽게 번역**했습니다.
+
+| 영역 | 처리 |
+|---|---|
+| 시작 화면 / 일시정지 메뉴 / 결과 화면 | ✅ 한국어 |
+| 16개 본 의뢰 (title + desc + sub + label + toast) | ✅ 한국어 |
+| 채널 68 무전기 (NOAA + 주민 호출) | ✅ 한국어 |
+| 스토리 아크 (주민 의뢰 + 계약) | ✅ 한국어 |
+| 어종 / 낚시 메시지 | ✅ 한국어 |
+| 항로 표지 알림 | ✅ 한국어 |
+| 야외 기록 / 발견 메시지 | ✅ 한국어 |
+| 평판 등급 라벨 (주민 / FWC / 뒷골) | ✅ 한국어 |
+| HUD 단위 (mph, ft, mi 등) | ✅ 단위 보존, 라벨 한국어 |
+
+**번역 정책 (엄격):**
+1. **표시 텍스트만** 한국어로 교체 — 식별자(key, id, value, region, zone, callsign), 색깔 hex, 좌표, 상태 enum, 채널 이름, 라이선스 약어는 **절대 변경 안 함**
+2. **한자 / 한문 사용 안 함** — 순수 한국어 + 약어(FWC, NOAA)
+3. **직역보다 의미 전달** — 플로리다/베이유 정서는 유지하되 한국 독자가 자연스럽게 이해할 수 있도록
+4. **약어 보존** — FWC(플로리다 어류·야생동물국), NOAA, Air 2, Mud Hen 등은 그대로 표기
+5. **상태 영문 보존** — 'done', 'fail', 'wipeout', 'clean', 'medal: GOLD' 같은 enum 값은 그대로 — 한글로는 '금메달' 라벨만 변경
+
+---
+
+## 🚀 시작하기
+
+### 설치 / 개발 서버
 
 ```bash
-git clone git@github.com:Vheissu/emerald-bayou.git
+git clone https://github.com/sigco3111/emerald-bayou.git
 cd emerald-bayou
 npm install
 npm run dev
 ```
 
-Then open http://127.0.0.1:5173. Graphics starts on Auto, which caps known older or software GPUs conservatively and steps down after sustained frame pressure or repeated long stalls. Fallback, Performance, Balanced and Cinematic can also be locked from the title or pause menu. Lower profiles keep the full map and simulation while reducing render-target, reflection, shadow and post-processing cost.
+브라우저에서 [http://127.0.0.1:5173](http://127.0.0.1:5173) 열기.
 
-`npm run build` produces a static `dist/` you can drop on any host.
-
-### Assets
-
-The GLB models (boats, the driver, the alligator, grass clumps, three cypress variants) aren't in the repo. They're 150 MB and one of them is over GitHub's file size limit, so they ship as a release asset instead:
+### 빌드 / 배포
 
 ```bash
-curl -L https://github.com/Vheissu/emerald-bayou/releases/latest/download/emerald-bayou-models.zip -o models.zip
+npm run build       # → dist/ 정적 사이트
+npm run preview     # 로컬 미리보기
+```
+
+### 다운로드 자산
+
+GLB 모델(보트, 운전자, 악어, 풀 덤불, 사이프러스 3종)은 저장소에 포함되어 있지 않습니다 (총 150 MB, 그 중 하나가 GitHub 파일 크기 제한 초과). 릴리스 자산에서 다운로드:
+
+```bash
+curl -L https://github.com/sigco3111/emerald-bayou/releases/latest/download/emerald-bayou-models.zip -o models.zip
 unzip models.zip -d public/models
 ```
 
-The game runs without them. `src/models.js` catches the failed loads and falls back to procedural stand-ins, so you get a playable but noticeably worse looking swamp.
+> **모델 없이도 플레이 가능** — `src/models.js`가 로드 실패 시 절차적 대체물을 사용합니다. 다만 시각적 완성도는 현저히 떨어집니다.
 
-The GitHub Pages workflow downloads and verifies this archive before it builds the public game.
+---
 
-## Controls
+## 🎮 컨트롤
 
-| Key | |
+### 키보드
+
+| 키 | 동작 |
 |---|---|
-| `W` / `S` | throttle and reverse |
-| `A` / `D` | rudder, and spin while airborne |
-| `S` / `Shift` in the air | lean back, lean forward |
-| drag | look around |
-| `V` | switch between chase and helm cameras |
-| `E` | interact (job posts, docks, traps, field notes, aid reports) |
-| `C` | cast, set the hook, and reel while held |
-| `X` | reel in or cut the line |
-| `G` | set or weigh the anchor while nearly stopped |
-| `M` | jobs board |
-| `Tab` | chart |
-| `L` | spotlight |
-| `H` | horn; one prolonged blast in dense fog |
-| `X` | cut a fishing line, or cut cage debris after the prop settles |
-| `R` | reset the boat |
-| controller `RT` / `LT` | analogue throttle and reverse |
-| controller left stick | rudder; pitch and spin while airborne; click to switch camera |
-| controller right stick | look; click to centre the camera |
-| controller `A / Cross` | interact |
-| controller `X / Square`, `B / Circle`, `Y / Triangle` | fish, alternate action or cut line/cage debris, anchor |
-| controller `LB`, `RB`, View, Menu | spotlight, horn, chart, pause |
+| `W` / `S` | 스로틀 / 후진 |
+| `A` / `D` | 키 (공중에선 좌우 스핀) |
+| 공중 `S` / `Shift` | 뒤로 / 앞으로 기울임 |
+| `드래그` | 둘러보기 |
+| `V` | 추적 / 헬름 카메라 전환 |
+| `E` | 상호작용 (의뢰, 독, 함정, 야외 기록, 항로 신고) |
+| `C` | 캐스트 / 후크 / 릴 |
+| `X` | 릴 인 또는 라인 끊기 |
+| `G` | 닻 내리기 / 거두기 (정지 상태) |
+| `M` | 의뢰 게시판 |
+| `Tab` | 해도 |
+| `L` | 스포트라이트 |
+| `H` | 경적 (자욱한 안개 시 4.5초 장음) |
+| `R` | 보트 리셋 |
 
-The D-pad works throughout the title and pause menus. D-pad up opens the jobs board while you are on the water. Supported controllers also rumble with hull strikes and hard landings.
+### 게임패드
 
-## What's in it
+| 버튼 | 동작 |
+|---|---|
+| `RT` / `LT` | 아날로그 스로틀 / 후진 |
+| 좌 스틱 | 키 (공중에선 피치/스핀) · 클릭 시 카메라 전환 |
+| 우 스틱 | 둘러보기 · 클릭 시 카메라 중앙 |
+| `A` / `×` | 상호작용 |
+| `X` / `□`, `B` / `○`, `Y` / `△` | 낚시 / 보조 동작 / 라인 끊기 / 닻 |
+| `LB`, `RB`, View, Menu | 스포트라이트 / 경적 / 해도 / 일시정지 |
 
-<img src="docs/screenshots/06-jobs.jpg" alt="The jobs board" width="100%">
+타이틀 / 일시정지 메뉴 전체에서 D-패드 사용 가능. 수상 상태에서 D-패드 ↑로 의뢰 게시판 호출. 지원되는 컨트롤러는 선체 충돌 / 강 착지 시 진동.
 
-Sixteen jobs unlock in sequence, from a shakedown run through a manatee count, a poacher chase against an AI skiff, a night rescue and a creek gauntlet. The last three add split-gate racing, a ramp circuit and a pickup-route-dropoff relay where hard landings can throw the case back into the water. On top of that there are daily bounties, per-run records, three-way reputation between the locals, FWC and the backchannel, and a story that comes in over channel 68.
+---
 
-Between jobs, you can come across dead motors, FWC stops, watched packages, storm wreckage, drifting fuel drums and illegal monofilament sets. A hard strike can split a drum and leave a sheen moving with the current. It can also stop one of the resident working boats: kill the prop and hold alongside while the crew checks everyone aboard, or leave and hear your hull reported over the radio.
+## 📜 의뢰 (16개)
 
-On calm afternoons, Big Cal may be working a nuisance gator beside his skiff while two boats form an unhelpful gallery. Idle 55–100 ft off and hold the escape cut to help him get the tape on, or put $50 on the number of fingers he finishes with. A fast closing pass, jump landing or hull contact can break his grip. The loose animal turns at the boat before it runs for deep water, while a sudden squall can scatter the scene without blaming the player.
+본 시퀀스에서 순서대로 잠금 해제됩니다.
 
-That whole gathering borrows three skiffs, four people and the alligator already kept by the encounter director. It creates no mesh, geometry, material, texture or light. The boats use three fixed collision records, the gator uses one, and the moving animal writes into the existing wake-stamp pool.
+| # | 한글 | 영문 | 보상 |
+|---|---|---|---|
+| 1 | 시운전 항해 | Shakedown Run | $250 |
+| 2 | 마네키 개체수 조사 | Manatee Count | $350 |
+| 3 | 사이프러스 질주 | Cypress Sprint | $500 |
+| 4 | 게통 회수 | Trap Line | $400 |
+| 5 | 밀렵꾼 추적 | Poacher Chase | $650 |
+| 6 | 모래톱 스턴트 | Sandbar Sessions | $450 |
+| 7 | 물자 보급 | Supply Run | $550 |
+| 8 | 길 잃은 카약 | Lost Kayaker | $600 |
+| 9 | 성가신 악어 | Nuisance Gator | $700 |
+| 10 | 크릭 전장 | Creek Gauntlet | $700 |
+| 11 | 침몰한 스키프 | Sunken Skiff | $450 |
+| 12 | 대공 점프 | Big Air | $500 |
+| 13 | 베이유 그랜드 투어 | Bayou Grand Tour | $800 |
+| 14 | 레드라인 분할 | Redline Splits | $760 |
+| 15 | 3킥커 서킷 | Three-Kicker Circuit | $820 |
+| 16 | 배달 릴레이 | Dispatch Relay | $950 |
 
-The seven resident crews keep their own schedules, jobs and operator records. They run for shelter when the weather exceeds what their boat can carry, complain about wake over working gear and remember collisions. FWC 27 can break from patrol to answer an emergency tow call when there is a safe approach.
+각 의뢰는 본인 클리어 후에도 더 빠른 기록 / 더 높은 메달로 반복 도전 가능.
 
-Those crews also watch for manatee backs and footprints. Five times a second, each skipper projects the closest approach over the next seven seconds, waits a human beat, then comes off plane and turns into the safer water. Darkness, fog and hard weather shorten the distance at which a crew notices the animal. The behaviour follows [FWC boating guidance](https://myfwc.com/education/wildlife/manatee/for-boaters/): stay at least 50 ft away, slow down and watch for footprints, backs, snouts and tails.
+---
 
-Resident wakes affect the rest of the swamp too. Prop wash can blow a bait school down before the player reaches it, passing hulls flush waders, nearby manatees dive, and gators leave a bank or slip under. These ambient reactions do not pay player bounties. The pass reuses the seven boats, four manatees, sixteen waders and eighteen gators already in memory, with one retained avoidance record per boat and no new render resource. [Everglades boating rules](https://www.nps.gov/ever/planyourvisit/boatingrulesregs.htm) prohibit harassing wildlife.
+## 🛠️ 기술 스택
 
-Surface patrols cannot see through islands. During a chase they check the waterline five times a second; an emergent bank or mangrove point breaks their view, sends them to the last reported position and changes the wanted display to FWC searching. Another patrol boat with a clear angle, or Air 2 overhead, can keep the hull identified. The check keeps one small state record and uses bounded terrain samples, with no new scene or GPU resources.
-
-At four wanted stars, Shallow Water 4 reads the player's current course, checks a predicted intercept for depth and obstructions, then runs ahead and turns broadside. The point stays fixed, so an early turn beats the roadblock. Hold course and its hull becomes a real collision obstacle while FWC 27 and Marine 12 keep pressing and ramming. The tactic uses the third pooled patrol boat and adds no scene resources.
-
-At five wanted stars, a sustained pursuit can bring FWC Air 2 if the wind and storm conditions are flyable. It works from positions called by surface units and its own finite view. Lose both under canopy or in fog and the helicopter circles the last fix while its searchlight sweeps; the chase can still be escaped. The response reuses the Coast Guard helicopter rig, searchlight and rotor audio, so it adds no second aircraft pool. This is based on FWC's description of its [Aviation Unit](https://myfwc.com/law-enforcement/special-programs/) patrolling large areas of land and water as an "Eye in the Sky," and its account of coordinating [air, land and sea assets](https://myfwc.com/about/inside-fwc/le/what-we-do/).
-
-On clear, low-wind nights, dense fog can settle over the backcountry before dawn and burn off after sunrise. Visibility drops to a few hundred metres. Powerboats slow down, show their navigation lights and sound a prolonged blast while making way; every crew keeps its own signal clock.
-
-The horn is live on `H`. It gives a short warning in clear water and a 4.5-second prolonged blast in dense fog. Nearby working boats answer from their real bearing and alter course when the signal catches them closing. Red, green and stern lights disappear outside their legal arcs, so another boat's aspect can be read at night.
-
-The marked channels now match the radio traffic. Red aids carry even numbers, green aids carry odd numbers, and each light keeps its own flash characteristic while the float moves with chop and current. Hail, tropical weather, hurricanes and vessel strikes can leave a marker dim, dark, off station or down. Idle alongside a bad aid to report the exact fix; it stays on the working chart until FWC maintenance clears it.
-
-The water is the part that took longest. Real reflection and refraction passes, a tannin absorption map rendered by the terrain workers so still shaded water goes black and grows duckweed, a tide that moves the shoreline about 0.4 m either way, and a wake that stamps into the surface and shoves floating debris around. Run skinny water and the hull pressure wave lifts a brown sediment plume from the bed; it spreads with speed, thickens in soft tannin backwaters and drifts with the same current as the wake. The plume uses the wake target's previously unused alpha channel and one existing trailing stamp, so it adds no texture, render target, material, geometry, scene object or draw call.
-
-At idle, `G` drops the bow anchor. Water depth sets the amount of rode, and the hull drifts within that scope before the line comes tight. Firm mud holds best; soft muck, shell and sawgrass give sooner. Current, storm load or too much throttle can make the anchor drag while the bow swings into the load. The rode is one fixed 12-point line, reused for every drop.
-
-Rain stays on the world after the curtain passes. Banks and tidal mud keep a dark wet film, while roofs, dock timber, trees and sawgrass lose roughness and catch sharper light until the sun and wind dry them. Hail melt and dense night fog can leave moisture too. The pass changes two terrain uniforms and the existing cached materials; it creates no textures, meshes, draw calls, render targets or shader programs.
-
-Severe tropical bands can now lift loose planks and sheet metal over the channel. They move with the gusts, tumble, become solid only as they drop to cage height, then splash down and remain as floating hull hazards. Logs stay in the water. The behavior follows National Weather Service and National Hurricane Center guidance that tropical-storm and hurricane winds can turn loose outdoor material into [windborne debris](https://www.weather.gov/mhx/hurricaneprep) and [flying missiles](https://www.nhc.noaa.gov/prepare/hazards.php); the debris left obstructing shallow channels follows [NOAA's account of storm-driven marine debris](https://oceanservice.noaa.gov/facts/disaster-debris.html).
-
-The air prop fails like an air prop. Floating deadheads hammer the hull, but standing cypress limbs and windborne debris can enter the cage, visibly wrap the prop, choke thrust and load the engine. Bring the throttle to idle and hold `X` (`B / Circle` on a controller) to cut the debris free from aboard. Pinning the throttle tightens it. The wrap is one fixed player-only line with a 768-byte position buffer that stays hidden when the cage is clear. Its stock line program is prepared behind the loading card, so the first cage strike does not compile a shader in play.
-
-Lightning no longer fades as one unbranched line. Each strike fills a fixed 72-segment buffer with a 24-step main channel, two major forks and a bounded set of smaller branches. Three return strokes run through the same channel with dark gaps between them, relighting the sky and water each time. Thunder still arrives by distance, and a nearby strike can still damage the boat or knock out settlement power. The line geometry and its scratch buffer total 3,756 bytes. There is one draw call and no texture.
-
-The camera now takes time to recover after looking into the sun or catching a close flash. Direct fair-weather sun, lightning and the night spotlight contract the existing grade exposure quickly; darkness returns more slowly. Cloud, rain and fog stop a hidden sun from dimming the picture. This changes the exposure uniform already in the post pass and adds no GPU resource.
-
-The storm system still owns twelve debris bodies and 44 meshes. Sharing their immutable parts cut the pool from 44 geometries and 16 materials to six geometries and seven materials. Its seventeen wake records are reused every frame, and thunder loops the existing engine-noise sample instead of generating a new 2.8 second buffer for every strike.
-
-World sounds follow their sources across the water. Gator bellows, bird calls, fish splashes, duck-blind shots, lightning, fires, patrol sirens and helicopters pan left or right as the camera turns. The siren and rotor beds each keep one stereo panner for their lifetime, while every compound one-shot shares a single short-lived panner. Browsers without stereo panning still get the same sounds in the centre.
-
-A clearing squall can leave a rainbow opposite the low sun. The primary bow carries red on the outside; a faint secondary reverses the colours, with Alexander's dark band between them. It needs recent rain and a break in the cloud, then fades as the rain curtain moves off. Both arcs are drawn inside the existing sky shader and its water reflection, with no extra scene objects, textures or render targets.
-
-Clouds now move across the ground as well as the sky. In fair and overcast daylight, broad shadows cross the water, banks and trees with the wind. They thin through a squall and disappear under the solid dark deck of a hurricane. The mask takes one sample from the 256 px noise texture already used by mist, inside the existing colour-grade pass. Performance and Fallback skip the work. It adds no scene object or render target and reuses the existing shader program and texture.
-
-Clear, calm afternoons now put a thin refractive shimmer over distant water and low banks. It builds after solar noon and dies under overcast, rain, fog or strong wind. Depth reconstruction keeps the nearby boat and sky steady, and the effect fades through the high canopy instead of warping the whole screen. Balanced and Cinematic reuse the grade pass's depth and noise inputs. Performance and Fallback skip the lookup. No new texture, render target or scene object is allocated.
-
-The Moon advances through a 29.531-day cycle. Its rise time, crescent or quarter terminator, moonlight and shadows all come from the same phase. New and full moons retain the strongest spring range; quarter moons soften the water and currents into a neap range. Clouds now hide the stars and Moon instead of letting either draw over the weather. One retained brightness value follows the Moon above the horizon and through the cloud deck, then drives the scene light, firefly display and visible contrast of blue-fire wakes without another frame allocation.
-
-The renderer budgets its internal drawing buffer instead of blindly doubling every Retina dimension. Performance profiles release the full-size optional post targets, reduce reflection and shadow work, and defer optional GLB decoding until the dock scene is playable. The map, streaming distance and simulation stay unchanged while the largest HDR and depth attachments remain bounded.
-
-The sky reflection convolution follows the same budget. Fallback, Performance, Balanced and Cinematic use 32, 64, 128 and 128 px environment maps. The map is convolved behind loading or at the title and then held through active play, because rebuilding it on an idle callback can still stop the main thread. Cinematic now retains about 2.25 MiB of half-float colour and capture depth instead of the old 9 MiB target.
-
-Navigation aids are streamed from seeded 360 m cells and capped at 36 around the boat. Six instanced meshes draw the whole local network, including the flashing lanterns, with no per-marker light objects or model downloads. Collision objects only enter physics inside a roughly 100 m working set, and the persistent fault ledger is capped at twelve records.
-
-Wildlife lives its own life. Alligators bask on banks and slide in when you get close, and the bull will charge an idle hull inside 16 m. Mullet jump near the boat, bait boils off the bow in the shallows, ibis and pelicans run lines low over the water, and vultures circle high. When you get more than 700 m away it all quietly relocates ahead of you.
-
-At night, the boat spotlight can catch an alligator before the rest of it appears out of the black water. A surfaced animal facing the beam throws back a tight amber-red pair. Turn its head, let it dive, or bring in dense fog and the return goes. The eighteen gators share one fixed 36-eye instanced pool with one geometry and one material. The effect uses no point lights or textures, and their swimming height and preferred depth now move with the tide.
-
-The same spotlight now shows the wet air it is cutting through. Clear air holds only a faint shaft. Rain and fog thicken it and shorten the usable throw, with three nested shells breaking up the cone instead of drawing a solid tube. It is one textureless 432-vertex mesh. Fallback turns it off; the other graphics profiles reuse the same 8.6 KB geometry and material.
-
-On a moving tide, pelicans and the osprey can find a mullet school in open water. Hold 25–65 m off at idle and the bait stays up; drive through it or let your wake reach it and the birds lift while the school goes deep. The event redirects two existing bird flocks and borrows from the fixed fish and spray pools instead of creating another set of wildlife.
-
-Bring the airboat to idle and press `C` to cast. Florida bass, bluegill and bowfin hold in the freshwater backwaters; common snook, juvenile tarpon and red drum work the mangrove and broad-river water. Depth, murk, current, time of day, tide, weather and recent prop wash all change the wait and the species on the line. During the fight, hold `C` to reel and let go when a hard run pushes the tension into the red. Every fish is measured over the gunwale, released, and written into the boat log with its region and personal best.
-
-The habitat split follows Florida Fish and Wildlife Conservation Commission profiles for [Florida bass](https://myfwc.com/wildlifehabitats/profiles/freshwater/largemouth-bass/), [bowfin](https://myfwc.com/wildlifehabitats/profiles/freshwater/bowfin/), [snook](https://myfwc.com/wildlifehabitats/profiles/saltwater/snook/snook/), [tarpon](https://myfwc.com/wildlifehabitats/profiles/saltwater/tarpon/tarpon/) and [red drum](https://myfwc.com/wildlifehabitats/profiles/saltwater/drums/red-drum/). The release animation follows the agency’s [catch-and-release handling guidance](https://myfwc.com/fishing/freshwater/fishing-tips/): short air exposure and head-first return to the water.
-
-Fishing owns one rod, one dynamic line buffer, one lure and one landing fish. Those resources are reused on every cast, and the recent-catch ledger stops at twelve entries.
-
-A hooked fish can now pull a nearby swimming alligator into the fight. A hard run carries farther than a small splash; one eligible animal may turn, throw a visible wake and close on the fish. Pull it clear or press `X` to cut the line. Banks block the approach, while basking, submerged, handled and recently fed animals stay out of it. If the alligator gets there first, the fish is gone and the boat log keeps the loss.
-
-The chase reuses the existing eighteen alligators, fish splash pool and two-slot wildlife wake budget. It adds no geometry, material, texture or draw call. The behaviour follows the National Park Service descriptions of alligators as [stealth hunters that feed in the water](https://www.nps.gov/bicy/learn/nature/american-alligators.htm) and of [fish as normal adult prey](https://www.nps.gov/guis/learn/nature/alligators.htm).
-
-Rare field signs depend on the place and the water rather than a mission marker. Roseate spoonbills settle in Rookery Lakes around first and last light, and a real player wake reaching the bank will flush them. A tagged smalltooth sawfish moves through Mangrove Reach on a rising tide; its receiver ping closes up as the boat approaches, but the fix only resolves while the hull stays at idle distance. Falling water in Cypress Reach can uncover a logging skiff long enough to copy its builder plate.
-
-Around dusk or dawn, a Burmese python may cross a still Cypress Reach cut. The boat has to hold 13–38 m off with an open waterline while the field camera records its body, heading and position; a cypress island or trunk between the boat and animal blocks the sequence. Prop wash can make it dive before the fix is complete. The report goes to FWC with no capture attempt, matching the agency's advice to photograph, note the location and report a sighting. Burmese pythons are established in South Florida and are often found near or in water; see the [FWC species profile](https://myfwc.com/wildlifehabitats/profiles/reptiles/snakes/burmese-python/) and [USGS waterway research](https://www.usgs.gov/centers/wetland-and-aquatic-research-center/science/burmese-python-environmental-dna-edna-surveys). Successful observations stay in the boat log and on the chart.
-
-The python is one 18-segment instanced mesh with one procedural geometry and one material. Its surface wake uses one record from the existing wake pool. Repeated sightings reuse the same rig.
-
-On some calm nights, a plankton bloom reaches Mangrove Reach. The water stays black until something moves through it: hull wakes, fish, paddles and splashes leave blue fire behind them. A bright Moon takes some contrast out of the glow without switching off the bloom; moonset and thick cloud bring the darker water back. The bloom runs through the existing wake and particle buffers, so it adds no extra scene assets.
-
-Calm banks now carry fireflies after sunset, with the thickest displays in cypress and mangrove water. Heavy rain and hard wind shut them down, while a high bright Moon makes the flashes harder to pick out. A fast engine thins the display close to the hull, and the bow spotlight washes out the insects caught in its cone. Each bank is seeded from its world cell, so the same lights remain in place as the boat idles past. The display is one textureless point draw capped at 243 insects; Performance and Balanced draw smaller prefixes, and Fallback skips it.
-
-The timing and wet-bank placement draw on [University of Florida field notes](https://entnemdept.ufl.edu/lloyd/firefly/ffcomp1-1.pdf). The mangrove bias follows the documented habitat of the [Florida intertidal firefly](https://xerces.org/press/first-conservation-status-assessments-published-for-north-american-fireflies), and the weather and light response follows [National Park Service viewing guidance](https://home.nps.gov/cong/fireflies.htm).
-
-Power at the camps is no longer perfect. Squalls make weak circuits sag. Thunderstorms and tropical weather can black out individual houses, and a close lightning strike can leave one address dark after the rain moves on. Each place keeps the same vulnerability for the day, and restored power comes back slowly instead of snapping on. The effect still uses five pooled point lights. Those lights now share one bulb geometry and material, and nearest-site selection reuses five fixed records instead of rebuilding and sorting a candidate list every 0.6 seconds.
-
-People are jointed figures driven by a pose target system rather than baked animation, so a man on a dock will track you as you go past, drink his beer, check his rod, cast, and reel in a fish. Boat ramps run a 150 second cycle where a truck backs down the slab, floats a boat off the trailer, motors out and comes back to winch it on.
-
-<img src="docs/screenshots/02-mission.jpg" alt="A story job in progress" width="100%">
-
-## How the world works
-
-<img src="docs/screenshots/04-chart.jpg" alt="The chart, 16 miles square across nine regions" width="100%">
-
-`src/heightfield.js` is plain JavaScript with no three.js import, which lets the main thread and a pool of up to four web workers evaluate the same terrain function. The home bayou around the tower is hand shaped inside a 560 m radius, blending out to procedural noise by 780 m. Past that, domain warped ridged noise carves rivers and creeks, fbm makes lakes, and flat sawgrass prairie fills the gaps with tree hammocks scattered through it. Sandbars are seeded per 400 m cell.
-
-`src/terrain.js` streams that as a quadtree, six levels from 100 m chunks up to 3200 m, 64 segments each, out to 7.2 km. Skirts hide the LOD cracks and a coarse parent stays visible until all four of its children have finished building, so you never see a hole. Vegetation is built per chunk as instanced meshes with tiers by level, dropping grass and cypress knees first and ending at crossed cards for far trees. Tree positions are seeded per 100 m cell and accepted at the exact terrain height, which is what makes every LOD agree with every other one.
-
-The two lessons that cost the most time: per chunk bounding spheres are not optional (leaving `frustumCulled = false` on a thousand instanced meshes dropped the frame rate to 19), and the coarse fallback has to be local, because letting a root tile draw whenever any distant leaf is still building puts a 3200 m blob over your boat.
-
-Minimap tiles are 200 m and rendered by the same workers, then cached. The chart is the same idea at 3200 m with chart styling.
-
-## Layout
+- **렌더링**: Three.js (WebGL) + 절차적 셰이더 (반사 / 굴절 / 탄닌 흡수)
+- **빌드**: Vite 8.x
+- **언어**: 순수 JavaScript (프레임워크 없음) + 약간의 GLSL 셰이더
+- **저장**: localStorage (저장 슬롯 v1 → v2 마이그레이션 지원)
+- **자산**: 7개 GLB 모델 (릴리스 다운로드) + 절차적 대체물
+- **테스트**: 내장 `node --test` (71개 시나리오 — 충돌 회피, FWC 추격, 야생동물 상호작용, 안개 등)
 
 ```
 src/
-  heightfield.js   terrain function, no three.js, shared with the workers
-  terrain.js       quadtree streaming and LOD
-  surfacewetness.js retained rain film and shared outdoor material response
-  vegetation.js    per-chunk instancing, wind shader
-  water.js         reflection, refraction, murk, tide, wake sediment
-  sediment.js      shallow-bed churn model
-  airboat.js       hull physics, air control, landing quality
-  game.js          jobs, bounties, records, save
-  discoveries.js   tide, time and region-driven field observations
-  navigationaids.js seeded channel markers, light failures and reports
-  fishing.js       boat-bound fishing, habitat, line tension and catch log
-  ecology.js       weather, time and traffic-driven world behaviour
-  nocturnal.js     seeded bank fireflies and night disturbance response
-  wildlife.js      birds, fish, gators and spotlight eyeshine
-  wildlifetraffic.js retained manatee closest-approach and safe-speed rules
-  wrangler.js      nuisance-gator station keeping and wake-risk rules
-  encounters.js    rescues, patrols, races, contraband and wildlife calls
-  law.js           wanted attention and pursuit state
-  story.js         the channel 68 arc
-  folk.js          jointed people and the pose target animation
-  life.js          fish, debris, NPC traffic, bank anglers
-  sites.js         stilt houses, ramps, boathouses, duck blinds
-  world.js         seeded camps, traps, camp runs
-  hud.js           HUD and radar
-  worldmap.js      the chart
+  main.js          메인 부트스트랩 + 메인 루프
+  game.js          게임 상태, 의뢰 16개, HUD, 메뉴, 결과, 저장
+  airboat.js       에어보트 시뮬레이션
+  radio.js         채널 68 무전기 + NOAA 기상 + 주민 호출
+  contracts.js     거주 주민 의뢰 시스템
+  story.js         채널 68 메인 스토리 아크 (Running Dark)
+  passage.js       케이스 / 구조 미션
+  aftermatch.js    폭풍 후 결과 시스템
+  encounters.js    구조 / 순찰 / 경주 / 밀수 / 야생 호출 이벤트
+  incidents.js     환경 사건 (표류 통, 잔해, 화재)
+  law.js           FWC 수배 추격 시스템
+  radio.js         채널 68 무전기 메시지
+  fauna + wildlife + wildlife behavior...
+  radio / contracts / story / encounters / incidents / passage / law / reputation / navigationaids / ecology / marshfire / stormline / airrescue / dolphin / stormhazards / downburst / waterspout / lightning / settlementpower / surfacewetness / nocturnal / wrangler / vegetation / texture / environment / sky / water / fishing / folk / hud / loading-screen / gamepad / startup / ...
 ```
 
-## Dev hooks
+---
 
-`window.__dbg` is exposed in the browser console with the renderer, camera, terrain, physics, water and most of the game systems on it.
+## 🎯 게임 시스템 (일부만 발췌)
 
-```js
+### 시뮬레이션
+
+- 25.6 km × 25.6 km 결정론적 절차적 지형 (시드 기반, 매번 동일)
+- 16평방마일 스트리밍 강, 톱블레이드 평원, 사이프러스 능선
+- 7명의 거주 선원 — 각자 일정, 의뢰, 운영 기록을 유지하며, 자기 보트가 감당 못 하는 날씨엔 대피합니다. 깨어진 자망을 불평하고, 충돌을 기억합니다.
+- 주민 보트가 마네키의 등·발자국을 감시합니다. **5Hz**로 7초 후 가장 가까운 접근을 예측, 인간적 템포 후 슬로우다운 후 안전한 물로 방향 전환.
+
+### 추격 / FWC 시스템
+
+- 5단계 수배 등급
+- 4단계: **Shallow Water 4**가 현재 코스를 읽고, 깊이/장애물 예측 보간 후 앞질러 횡단으로 나옵니다. 일찍 방향을 틀면 로드블록을 피할 수 있습니다.
+- 5단계: 지속 추격 시 **FWC Air 2** 헬리콥터가 합류합니다 (바람/폭풍 조건이 비행 가능할 때만).
+
+### 날씨
+
+- 맑고 바람 적은 밤에는 자욱한 안개가 새벽 전 형성되고 일출 후 걷힙니다 — 시야가 수백 m로 떨어집니다.
+- 모든 모터보트는 속도를 줄이고, 항법등을 켜고, 진행 시 4.5초 장음을 울립니다.
+
+### 수문학
+
+- 실제 반사/굴절 패스
+- 탄닌 흡수 맵 (터레인 워커가 렌더링 → 그늘 물이 검게 보이고 부레옥잠이 자라남)
+- 만조 — 해안선이 0.4 m 안팎으로 움직임
+- 깨어진 자국은 표면에 stamp를 찍고, 떠다니는 잔해를 밀어냄
+- 얕은 물에서 배의 압력파는 갈색 퇴적 플룸을 일으킴 — 같은 해류로 떠다님
+
+### Dev Hooks
+
+브라우저 콘솔에서 `window.__dbg` 사용 가능 — 렌더러, 카메라, 터레인, 물리, 환경, 생태, 항해, 추격, 무전기, 야간 시스템 등 모든 게임 시스템 노출.
+
+```
 __dbg.mode = 'depth'                      // full | raw | nowater | depth | refl
-__dbg.phys.reset(x, z, heading)           // teleport
-__dbg.environment.minutesPerSecond = 0    // freeze the clock
-__dbg.environment.setHour(17.4)           // pick the light
-__dbg.environment.lunarSnapshot()         // phase, illumination, tide range, altitude, live light
-__dbg.ecology.setBioluminescence(1, true) // force the disturbed-water glow
-__dbg.discoveries.start('roseate-roost', true, true) // force a nearby field sign
-__dbg.discoveries.start('python-crossing', true, true) // force the swimming-python report
-__dbg.navigationAids.resourceStats()     // active aids, draw calls, faults and reports
-__dbg.fishing.resourceStats()            // fixed rod, line, lure and landing-fish budget
-__dbg.nocturnal.setActivityOverride(1, true) // force bank fireflies for inspection
-__dbg.nocturnal.resourceStats()           // point count, draw count and geometry bytes
-__dbg.gators.resourceStats()               // 18 animals and the fixed 36-eye instanced pool
-Alt+Shift+U                                // stage one resident-boat/manatee crossing in development
-__dbg.environment.setRainbow(1)            // force both bows; pass null to restore live weather
-__dbg.environment.settlementPowerSnapshot() // five-light pool, live grid stress and saved strike outages
-__dbg.environment.spotlightVolumeSnapshot() // one weather-scaled beam mesh and its fixed geometry budget
-__dbg.environment.lightningSnapshot()       // fixed branched channel, return strokes and live draw budget
-__dbg.environment.eyeAdaptationSnapshot()   // current exposure target and zero-extra-GPU-resource budget
-__dbg.environment.cloudShadowSnapshot()   // live mask, drift and zero-extra-resource budget
-__dbg.environment.surfaceWetnessSnapshot()  // live film target, shared material writes and terrain uniforms
-__dbg.encounters.pursuitSnapshot()        // surface units, channel closure, shared visual and pooled aviation state
-__dbg.encounters.wranglerSnapshot()       // pooled crowd, assist, wake risk and zero extra render resources
-__dbg.hazards.resourceStats()             // debris pool, shared resources and wake-stamp budget
-__dbg.audio.spatialStats()                 // listener direction and spatial-node allocation totals
-__dbg.freeCam = { x, y, z, tx, ty, tz }   // park the camera
-__dbg.terrain.hf.computeBase(x, z)        // { h, s, lake, prairie, hammock }
+__dbg.phys.reset(x, z, heading)           // 텔레포트
+__dbg.environment.minutesPerSecond = 0    // 시계 정지
+__dbg.environment.setHour(17.4)           // 조명 직접 선택
+__dbg.ecology.setBioluminescence(1, true) // 발광 강제
+__dbg.discoveries.start('roseate-roost', true, true) // 야외 표지 강제 표시
+Alt+Shift+U                                // 주민 보트/마네키 교차 시험 1회
+__dbg.environment.setRainbow(1)            // 무지개 강제
+__dbg.audio.spatialStats()                 // 공간 노드 사용 통계
 ```
 
-In development, `Shift+F12` toggles a frozen, safe-distance python inspection and restores the previous boat position and clock when pressed again. It is stripped from the production build.
+---
 
-`import('/src/inspect.js')` from the console gives you a helper for measuring and previewing a GLB, which is how the entries in `SPEC` in `src/models.js` were worked out.
+## 📜 라이선스 / 크레딧
 
-## Licence
+- **원본 저장소**: [Vheissu/emerald-bayou](https://github.com/Vheissu/emerald-bayou) — MIT License
+- **원작자**: Dwayne Charrington (Copyright 2026)
+- **이 포크**: sigco3111 — 한글화 추가, 코드 구조 동일
+- **GLB 모델**: Meshy로 생성 — 별도 이용약관 적용 (원본 저장소 라이선스 아님)
 
-MIT. See [LICENSE](LICENSE).
+### 한국어 번역 기여
 
-The GLB models in the release archive were generated with [Meshy](https://www.meshy.ai/) and are covered by their own terms, not by this repository's licence.
+- 시작 화면 / 메뉴 / HUD / 로딩 UI
+- 16개 본 의뢰 + 미션 진행 메시지 / 토스트
+- 채널 68 무전기 (NOAA 기상 + 주민 호출)
+- 스토리 아크 (Running Dark + 주민 의뢰)
+- 어종 / 낚시 메시지 / 어획 알림
+- 항로 표지 알림 / 야외 기록 / 발견 메시지
+- 평판 등급 (주민 / FWC / 뒷골)
+- 적중 / 충돌 / 만조 / 폭풍 / 안개 토스트
+
+### 인용된 외부 자료
+
+- [FWC 보트 가이드 — 마네키](https://myfwc.com/education/wildlife/manatee/for-boaters/) — 마네키 회피 동작의 근거
+- [에버글레이즈 국립공원 보트 규정](https://www.nps.gov/ever/planyourvisit/boatingrulesregs.htm) — 야생동물 괴롭힘 금지
+- [FWC 항공대 — Eye in the Sky](https://myfwc.com/law-enforcement/special-programs/) — 공중 추격 시스템
+- [FWC 통합 작전](https://myfwc.com/about/inside-fwc/le/what-we-do/) — 공중·육상·해상 통합 작전
+
+---
+
+## 🐛 알려진 한글화 한계
+
+- **dev hooks (`__dbg`)는 영문 유지** — 내부 디버깅 도구로 일반 사용자에게 노출되지 않음
+- **콘솔 경고 / Three.js 디버그 메시지**는 영문 그대로 — 게임 동작에는 영향 없음
+- **언어 전환 토글 없음** — 기본값 한국어. 영문 보존본은 원본 저장소 참조.
+
+---
+
+## 🤝 기여
+
+이 저장소는 **한글화 포크**입니다. 버그 제보, 번역 개선, 추가 의뢰/지역 한국화는 PR 환영합니다.

@@ -199,9 +199,9 @@ export class StoryDirector {
     if (this.state.stage !== 'dormant' || (!force && (this.game.state || this.encounters.active || this.incidents.active))) return false;
     this.state.stage = 'search'; this.state.approached = false; this.restore(); this.persist();
     const cold = this.reputation.score('locals') <= -3;
-    this.call('CH 68', 'LEON DOSS · OLD MILL', cold ? 'Tower Boat, this is work, not forgiveness. My yellow maintenance skiff came loose west of tower water. Red controller case should still be aboard.' : 'Tower Boat, Leon at Old Mill. My yellow maintenance skiff came loose west of tower water. Red controller case should still be aboard.', 2, 'offer-leon');
-    this.call('CH 16', 'MARA KEENE · TOWER', 'I have Leon’s last radio fix. Putting the circle on your chart now.', 1, 'offer-mara');
-    this.game.toast('Running Dark', 'Leon Doss put a last position on the chart.', 3.2); return true;
+    this.call('CH 68', 'LEON DOSS · OLD MILL', cold ? '타워 보트, 이건 용서가 아니라 일입니다. 내 노란 정비 스키프가 타워 수역 서쪽에서 풀렸어요. 빨간 컨트롤러 케이스는 아직 안에 있을 겁니다.' : '타워 보트, Old Mill의 Leon입니다. 내 노란 정비 스키프가 타워 수역 서쪽에서 풀렸어요. 빨간 컨트롤러 케이스는 아직 안에 있을 겁니다.', 2, 'offer-leon');
+    this.call('CH 16', 'MARA KEENE · TOWER', 'Leon의 마지막 무전 좌표를 받았습니다. 해도에 원으로 표시합니다.', 1, 'offer-mara');
+    this.game.toast('Running Dark', 'Leon Doss가 마지막 좌표를 차트에 표시했습니다.', 3.2); return true;
   }
 
   pickup() {
@@ -209,9 +209,9 @@ export class StoryDirector {
     this.state.stage = 'choice'; this.choiceT = 0; this.clearPrompt();
     this.boat.add(this.rigs.case); this.rigs.case.position.set(-0.72, 0.72, -1.35); this.rigs.case.rotation.set(0.03, -0.18, 0.02); this.rigs.case.visible = true;
     this.phys.loaded = Math.max(this.phys.loaded, 0.18); this.audio.pickup(); this.persist();
-    this.call('CH 72', 'CAL ROOK · LOST KEY', 'Tower Boat, leave that red case alone. It belongs on Lost Key. Eight hundred for a quiet delivery.', 3, 'choice-cal');
-    this.call('CH 68', 'LEON DOSS · OLD MILL', 'That controller belongs in the West Cut light. Bring it to Old Mill and I can mark that channel before dark.', 3, 'choice-leon');
-    this.game.toast('Controller case aboard', 'Leon wants it back. Cal Rook is offering cash.', 3.2);
+    this.call('CH 72', 'CAL ROOK · LOST KEY', '타워 보트, 그 빨간 케이스 건드리지 마세요. Lost Key 소속입니다. 조용히 배달하면 800입니다.', 3, 'choice-cal');
+    this.call('CH 68', 'LEON DOSS · OLD MILL', '그 컨트롤러는 West Cut 등대에 들어갈 겁니다. Old Mill로 가져오면 해 전까지 채널 표시할 수 있습니다.', 3, 'choice-leon');
+    this.game.toast('컨트롤러 케이스 적재', 'Leon은 돌려받고 싶어합니다. Cal Rook이 현금을 제안 중.', 3.2);
   }
 
   choose(branch) {
@@ -221,12 +221,12 @@ export class StoryDirector {
     this.rigs.oldMill.visible = branch === 'local'; this.rigs.lostKey.visible = branch === 'runner';
     if (branch === 'runner') {
       this.state.cargoUntil = Date.now() + 190000; this.law.addContraband();
-      this.call('CH 72', 'CAL ROOK · LOST KEY', 'Stay off sixteen. Lost Key has a blue work light off the east dock.', 3, 'runner-start');
-      this.game.toast('Lost Key', 'The controller is now unmarked cargo.', 2.8);
+      this.call('CH 72', 'CAL ROOK · LOST KEY', '16번 채널 사용 금지. Lost Key 동쪽 독에 파란 작업등.', 3, 'runner-start');
+      this.game.toast('Lost Key', '컨트롤러는 이제 무표지 화물입니다.', 2.8);
     } else {
       this.state.cargoUntil = 0;
-      this.call('CH 68', 'LEON DOSS · OLD MILL', 'Copy Old Mill. Keep the latches up. Salt water gets inside, the west cut stays black another month.', 2, 'local-start');
-      this.game.toast('Old Mill', 'Leon is waiting in a blue work skiff.', 2.8);
+      this.call('CH 68', 'LEON DOSS · OLD MILL', 'Old Mill 수신. 걸쇠를 올린 채 유지하세요. 바닷물이 들어가면 west cut이 한 달 더 꺼진 채로 남습니다.', 2, 'local-start');
+      this.game.toast('Old Mill', 'Leon이 파란 작업 스키프에서 대기 중.', 2.8);
     }
     this.clearPrompt(); this.persist();
   }
@@ -241,17 +241,17 @@ export class StoryDirector {
     this.state.stage = 'complete'; this.state.ending = branch; this.state.completedAt = Date.now(); this.state.consequenceAt = Date.now() + 60000; this.state.consequence = false; this.state.cargoUntil = 0;
     this.rigs.wreck.visible = false; this.phys.loaded = 0; this.clearPrompt(); this.game.wpTarget = null;
     if (branch === 'runner') {
-      this.game.addCash(800); this.reputation.change('runners', 1.4, 'running-dark-lost-key', 'You brought Cal Rook the missing channel controller.', true);
-      this.reputation.change('locals', -0.55, 'running-dark-lost-key', 'Old Mill heard where the missing controller went.', false);
+      this.game.addCash(800); this.reputation.change('runners', 1.4, 'running-dark-lost-key', 'Cal Rook에게 분실된 채널 컨트롤러를 가져다줬습니다.', true);
+      this.reputation.change('locals', -0.55, 'running-dark-lost-key', 'Old Mill에서 분실 컨트롤러 행방을 들었습니다.', false);
       this.law.hotCargoT = 0; this.law.cool(0.35);
-      this.call('CH 72', 'CAL ROOK · LOST KEY', 'Case is dry. Eight hundred, as promised. Do not ask which marker is getting it.', 3, 'runner-finish');
-      this.game.bountyToast('Lost Key delivery <b>+$800</b>');
+      this.call('CH 72', 'CAL ROOK · LOST KEY', '케이스 밀봉完好. 약속대로 800. 어느 표지에 들어가는지 묻지 마세요.', 3, 'runner-finish');
+      this.game.bountyToast('Lost Key 배달 완료 <b>+$800</b>');
     } else {
-      this.game.addCash(425); this.reputation.change('locals', 1.3, 'running-dark-old-mill', 'You returned the controller that keeps West Cut marked.', true);
-      this.reputation.change('fwc', 0.35, 'running-dark-old-mill', 'A navigation-safety controller was returned to service.', false);
-      this.reputation.change('runners', -0.75, 'running-dark-old-mill', 'Cal Rook heard you took the controller to Old Mill.', false);
-      this.call('CH 68', 'LEON DOSS · OLD MILL', 'I have it. Give me one tide and the West Cut light will work again.', 3, 'local-finish');
-      this.game.bountyToast('Old Mill delivery <b>+$425</b>');
+      this.game.addCash(425); this.reputation.change('locals', 1.3, 'running-dark-old-mill', 'West Cut 표시를 유지하는 컨트롤러를 복귀시켰습니다.', true);
+      this.reputation.change('fwc', 0.35, 'running-dark-old-mill', '항법 안전 컨트롤러가 다시 가동되었습니다.', false);
+      this.reputation.change('runners', -0.75, 'running-dark-old-mill', 'Cal Rook이 컨트롤러를 Old Mill에 가져갔다는 소식을 들었습니다.', false);
+      this.call('CH 68', 'LEON DOSS · OLD MILL', '받았습니다. 조류 한 번 지나면 West Cut 등대가 다시 작동합니다.', 3, 'local-finish');
+      this.game.bountyToast('Old Mill 배달 완료 <b>+$425</b>');
     }
     this.audio.complete(); this.persist();
   }
@@ -259,14 +259,14 @@ export class StoryDirector {
   triggerConsequence(force = false) {
     if (this.state.stage !== 'complete' || this.state.consequence || (!force && Date.now() < this.state.consequenceAt)) return false;
     this.state.consequence = true; this.configureNav(); this.rigs.nav.group.visible = true; this.passage?.arm(); this.persist();
-    if (this.state.ending === 'runner') this.call('CH 16', 'MARA KEENE · TOWER', 'West Cut red is flashing out of sequence. Treat it as false until somebody can pull it.', 2, 'runner-aftermath');
-    else this.call('CH 68', 'JUNE BELL · SPLIT PINE', 'West Cut green is flashing again. Leon says the tower boat gets the credit.', 2, 'local-aftermath');
+    if (this.state.ending === 'runner') this.call('CH 16', 'MARA KEENE · TOWER', 'West Cut 빨간 표지가 규격 밖으로 점멸 중. 회수할 때까지 거짓 표시로 간주하세요.', 2, 'runner-aftermath');
+    else this.call('CH 68', 'JUNE BELL · SPLIT PINE', 'West Cut 초록 표지가 다시 점멸 중. Leon이 타워 보트가 공을 세웠다고 합니다.', 2, 'local-aftermath');
     return true;
   }
 
   baseMarker() {
     const stage = this.state.stage, C = this.state.coords;
-    if (stage === 'search') return { ...(this.state.approached ? { x: this.state.caseX, z: this.state.caseZ } : { x: C.search.x + 64, z: C.search.z - 42 }), color: '#e5c063', label: this.state.approached ? 'Leon’s controller case' : 'Leon’s last radio fix', story: true };
+    if (stage === 'search') return { ...(this.state.approached ? { x: this.state.caseX, z: this.state.caseZ } : { x: C.search.x + 64, z: C.search.z - 42 }), color: '#e5c063', label: this.state.approached ? 'Leon의 컨트롤러 케이스' : 'Leon의 마지막 무전 좌표', story: true };
     if (stage === 'delivery') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#e5c063', label: this.state.branch === 'runner' ? 'Lost Key handoff' : 'Old Mill handoff', story: true }; }
     if (stage === 'complete' && this.state.consequence) { const p = C.search; return { x: p.x, z: p.z, color: this.state.ending === 'runner' ? '#ff493d' : '#65ff89', label: this.state.ending === 'runner' ? 'unreliable West Cut light' : 'restored West Cut light', story: false }; }
     return null;
@@ -294,11 +294,11 @@ export class StoryDirector {
     const s = this.state;
     if (this.stormLine && (this.stormLine.state.stage !== 'dormant' || this.stormLine.eligible())) return this.stormLine.menuLine();
     if (this.passage && (this.passage.state.stage !== 'dormant' || (s.stage === 'complete' && s.consequence))) return this.passage.menuLine();
-    if (s.stage === 'dormant') return 'Running Dark · not started';
-    if (s.stage === 'search') return 'Running Dark · find Leon’s skiff';
-    if (s.stage === 'choice') return 'Running Dark · controller case aboard';
-    if (s.stage === 'delivery') return `Running Dark · bound for ${s.branch === 'runner' ? 'Lost Key' : 'Old Mill'}`;
-    return `Running Dark · ${s.ending === 'runner' ? 'Lost Key paid' : 'West Cut marked'}`;
+    if (s.stage === 'dormant') return 'Running Dark · 미시작';
+    if (s.stage === 'search') return 'Running Dark · Leon의 스키프 찾기';
+    if (s.stage === 'choice') return 'Running Dark · 컨트롤러 케이스 적재';
+    if (s.stage === 'delivery') return `Running Dark · ${s.branch === 'runner' ? 'Lost Key' : 'Old Mill'}행`;
+    return `Running Dark · ${s.ending === 'runner' ? 'Lost Key가 지불' : 'West Cut 표시 완료'}`;
   }
 
   hud() {
@@ -307,9 +307,9 @@ export class StoryDirector {
     const contract = this.contracts?.hud(); if (contract) return contract;
     const s = this.state, mark = this.marker();
     if (!this.busy()) return null;
-    if (s.stage === 'search') return { title: 'Running Dark', obj: s.approached ? 'Recover the red controller case' : 'Find Leon’s maintenance skiff', sub: `${regionAt((mark || s.coords.search).x, (mark || s.coords.search).z).name} · ${this.game.dist((mark || s.coords.search).x, (mark || s.coords.search).z) < 300 ? 'slow down and look for the yellow hull' : 'last radio fix on the chart'}` };
+    if (s.stage === 'search') return { title: 'Running Dark', obj: s.approached ? '빨간 컨트롤러 케이스 회수' : 'Find Leon’s maintenance skiff', sub: `${regionAt((mark || s.coords.search).x, (mark || s.coords.search).z).name} · ${this.game.dist((mark || s.coords.search).x, (mark || s.coords.search).z) < 300 ? 'slow down and look for the yellow hull' : 'last radio fix on the chart'}` };
     if (s.stage === 'choice') return { title: 'Running Dark', obj: 'Who gets the controller?', sub: 'E · Old Mill restores the light  ·  F · Lost Key pays $800' };
-    const d = this.destination(); return { title: 'Running Dark', obj: `Take the case to ${s.branch === 'runner' ? 'Lost Key' : 'Old Mill'}`, sub: `${regionAt(d.x, d.z).name} · arrive under 6 mph` };
+    const d = this.destination(); return { title: 'Running Dark', obj: `케이스를 ${s.branch === 'runner' ? 'Lost Key' : 'Old Mill'}로 가져가세요`, sub: `${regionAt(d.x, d.z).name} · 6 mph 이하로 도착` };
   }
 
   updateCase(dt, t) {
@@ -392,7 +392,7 @@ export class StoryDirector {
       this.call(this.state.branch === 'runner' ? 'CH 72' : 'CH 68', this.state.branch === 'runner' ? 'CAL ROOK · LOST KEY' : 'LEON DOSS · OLD MILL', this.state.branch === 'runner' ? 'Blue work light is mine. Come alongside slow.' : 'Blue skiff at Old Mill. Put the cage to idle before you come alongside.', 2, 'route-two');
     }
     if (d < 12 && this.phys.speed * MPH < 6 && this.canInteract()) {
-      this.setPrompt(`<b>E</b> hand the controller to ${this.state.branch === 'runner' ? 'Cal Rook' : 'Leon Doss'}`); if (this.interact) this.finish();
+      this.setPrompt(`<b>E</b> 컨트롤러를 ${this.state.branch === 'runner' ? 'Cal Rook' : 'Leon Doss'}에게 전달`); if (this.interact) this.finish();
     } else this.clearPrompt();
   }
 

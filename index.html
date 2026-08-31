@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Emerald Bayou</title>
+<title>에메랄드 베이유 (Emerald Bayou)</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="./fonts/le-murmure-regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/src/loading-screen.css">
@@ -313,6 +313,7 @@
 <div id="hud">
   <div id="minimap"><canvas id="minimapCanvas" width="480" height="304"></canvas></div>
   <div id="speed"><span class="air" id="airVal"></span><b id="speedVal">0</b>mph</div>
+  <!-- 이하 UI 요소들은 모두 한글 콘텐츠로 채워짐 (game.js / loading-screen.js) -->
   <div id="mission"></div>
   <div id="timer"></div>
   <div id="wp"></div>
@@ -343,40 +344,40 @@
     <div class="loading-scene-meta" aria-hidden="true">
       <span id="loadscene">01 / 06</span>
       <i></i>
-      <span id="loaddistrict">Sawgrass Landing</span>
+      <span id="loaddistrict">톱블레이드 랜딩</span>
     </div>
-    <div class="loading-brand" aria-label="Emerald Bayou">
-      <span class="loading-wordmark">Emerald</span>
-      <span class="loading-script" aria-hidden="true">Bayou</span>
+    <div class="loading-brand" aria-label="에메랄드 베이유">
+      <span class="loading-wordmark">에메랄드</span>
+      <span class="loading-script" aria-hidden="true">베이유</span>
     </div>
     <div class="loading-story">
-      <strong id="loadchapter">Gator overtime</strong>
-      <span id="loadnote">Everybody clocked out except the gator.</span>
+      <strong id="loadchapter">악어의 야근</strong>
+      <span id="loadnote">모두 퇴근했는데 악어만 남아 있어요.</span>
     </div>
     <div class="loading-progress" role="status" aria-live="polite">
       <div class="loading-status">
-        <span id="loadtext">Flooding the backcountry</span>
+        <span id="loadtext">뒷골 물을 채우는 중</span>
         <span id="loadpct">0%</span>
       </div>
-      <div id="loadtrack" class="bar" role="progressbar" aria-label="Loading Emerald Bayou" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+      <div id="loadtrack" class="bar" role="progressbar" aria-label="에메랄드 베이유 로딩" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
     </div>
   </div>
 </div>
 <div id="start" class="overlay hidden" aria-hidden="true">
   <div class="start-panel">
-    <p class="kicker">South Florida backcountry</p>
-    <h1>Emerald <em>Bayou</em></h1>
-    <p class="deck">Run freight. Race the cuts. Stay off FWC’s board when the weather turns.</p>
-    <p class="meta">250 sq mi of open bayou &nbsp;·&nbsp; living wildlife &nbsp;·&nbsp; no road home</p>
-    <p class="controls"><span class="input-keyboard"><b>W / S</b> throttle &nbsp; <b>A / D</b> rudder &nbsp; <b>drag</b> look &nbsp; <b>V</b> camera &nbsp; <b>E</b> interact<br><b>L</b> spotlight &nbsp; <b>H</b> horn &nbsp; <b>C</b> fish &nbsp; <b>X</b> cut &nbsp; <b>G</b> anchor &nbsp; <b>M</b> jobs &nbsp; <b>Tab</b> chart &nbsp; <b>R</b> reset</span><span class="input-gamepad"><b>RT / LT</b> throttle &nbsp; <b>left stick</b> rudder / click camera &nbsp; <b>right stick</b> look / click centre<br><b>A / Cross</b> interact &nbsp; <b>B / Circle</b> alternate / cut &nbsp; <b>X / Square</b> fish &nbsp; <b>Y / Triangle</b> anchor<br><b>LB</b> light &nbsp; <b>RB</b> horn &nbsp; <b>D-pad up</b> jobs &nbsp; <b>View</b> chart &nbsp; <b>Menu / Options</b> pause</span></p>
+    <p class="kicker">남플로리다 뒷골</p>
+    <h1>에메랄드 <em>베이유</em></h1>
+    <p class="deck">화물 운반, 시내 경주, 날씨 turns 비추면 FWC 블랙리스트.</p>
+    <p class="meta">250평방마일의 열린 습지 &nbsp;·&nbsp; 살아있는 야생 &nbsp;·&nbsp; 돌아갈 길 없음</p>
+    <p class="controls"><span class="input-keyboard"><b>W / S</b> 가속 / 후진 &nbsp; <b>A / D</b> 키 &nbsp; <b>드래그</b> 둘러보기 &nbsp; <b>V</b> 카메라 &nbsp; <b>E</b> 상호작용<br><b>L</b> 조명 &nbsp; <b>H</b> 경적 &nbsp; <b>C</b> 낚시 &nbsp; <b>X</b> 끊기 &nbsp; <b>G</b> 닻 &nbsp; <b>M</b> 의뢰 &nbsp; <b>Tab</b> 해도 &nbsp; <b>R</b> 초기화</span><span class="input-gamepad"><b>RT / LT</b> 가속 / 후진 &nbsp; <b>좌스틱</b> 키 / 클릭 시 카메라 &nbsp; <b>우스틱</b> 둘러보기 / 클릭 시 중앙<br><b>A / ×</b> 상호작용 &nbsp; <b>B / ○</b> 보조 / 끊기 &nbsp; <b>X / □</b> 낚시 &nbsp; <b>Y / △</b> 닻<br><b>LB</b> 조명 &nbsp; <b>RB</b> 경적 &nbsp; <b>D-패드 ↑</b> 의뢰 &nbsp; <b>View</b> 해도 &nbsp; <b>Menu / Options</b> 일시정지</span></p>
   </div>
-  <nav class="title-actions" aria-label="Main menu">
-    <p class="action-label">Tower dock</p>
-    <button type="button" class="title-action primary" id="titlePrimary" data-title-action="continue"><span class="action-name">Ride out</span><span class="action-detail" id="titleContinueDetail">Open water from the tower dock</span></button>
-    <button type="button" class="title-action" data-title-action="jobs"><span class="action-name">Jobs &amp; story</span><span class="action-detail" id="titleJobsDetail">Sixteen jobs, resident work and Running Dark</span></button>
-    <button type="button" class="title-action" id="titleNew" data-title-action="new" hidden><span class="action-name">New game</span><span class="action-detail">Clear this hull and return to the tower dock</span></button>
-    <button type="button" class="title-action" data-title-action="graphics"><span class="action-name">Graphics</span><span class="action-detail" id="titleGraphicsDetail">Auto</span></button>
-    <div class="title-foot"><span id="titleWorldDetail">Day 1 · fair</span><span><span class="input-keyboard">Enter to select</span><span class="input-gamepad">A / Cross to select</span></span></div>
+  <nav class="title-actions" aria-label="메인 메뉴">
+    <p class="action-label">타워 독</p>
+    <button type="button" class="title-action primary" id="titlePrimary" data-title-action="continue"><span class="action-name">출항하기</span><span class="action-detail" id="titleContinueDetail">타워 독에서 외해로 나갑니다</span></button>
+    <button type="button" class="title-action" data-title-action="jobs"><span class="action-name">의뢰와 스토리</span><span class="action-detail" id="titleJobsDetail">16개의 의뢰, 주민 의뢰, 그리고 Running Dark</span></button>
+    <button type="button" class="title-action" id="titleNew" data-title-action="new" hidden><span class="action-name">새 게임</span><span class="action-detail">이 선체를 비우고 타워 독으로 돌아갑니다</span></button>
+    <button type="button" class="title-action" data-title-action="graphics"><span class="action-name">그래픽</span><span class="action-detail" id="titleGraphicsDetail">자동</span></button>
+    <div class="title-foot"><span id="titleWorldDetail">1일차 · 맑음</span><span><span class="input-keyboard">Enter로 선택</span><span class="input-gamepad">A / ×로 선택</span></span></div>
   </nav>
 </div>
 <div id="menu" class="overlay hidden" tabindex="-1" aria-hidden="true"></div>

@@ -100,11 +100,11 @@ export class Ecology {
     let saveDirty = false;
     if (this.bioPotential > 0.62 && this.radio && this.nature.bioAdvisoryDay !== E.day) {
       this.nature.bioAdvisoryDay = E.day; saveDirty = true;
-      this.radio.transmit({ channel: 'CH 68', speaker: 'JUNE BELL · SPLIT PINE', text: 'Blue fire is showing in Mangrove Reach. Pretty water, but nobody eats shellfish out of that cut tonight.', priority: 1, key: `nature:bio:${E.day}`, cooldown: 99999 });
+      this.radio.transmit({ channel: 'CH 68', speaker: '준 벨 · 스플릿 파인', text: '맹그로브 리치에서 푸른 빛이 보입니다. 물은 예쁘지만 오늘 밤 그 수로에서 조개를 먹는 사람은 없습니다.', priority: 1, key: `nature:bio:${E.day}`, cooldown: 99999 });
     }
     if (this.bio > 0.34 && this.nature.bioSeenDay !== E.day) {
       this.nature.bioSeenDay = E.day; saveDirty = true;
-      this.game.toast('Blue fire in the wake', 'Mangrove Reach · the plankton flashes only where the water moves', 4.2);
+      this.game.toast('파도 위 푸른 빛', '맹그로브 리치 · 플랑크톤은 물이 움직이는 곳에서만 빛납니다', 4.2);
     }
     if (saveDirty) this.game.persist();
   }
@@ -151,10 +151,10 @@ export class Ecology {
   scatterFeeding(reason = '') {
     const F = this.feeding; if (!F.active || F.state === 'scatter') return;
     F.state = 'scatter'; F.scatterT = 0; F.reason = reason;
-    if (reason === 'prop-wash') this.game.toast('Bait blown out', 'Prop wash sent the mullet down.', 2.7);
-    else if (reason === 'wake') this.game.toast('Wake reached the school', 'The birds lifted and the bait went deep.', 2.7);
-    else if (reason === 'traffic-prop-wash') this.game.toast('Another boat blew the bait out', 'Its prop wash sent the mullet down.', 2.7);
-    else if (reason === 'traffic-wake') this.game.toast('Another wake reached the school', 'The birds lifted before you got there.', 2.7);
+    if (reason === 'prop-wash') this.game.toast('Bait blown out', '프로펠러 파도가 청어 무리를 깊이 내렸습니다.', 2.7);
+    else if (reason === 'wake') this.game.toast('Wake reached the school', '새들이 날아올라 미끼가 깊이 가라앉았습니다.', 2.7);
+    else if (reason === 'traffic-prop-wash') this.game.toast('다른 보트가 미끼를 흩뜨렸습니다', '프로펠러 파도가 청어 무리를 내렸습니다.', 2.7);
+    else if (reason === 'traffic-wake') this.game.toast('Another wake reached the school', '도착하기 전 새들이 날아올랐습니다.', 2.7);
   }
 
   endFeeding() {
@@ -195,14 +195,14 @@ export class Ecology {
     }
     if (!F.seen && distance < 145) {
       F.seen = true; this.nature.feedingSeen = Math.min(9999, (this.nature.feedingSeen || 0) + 1); this.game.persist();
-      this.game.toast('Birds working bait', 'Pelicans are holding over a mullet school.', 3.4);
+      this.game.toast('새들이 미끼를 쫓는 중', '펠리컨이 청어 무리 위를 맴돕니다.', 3.4);
     }
     if (F.state === 'feeding') {
       const holding = distance >= 24 && distance <= 64 && P.speed < 2.65;
       F.quietT = holding ? F.quietT + dt : Math.max(0, F.quietT - dt * 0.7);
       if (!F.observed && F.quietT >= 6) {
         F.observed = true; this.nature.feedingObserved = Math.min(9999, (this.nature.feedingObserved || 0) + 1); this.game.persist();
-        this.game.bounties?.event('baitwatch', 1); this.game.toast('Bait held in the current', 'Six seconds at idle. The birds stayed on it.', 3.2);
+        this.game.bounties?.event('baitwatch', 1); this.game.toast('Bait held in the current', '유속 6초. 새들이 그대로 머물렀습니다.', 3.2);
       }
       F.boilT -= dt;
       if (F.boilT <= 0) {

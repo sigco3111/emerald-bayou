@@ -16,12 +16,12 @@ const whole = (value, high = 999999) => Math.max(0, Math.min(high, Math.floor(Nu
 export const FISHING_LIMITS = Object.freeze({ recent: 12, linePoints: 20, maxCount: 999999 });
 
 export const FISH_SPECIES = Object.freeze([
-  Object.freeze({ id: 'florida-bass', name: 'Florida bass', color: 0x6e7a42, belly: 0xd8d4a3, minIn: 11, maxIn: 27, power: 0.52, jump: 0.38, depth: [0.75, 4.8] }),
-  Object.freeze({ id: 'bluegill', name: 'Bluegill', color: 0x557d72, belly: 0xd79b55, minIn: 5, maxIn: 11.5, power: 0.25, jump: 0.05, depth: [0.55, 3.3] }),
-  Object.freeze({ id: 'bowfin', name: 'Bowfin', color: 0x59634a, belly: 0xb8a67c, minIn: 16, maxIn: 31, power: 0.74, jump: 0.16, depth: [0.65, 3.8] }),
-  Object.freeze({ id: 'common-snook', name: 'Common snook', color: 0xa7aaa1, belly: 0xe4ded0, minIn: 18, maxIn: 44, power: 0.86, jump: 0.72, depth: [1.05, 6.4] }),
-  Object.freeze({ id: 'juvenile-tarpon', name: 'Juvenile tarpon', color: 0xaab8bb, belly: 0xe3e9e5, minIn: 20, maxIn: 42, power: 1, jump: 0.92, depth: [1.25, 7.2] }),
-  Object.freeze({ id: 'red-drum', name: 'Red drum', color: 0xa96c44, belly: 0xe0c7a4, minIn: 16, maxIn: 35, power: 0.8, jump: 0.22, depth: [0.85, 5.5] }),
+  Object.freeze({ id: 'florida-bass', name: '플로리다 베스', color: 0x6e7a42, belly: 0xd8d4a3, minIn: 11, maxIn: 27, power: 0.52, jump: 0.38, depth: [0.75, 4.8] }),
+  Object.freeze({ id: 'bluegill', name: '블루길', color: 0x557d72, belly: 0xd79b55, minIn: 5, maxIn: 11.5, power: 0.25, jump: 0.05, depth: [0.55, 3.3] }),
+  Object.freeze({ id: 'bowfin', name: '보우핀', color: 0x59634a, belly: 0xb8a67c, minIn: 16, maxIn: 31, power: 0.74, jump: 0.16, depth: [0.65, 3.8] }),
+  Object.freeze({ id: 'common-snook', name: '커먼 스누크', color: 0xa7aaa1, belly: 0xe4ded0, minIn: 18, maxIn: 44, power: 0.86, jump: 0.72, depth: [1.05, 6.4] }),
+  Object.freeze({ id: 'juvenile-tarpon', name: '어린 타폰', color: 0xaab8bb, belly: 0xe3e9e5, minIn: 20, maxIn: 42, power: 1, jump: 0.92, depth: [1.25, 7.2] }),
+  Object.freeze({ id: 'red-drum', name: '붉은 드럼', color: 0xa96c44, belly: 0xe0c7a4, minIn: 16, maxIn: 35, power: 0.8, jump: 0.22, depth: [0.85, 5.5] }),
 ]);
 
 const SPECIES_BY_ID = new Map(FISH_SPECIES.map(species => [species.id, species]));

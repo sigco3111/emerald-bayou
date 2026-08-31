@@ -129,7 +129,7 @@ export class StormLine {
     this.rigs.lamp.mat.color.setHex(color); this.rigs.lamp.light.color.setHex(color);
     this.convoy.mesh = this.convoyMesh(); this.chaser.mesh = this.chaserMesh();
     this.convoy.navigationLights = !runner; this.chaser.navigationLights = runner;
-    this.convoyObs.tag = runner ? 'Cal Rook storm convoy' : 'Split Pine evacuation skiff';
+    this.convoyObs.tag = runner ? 'Cal Rook 폭풍 호송' : 'Split Pine 대피 스키프';
     this.chaserObs.tag = runner ? 'FWC patrol' : 'runner skiff';
   }
 
@@ -199,7 +199,7 @@ export class StormLine {
     if (this.P.environment.key !== 'hurricane' && this.P.environment.key !== 'tropical') this.P.environment.setWeather('tropical', false, true);
     if (branch === 'runner') {
       this.P.call('CH 72', 'CAL ROOK · LOST KEY', 'Lost Key shed is taking water. The cold box and generator are on my work skiff. Meet me here and lead us to the mangrove cache before Soto closes the cut.', 4, 'high-water-offer-runner');
-      this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', 'Tower Boat, stay clear of Lost Key traffic. Emergency orders do not make stolen clinic cargo lawful.', 3, 'high-water-soto-warning');
+      this.P.call('FWC TAC', 'WARDEN SOTO · FWC 27', '타워 보트, Lost Key 통행에서 떨어져 계세요. 응급 명령이 도난 클리닉 화물을 합법화하지 않습니다.', 3, 'high-water-soto-warning');
     } else {
       this.P.call('CH 68', 'JUNE BELL · SPLIT PINE', 'Split Pine dock is under. Nolan, the cold box and our generator are moving to Old Mill. The intake is full of grass. Meet the aid skiff and lead us through.', 4, 'high-water-offer-rescue');
       this.P.call('CH 16', 'MARA KEENE · TOWER', 'Hurricane bands are crossing the backcountry. Old Mill has the nearest high-water berth.', 3, 'high-water-mara-warning');

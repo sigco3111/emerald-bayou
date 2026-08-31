@@ -30,7 +30,7 @@ function signal(parent, color, x, y, z, range = 48) {
 }
 
 function medicalCooler() {
-  const g = new THREE.Group(); g.name = 'sealed medical cooler';
+  const g = new THREE.Group(); g.name = '밀봉 의료용 콜러';
   const bodyMat = new THREE.MeshStandardMaterial({ color: 0x24708d, roughness: 0.62, metalness: 0.05 });
   const lidMat = new THREE.MeshStandardMaterial({ color: 0xe5e2d5, roughness: 0.7, metalness: 0.02 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x182320, roughness: 0.78, metalness: 0.18 });
@@ -175,19 +175,19 @@ export class FalsePassage {
     });
     this.routeBand = 0; this.choiceT = 0; this.restore(); this.persist();
     if (this.P.state.ending === 'runner') {
-      this.P.call('CH 16', 'MARA KEENE · TOWER', 'That false red at West Cut put a clinic courier into the cypress. Nolan Pike is overdue, and you know why I am calling this hull.', 4, 'passage-offer-runner');
+      this.P.call('CH 16', 'MARA KEENE · TOWER', 'West Cut의 잘못된 빨간 표지 때문에 클리닉 배달원이 사이프러스에 빠졌습니다. Nolan Pike가 기한을 넘겼고, 제가 왜 이 선체를 호출하는지 아실 겁니다.', 4, 'passage-offer-runner');
     } else {
-      this.P.call('CH 68', 'LEON DOSS · OLD MILL', 'Somebody cut the West Cut cage after I put it back. Clinic courier hit something below the light. Nolan Pike has not answered since.', 4, 'passage-offer-local');
+      this.P.call('CH 68', 'LEON DOSS · OLD MILL', '제가 West Cut 케이지를 다시 설치한 후 누군가 잘랐습니다. 클리닉 배달원이 등대 아래 어딘가에 부딪혔고, Nolan Pike는 그 후로 응답이 없습니다.', 4, 'passage-offer-local');
     }
-    this.P.call('CH 16', 'MARA KEENE · TOWER', 'Last carrier is west of the marker. White skiff, blue medical cooler, one person aboard.', 3, 'passage-fix');
-    this.P.game.toast('False Passage', 'A clinic courier is missing off West Cut.', 3.4); return true;
+    this.P.call('CH 16', 'MARA KEENE · TOWER', '마지막 캐리어는 표지 서쪽. 흰 스키프, 파란 의료용 콜러, 1명 탑승.', 3, 'passage-fix');
+    this.P.game.toast('False Passage', 'West Cut에서 클리닉 배달원 실종.', 3.4); return true;
   }
 
   destination() { return this.state.branch === 'runner' ? this.state.coords.cache : this.state.coords.aid; }
 
   marker() {
     const s = this.state.stage, C = this.state.coords;
-    if (s === 'search' || s === 'choice') return { ...(this.state.approached ? { x: this.state.coolerX, z: this.state.coolerZ } : { x: C.wreck.x + 55, z: C.wreck.z - 35 }), color: '#e6d07a', label: this.state.approached ? 'Nolan’s medical cooler' : 'courier’s last carrier', story: true };
+    if (s === 'search' || s === 'choice') return { ...(this.state.approached ? { x: this.state.coolerX, z: this.state.coolerZ } : { x: C.wreck.x + 55, z: C.wreck.z - 35 }), color: '#e6d07a', label: this.state.approached ? 'Nolan’s medical cooler' : '배달원의 마지막 캐리어', story: true };
     if (s === 'delivery') { const d = this.destination(); return { x: d.x, z: d.z, color: this.state.branch === 'runner' ? '#5b8fff' : '#f0d989', label: this.state.branch === 'runner' ? 'Cal’s cutout' : 'Split Pine aid boat', story: true }; }
     return null;
   }

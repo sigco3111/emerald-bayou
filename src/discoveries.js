@@ -13,7 +13,7 @@ const angleDelta = (from, to) => Math.atan2(Math.sin(to - from), Math.cos(to - f
 
 export const FIELD_DISCOVERIES = Object.freeze([
   Object.freeze({
-    id: 'roseate-roost', kind: 'roost', name: 'Roseate spoonbill roost', short: 'Roseate roost', region: 'rookery', place: 'Rookery Lakes',
+    id: 'roseate-roost', kind: 'roost', name: '붉은따오기 집단', short: '붉은따오기', region: 'rookery', place: '루커리 레이크',
     color: '#ed91ab', reward: 225, hold: 7, minDistance: 20, maxDistance: 54, maxMph: 4.8,
     hint: 'Rookery Lakes · calm water around first or last light',
     intro: 'Nine roseates are settled on the inside bank. Keep the wake off them.',
@@ -22,7 +22,7 @@ export const FIELD_DISCOVERIES = Object.freeze([
     followup: 'Bird Crew copied nine roseates from the tower boat log. That roost had two juveniles in it, so the inside bank is closed to sampling today.',
   }),
   Object.freeze({
-    id: 'tagged-sawfish', kind: 'sawfish', name: 'Tagged smalltooth sawfish', short: 'Tagged sawfish', region: 'mangrove', place: 'Mangrove Reach',
+    id: 'tagged-sawfish', kind: 'sawfish', name: '표지 부착 톱니 상어', short: '표지 상어', region: 'mangrove', place: '맹그로브 리치',
     color: '#71c9be', reward: 340, hold: 9, minDistance: 14, maxDistance: 42, maxMph: 6,
     hint: 'Mangrove Reach · a rising tide near dawn or dusk',
     intro: 'The receiver is catching an acoustic tag. Track the ping and leave room around the animal.',
@@ -31,7 +31,7 @@ export const FIELD_DISCOVERIES = Object.freeze([
     followup: 'The sawfish fix matched a female tagged off the Gulf three years ago. The biologists have her back on the nursery-water map.',
   }),
   Object.freeze({
-    id: 'python-crossing', kind: 'python', name: 'Swimming Burmese python', short: 'Python crossing', region: 'cypress', place: 'Cypress Reach',
+    id: 'python-crossing', kind: 'python', name: '수영하는 버마 왕뱀', short: '왕뱀 횡단', region: 'cypress', place: '사이프러스 리치',
     color: '#c8a56c', reward: 275, hold: 7.5, minDistance: 13, maxDistance: 38, maxMph: 4.5,
     hint: 'Cypress Reach · warm, still water around dusk or dawn',
     intro: 'Long tan body on the surface. Idle wide and hold it in frame while the field camera resolves.',
@@ -40,7 +40,7 @@ export const FIELD_DISCOVERIES = Object.freeze([
     followup: 'Photo is clean. The invasives crew has the heading and a fresh search box. Keep your hands in the boat.',
   }),
   Object.freeze({
-    id: 'logging-skiff', kind: 'wreck', name: 'Hammond logging skiff', short: 'Logging skiff', region: 'cypress', place: 'Cypress Reach',
+    id: 'logging-skiff', kind: 'wreck', name: '해몬드 벌목 보트', short: '벌목 스키프', region: 'cypress', place: 'Cypress Reach',
     color: '#d6b16d', reward: 180,
     hint: 'Cypress Reach · falling water below the old cypress knees',
     intro: 'Low water has uncovered a timber skiff and a stamped builder plate.',
@@ -328,7 +328,7 @@ export class FieldDiscoveryDirector {
     } else if (definition.kind === 'python') this.placePython(active, 0);
     else this.placeSawfish(active, 0);
     const fieldTeam = definition.kind === 'sawfish' || definition.kind === 'python';
-    this.radio?.transmit({ channel: fieldTeam ? 'FWC TAC' : 'CH 68', speaker: fieldTeam ? 'GLADES FIELD TEAM' : 'MARA KEENE · TOWER', text: definition.rumor, priority: 1, key: `discovery:rumor:${definition.id}:${snapshot.day}`, cooldown: 99999 });
+    this.radio?.transmit({ channel: fieldTeam ? 'FWC TAC' : 'CH 68', speaker: fieldTeam ? '글레이즈 야외팀' : '마라 킨 · 타워', text: definition.rumor, priority: 1, key: `discovery:rumor:${definition.id}:${snapshot.day}`, cooldown: 99999 });
     return true;
   }
 
@@ -447,7 +447,7 @@ export class FieldDiscoveryDirector {
     const previous = this.store.missed[active.definition.id] || {};
     this.store.missed[active.definition.id] = { day: this.environment.day, count: Math.min(99, (Number(previous.count) || 0) + 1) };
     if (strike) {
-      this.law?.violation(0.62, 'protected sawfish strike');
+      this.law?.violation(0.62, '보호 상어 충돌');
       this.reputation?.change('fwc', -0.7, 'sawfish-strike', 'The field team logged the tower hull after a protected-animal strike.', false);
       this.audio.thud(1.1);
     } else if (active.definition.kind === 'python') this.audio.splash(0.22);
@@ -498,9 +498,9 @@ export class FieldDiscoveryDirector {
   updateWreck(active) {
     const distance = Math.hypot(active.x - this.phys.pos.x, active.z - this.phys.pos.y), speedMph = this.phys.speed * MPH; active.distance = distance;
     if (distance < 78) this.reveal(active); if (!active.known) return;
-    if (this.environment.waterLevel > -0.025) { this.game.toast('The flood covered the plate', 'The wreck will show again on another falling tide.', 3.4); this.close(120); return; }
+    if (this.environment.waterLevel > -0.025) { this.game.toast('홍수가 명판을 덮었습니다', 'The wreck will show again on another falling tide.', 3.4); this.close(120); return; }
     if (distance < 14) {
-      if (speedMph <= 4.5) { this.setPrompt("copy the skiff's builder plate"); if (this.interact) this.complete(active); }
+      if (speedMph <= 4.5) { this.setPrompt("스키프의 제조사 명판을 기록"); if (this.interact) this.complete(active); }
       else this.setPrompt('idle below 4.5 mph to read the plate');
     } else this.clearPrompt(this.game.dockCamp || this.game.dockJob || this.game.atBoard);
   }
@@ -534,11 +534,11 @@ export class FieldDiscoveryDirector {
     const active = this.active; if (!active?.known || this.busy()) return null;
     if (active.state === 'logged') return { title: 'Field note logged', obj: active.definition.name, sub: active.definition.success };
     if (active.state === 'failed') return { title: 'Field observation lost', obj: active.definition.name, sub: 'The same conditions may return another day.' };
-    if (active.definition.kind === 'wreck') return { title: 'Low-water field note', obj: active.distance < 14 ? 'Idle alongside and read the builder plate' : 'Work in close before the flood covers it', sub: 'The plate stays on the wreck. Copy the hull number into the chart.' };
+    if (active.definition.kind === 'wreck') return { title: 'Low-water field note', obj: active.distance < 14 ? 'Idle alongside and read the builder plate' : '홍수가 덮기 전에 가까이서 작업', sub: 'The plate stays on the wreck. Copy the hull number into the chart.' };
     const percent = Math.round(active.hold / active.definition.hold * 100), inRange = active.distance >= active.definition.minDistance && active.distance <= active.definition.maxDistance;
-    if (active.definition.kind === 'roost') return { title: 'Roseate roost', obj: `Quiet observation · ${percent}%`, sub: inRange ? 'Hold below 4.8 mph and keep the wake off the bank' : 'Stay 20–54 m off the birds' };
-    if (active.definition.kind === 'python') return { title: 'Python crossing', obj: `Photo sequence · ${percent}%`, sub: !active.visible ? 'A bank is blocking the camera. Work into the same cut.' : inRange ? 'Hold below 4.5 mph and keep the wake behind the hull' : 'Stay 13–38 m off. Do not attempt capture.' };
-    return { title: 'Tagged sawfish', obj: `Receiver fix · ${percent}%`, sub: active.spookT > 0 ? 'Animal spooked. Open the distance and bring the prop down.' : inRange ? 'Hold below 6 mph while the receiver resolves the tag' : 'Track the ping from 14–42 m' };
+    if (active.definition.kind === 'roost') return { title: 'Roseate roost', obj: `관찰 진행 · ${percent}%`, sub: inRange ? 'Hold below 4.8 mph and keep the wake off the bank' : '새들로부터 20~54 m 거리 유지' };
+    if (active.definition.kind === 'python') return { title: 'Python crossing', obj: `사진 촬영 · ${percent}%`, sub: !active.visible ? 'A bank is blocking the camera. Work into the same cut.' : inRange ? 'Hold below 4.5 mph and keep the wake behind the hull' : 'Stay 13–38 m off. Do not attempt capture.' };
+    return { title: 'Tagged sawfish', obj: `수신기 측정 · ${percent}%`, sub: active.spookT > 0 ? 'Animal spooked. Open the distance and bring the prop down.' : inRange ? '수신기가 태그를 잡을 때까지 6 mph 이하' : '14~42 m에서 핑 추적' };
   }
 
   stamps(out) {
